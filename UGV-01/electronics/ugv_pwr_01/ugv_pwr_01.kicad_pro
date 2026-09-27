@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "filename": "ugv_pwr_01.kicad_pro",
+    "version": 3
+  },
+  "sheets": [
+    [
+      "7e44c0d3-8c82-5af6-b948-67f3897a195a",
+      "Root"
+    ],
+    [
+      "747e03a3-2f1c-5406-970e-5b0836bae6c3",
+      "pwr_mcu_interface"
+    ],
+    [
+      "94b16659-53e4-5cf1-8fea-6e771fd9e7f6",
+      "k2_reference"
+    ],
+    [
+      "c38a10bf-a711-503e-b3ed-1e6ba260ddc0",
+      "actuator_path"
+    ],
+    [
+      "d74fe101-7857-5499-b464-fba23e91fad4",
+      "safety_gate"
+    ],
+    [
+      "d7cfa224-6ad1-5df6-823e-9a0ff83a1329",
+      "arming_io"
+    ]
+  ]
+}

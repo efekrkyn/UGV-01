@@ -1,0 +1,500 @@
+{
+  "status": "D1_PACKAGING_CANDIDATE",
+  "baseline_revision": "A0",
+  "candidate_width_mm": 300,
+  "inputs": {
+    "revision": "D1",
+    "status": "detail_candidate_not_for_manufacture",
+    "gross_mass_kg": 8,
+    "shock_g": 3,
+    "load_sharing_wheels": 2,
+    "lateral_friction": 1.0,
+    "wheel_radius_mm": 60,
+    "wheel_width_mm": 30,
+    "wheel_center_y_mm": 135,
+    "axle_z_mm": 60,
+    "motor_front_y_mm": 75,
+    "motor_body_length_mm": 70.1,
+    "motor_body_offset_x_mm": 7,
+    "motor_pcd_mm": 31,
+    "coupling_start_y_mm": 85.5,
+    "coupling_length_mm": 31.8,
+    "coupling_max_insertion_mm": 11.9,
+    "shaft_start_y_mm": 105.8,
+    "bearing_inner_start_y_mm": 119.5,
+    "bearing_outer_start_y_mm": 133,
+    "bearing_width_mm": 8,
+    "bearing_bore_mm": 10,
+    "bearing_od_mm": 26,
+    "bearing_static_n": 1960,
+    "shaft_min_yield_mpa_assumption": 305,
+    "shaft_notch_factor_assumption": 1.8,
+    "shaft_screening_torque_nm": 1.5,
+    "carrier_min_yield_mpa_assumption": 240,
+    "carrier_effective_width_mm_assumption": 54,
+    "carrier_thickness_mm": 5,
+    "carrier_stress_factor_assumption": 1.5,
+    "carrier_bolt_x_mm": [
+      -22,
+      35
+    ],
+    "carrier_bolt_y_mm": [
+      70,
+      90
+    ]
+  },
+  "parts": [
+    {
+      "name": "UGV-MECH-001",
+      "volume_mm3": 175350.3153546193,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-002--1",
+      "volume_mm3": 27000.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-002-+1",
+      "volume_mm3": 27000.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-010--1",
+      "volume_mm3": 25882.965204462776,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-010-+1",
+      "volume_mm3": 25882.96520446278,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-013-1",
+      "volume_mm3": 59591.0495667735,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-011--1",
+      "volume_mm3": 33347.1155044628,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-011-+1",
+      "volume_mm3": 33347.1155044628,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-013-2",
+      "volume_mm3": 59591.04956677351,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-012--1",
+      "volume_mm3": 25882.96520446285,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-012-+1",
+      "volume_mm3": 25882.965204462846,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-013-3",
+      "volume_mm3": 59591.0495667735,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-022--1",
+      "volume_mm3": 60372.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-017--1",
+      "volume_mm3": 85500.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-022-+1",
+      "volume_mm3": 60372.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-017-+1",
+      "volume_mm3": 85500.0,
+      "solids": 1
+    },
+    {
+      "name": "REF-BATTERY",
+      "volume_mm3": 473550.00000000006,
+      "solids": 1
+    },
+    {
+      "name": "REF-CM5-IO",
+      "volume_mm3": 504000.0,
+      "solids": 1
+    },
+    {
+      "name": "REF-PWR-PCB",
+      "volume_mm3": 230400.0,
+      "solids": 1
+    },
+    {
+      "name": "REF-MCU-PCB",
+      "volume_mm3": 285600.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-030",
+      "volume_mm3": 14618.29649258883,
+      "solids": 1
+    },
+    {
+      "name": "REF-MAST-COLUMN",
+      "volume_mm3": 58500.0,
+      "solids": 1
+    },
+    {
+      "name": "REF-CAMERA",
+      "volume_mm3": 63000.0,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-040-RR",
+      "volume_mm3": 38042.825869315035,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-041-RR",
+      "volume_mm3": 1191.42731658647,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-042-RR",
+      "volume_mm3": 11689.753166672097,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-043-RR",
+      "volume_mm3": 531.2786606393872,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-044-RR",
+      "volume_mm3": 612.5752245326562,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-045-RR",
+      "volume_mm3": 67.61728408137681,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-046-RR",
+      "volume_mm3": 46769.60060289716,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-047-RR",
+      "volume_mm3": 79665.60811987275,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-1-RR",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-2-RR",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-POLOLU-4754-RR",
+      "volume_mm3": 75667.02357246127,
+      "solids": 1
+    },
+    {
+      "name": "REF-RULAND-OLDHAM-RR",
+      "volume_mm3": 14812.114560832939,
+      "solids": 1
+    },
+    {
+      "name": "REF-RETAINING-RING-10-RR",
+      "volume_mm3": 50.37022407773007,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-040-RL",
+      "volume_mm3": 38042.825869315035,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-041-RL",
+      "volume_mm3": 1191.42731658647,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-042-RL",
+      "volume_mm3": 11689.753166672097,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-043-RL",
+      "volume_mm3": 531.2786606393872,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-044-RL",
+      "volume_mm3": 612.5752245326562,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-045-RL",
+      "volume_mm3": 67.61728408137681,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-046-RL",
+      "volume_mm3": 46769.60060289716,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-047-RL",
+      "volume_mm3": 79665.60811987275,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-1-RL",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-2-RL",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-POLOLU-4754-RL",
+      "volume_mm3": 75667.02357246127,
+      "solids": 1
+    },
+    {
+      "name": "REF-RULAND-OLDHAM-RL",
+      "volume_mm3": 14812.114560832939,
+      "solids": 1
+    },
+    {
+      "name": "REF-RETAINING-RING-10-RL",
+      "volume_mm3": 50.37022407773007,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-040-FR",
+      "volume_mm3": 38042.825869315035,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-041-FR",
+      "volume_mm3": 1191.42731658647,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-042-FR",
+      "volume_mm3": 11689.753166672097,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-043-FR",
+      "volume_mm3": 531.2786606393872,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-044-FR",
+      "volume_mm3": 612.5752245326562,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-045-FR",
+      "volume_mm3": 67.61728408137681,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-046-FR",
+      "volume_mm3": 46769.60060289716,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-047-FR",
+      "volume_mm3": 79665.60811987275,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-1-FR",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-2-FR",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-POLOLU-4754-FR",
+      "volume_mm3": 75667.02357246127,
+      "solids": 1
+    },
+    {
+      "name": "REF-RULAND-OLDHAM-FR",
+      "volume_mm3": 14812.114560832939,
+      "solids": 1
+    },
+    {
+      "name": "REF-RETAINING-RING-10-FR",
+      "volume_mm3": 50.37022407773007,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-040-FL",
+      "volume_mm3": 38042.825869315035,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-041-FL",
+      "volume_mm3": 1191.42731658647,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-042-FL",
+      "volume_mm3": 11689.753166672097,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-043-FL",
+      "volume_mm3": 531.2786606393872,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-044-FL",
+      "volume_mm3": 612.5752245326562,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-045-FL",
+      "volume_mm3": 67.61728408137681,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-046-FL",
+      "volume_mm3": 46769.60060289716,
+      "solids": 1
+    },
+    {
+      "name": "UGV-MECH-047-FL",
+      "volume_mm3": 79665.60811987275,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-1-FL",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-6000-2RSH-2-FL",
+      "volume_mm3": 3619.114736935441,
+      "solids": 1
+    },
+    {
+      "name": "REF-POLOLU-4754-FL",
+      "volume_mm3": 75667.02357246127,
+      "solids": 1
+    },
+    {
+      "name": "REF-RULAND-OLDHAM-FL",
+      "volume_mm3": 14812.114560832939,
+      "solids": 1
+    },
+    {
+      "name": "REF-RETAINING-RING-10-FL",
+      "volume_mm3": 50.37022407773007,
+      "solids": 1
+    }
+  ],
+  "intersections": [],
+  "added_plate_holes_mm": [
+    [
+      -83,
+      -70
+    ],
+    [
+      -83,
+      -90
+    ],
+    [
+      -140,
+      -70
+    ],
+    [
+      -140,
+      -90
+    ],
+    [
+      -83,
+      70
+    ],
+    [
+      -83,
+      90
+    ],
+    [
+      -140,
+      70
+    ],
+    [
+      -140,
+      90
+    ],
+    [
+      83,
+      -70
+    ],
+    [
+      83,
+      -90
+    ],
+    [
+      140,
+      -70
+    ],
+    [
+      140,
+      -90
+    ],
+    [
+      83,
+      70
+    ],
+    [
+      83,
+      90
+    ],
+    [
+      140,
+      70
+    ],
+    [
+      140,
+      90
+    ]
+  ],
+  "modifications": [
+    "Four offset gearmotors with separately supported wheels",
+    "Four carrier interfaces: 16 M4 holes, 4 reused from A0, 12 new",
+    "Drivetrain windows and removal of four old end feet"
+  ],
+  "limitations": [
+    "Remaining body feet need strength review",
+    "No bolt heads, tooling sweeps, cable harness or tray supports",
+    "A0 URDF and vehicle.json unchanged until full interface release"
+  ]
+}

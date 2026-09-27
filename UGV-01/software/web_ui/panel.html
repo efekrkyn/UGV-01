@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UGV-01 AI paneli</title>
+<style>
+  :root { --bg:#f6f5f1; --fg:#1d1f1c; --muted:#5d625a; --card:#ffffff; --line:#d9d6cc;
+          --accent:#c9851b; --ai:#1f5fbf; --stop:#b3261e; --ok:#2f7d32; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#171816; --fg:#ecebe6; --muted:#a6aaa1; --card:#22241f; --line:#3a3d36;
+            --accent:#e0a33c; --ai:#6fa0ff; --stop:#ff6b60; --ok:#7bc47f; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.45 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; display: grid; gap: 12px; }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+  h1 { font-size: 1.3rem; margin: 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; }
+  #status { color: var(--muted); }
+  #status.ai { color: var(--ai); font-weight: 600; }
+  #log { height: 45vh; overflow-y: auto; display:grid; gap:8px; align-content:start; }
+  .msg { padding:8px 10px; border-radius:8px; border:1px solid var(--line); }
+  .msg.you { justify-self:end; }
+  .msg.robot { border-color: var(--ai); }
+  .msg.system { color: var(--muted); font-size: .9rem; }
+  form { display:flex; gap:8px; }
+  input[type=text] { flex:1; min-height:44px; padding:8px 10px; font:inherit; color:inherit;
+                     background:var(--bg); border:1px solid var(--line); border-radius:8px; }
+  button { min-height:44px; padding:8px 14px; font:inherit; border-radius:8px; border:1px solid var(--line);
+           background:var(--card); color:inherit; cursor:pointer; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #stop { background: var(--stop); color:#fff; border-color: var(--stop); font-weight:700; width:100%; }
+  label.switch { display:flex; gap:8px; align-items:center; min-height:44px; }
+  small { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>UGV-01 · AI paneli</h1>
+    <label class="switch"><input type="checkbox" id="ai-switch"> AI modu</label>
+  </header>
+  <p id="status" role="status" aria-live="polite">Bağlantı yok</p>
+  <button id="stop" type="button">YAZILIMSAL STOP · "dur" · (fiziksel E-stop her zaman birincil)</button>
+  <button id="arm-parked" type="button">Kolu elle park ettim · onayla (açılışta ve kol gevşeyince)</button>
+  <section class="card" aria-label="Sohbet">
+    <div id="log" aria-live="polite"></div>
+  </section>
+  <form id="chat">
+    <label for="text" hidden>Komut</label>
+    <input type="text" id="text" autocomplete="off" placeholder="Örn. kırmızı küpü bul ve önüne git">
+    <button type="button" id="mic" aria-pressed="false">🎤 Konuş</button>
+    <button type="submit">Gönder</button>
+  </form>
+  <small>AI modunda iki göz kamerasının görüntüsü ve araç durumu AI sağlayıcısına (varsayılan DeepSeek API) gönderilir.
+    AI modu yalnız anahtar açık, bu sekme görünür ve odaklıyken çalışır; sekme değişirse araç durur.
+    Sesli komut metne çevrilip kutuya yazılır, gönder'e basınca gider; "dur" sözü hemen yerelde durdurur.</small>
+</main>
+<script type="module">
+import { AiPermit, LEASE_PERIOD_MS, isStopCommand } from './panel_logic.mjs';
+
+const $ = (id) => document.getElementById(id);
+const permit = new AiPermit();
+let ws = null;
+
+function say(text, who) {
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  div.textContent = text;
+  $('log').append(div);
+  $('log').scrollTop = $('log').scrollHeight;
+}
+
+function send(message) {
+  if (ws && ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify(message)); return true; }
+  return false;
+}
+
+function stop(source) {
+  permit.setSwitch(false);
+  $('ai-switch').checked = false;
+  const sent = send({ type: 'stop', source });
+  say(sent ? 'DUR gönderildi.' : 'DUR gönderilemedi: bağlantı yok. Fiziksel E-stop kullanın!', 'system');
+}
+
+function refreshPage() {
+  permit.setPage({ visible: document.visibilityState === 'visible', focused: document.hasFocus() });
+  const connected = ws && ws.readyState === WebSocket.OPEN;
+  $('status').textContent = !connected ? 'Bağlantı yok'
+    : permit.allowed() ? 'AI modu açık' : permit.switchOn ? 'AI modu duraklatıldı (sekme görünür/odaklı değil)' : 'Manuel';
+  $('status').className = permit.allowed() && connected ? 'ai' : '';
+}
+
+function connect() {
+  ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ai`);
+  ws.onopen = refreshPage;
+  ws.onclose = () => { refreshPage(); setTimeout(connect, 1000); };
+  ws.onmessage = (event) => {
+    const m = JSON.parse(event.data);
+    if (m.type === 'say') say(m.text, 'robot');
+    else if (m.type === 'ask') say(`Soru: ${m.question} (yanıtı kutuya yazıp gönderin)`, 'robot');
+    else if (m.type === 'status') say(m.text, 'system');
+  };
+}
+
+// Lease: every 50 ms while allowed. The MacBook gateway drops AI mode when it is older than 100 ms.
+setInterval(() => { refreshPage(); if (permit.allowed()) send({ type: 'lease', ai: true }); }, LEASE_PERIOD_MS);
+document.addEventListener('visibilitychange', refreshPage);
+window.addEventListener('focus', refreshPage);
+window.addEventListener('blur', refreshPage);
+
+$('ai-switch').addEventListener('change', (e) => { permit.setSwitch(e.target.checked); refreshPage(); });
+$('stop').addEventListener('click', () => stop('button'));
+// M3 review: after power-on or a drop of servo power away from stow the robot keeps the arm limp until this.
+$('arm-parked').addEventListener('click', () => {
+  if (!confirm('Kol stow konumunda, çamurluğa yaslı ve araç kurulu değil mi?')) return;
+  if (!send({ type: 'arm_parked' })) say('Gönderilemedi: bağlantı yok.', 'system');
+});
+$('chat').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const text = $('text').value.trim();
+  if (!text) return;
+  $('text').value = '';
+  say(text, 'you');
+  if (isStopCommand(text)) return stop('text');
+  if (!permit.allowed()) return say('AI modunu açın (anahtar, görünür ve odaklı sekme).', 'system');
+  if (!send({ type: 'instruction', text })) say('Gönderilemedi: bağlantı yok.', 'system');
+});
+
+const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!Recognition) {
+  $('mic').disabled = true;
+  $('mic').title = 'Bu tarayıcı konuşma tanımayı desteklemiyor';
+} else {
+  const rec = new Recognition();
+  rec.lang = 'tr-TR';
+  rec.interimResults = false;
+  rec.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    if (isStopCommand(text)) { say(`🎤 ${text}`, 'you'); return stop('voice'); }
+    $('text').value = text;  // shown for confirmation; the operator presses Gönder
+    $('text').focus();
+  };
+  rec.onend = () => $('mic').setAttribute('aria-pressed', 'false');
+  $('mic').addEventListener('click', () => { $('mic').setAttribute('aria-pressed', 'true'); rec.start(); });
+}
+connect();
+</script>
+</body>
+</html>

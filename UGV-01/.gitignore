@@ -1,0 +1,22 @@
+# .venv is a link to .venv.nosync: iCloud neither syncs nor evicts *.nosync folders
+.venv*
+__pycache__/
+*.pyc
+.DS_Store
+# API keys and other secrets live only on the vehicle (docs/ai_control.md)
+secrets/
+*.env
+
+# ESP-IDF build output (L4a)
+firmware/lite/esp32/build/
+firmware/lite/esp32/sdkconfig
+firmware/lite/esp32/sdkconfig.old
+firmware/lite/esp32/dependencies.lock
+firmware/lite/eye/build/
+firmware/lite/eye/sdkconfig
+firmware/lite/eye/sdkconfig.old
+firmware/lite/eye/managed_components/
+firmware/lite/eye/dependencies.lock
+
+# film render output (media/film/make_film.sh)
+media/film/out/

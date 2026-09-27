@@ -1,0 +1,31 @@
+id,item,category,quantity,unit_tl,source,note
+L01,ESP32-S3-DevKitC-1 N16R8,compute,1,600,"https://www.akakce.com/elektronik-devre-elemani/en-ucuz-robiz-esp32-s3-devkitc-1-n16r8-wifi-bluetooth-5-modul-gelistirme-karti-esp32-s3-n16r8-32-bit-cift-cekirdek-fiyati,1091323120.html",ana kart; v1.1 (RGB LED GPIO38)
+L02,ESP32-CAM + OV2640,camera,2,600,"https://www.akakce.com/elektronik-devre-elemani/en-ucuz-esp32-cam-wifi-bluetooth-gelistirme-karti-ov2640-kamera-modulu-fiyati,130512545.html",göz kameraları; baştaki kabuklarda
+L03,ESP32-CAM-MB USB programlayıcı,tools,1,150,tahmin,ESP32-CAM üzerinde USB yok
+L04,JGA25-370 12 V 77 dev/dk 1:78 Hall enkoderli,motor_encoder,4,550,tahmin,"dört teker (R4: arka sıkışma da enkoderle görülür); redüksiyon, PPR ve sargı direnci gelen partide ölçülür"
+L06,TB6612FNG sürücü modülü,driver,2,100,tahmin,"önerilen VM ≤13,5 V, IOUT ≤1,0 A/kanal (Toshiba veri sayfası); balastla sıkışma ≤0,97 A"
+L07,MG90S metal dişli mikro servo,servo,4,135,https://www.robo90.com/servo-motor,"pan, tilt, bilek dönüşü, pençe"
+L08,MG996R servo 180°,servo,3,280,https://www.robotistan.com/mg996-13-kg-servo-motor,"kol: üst kol dönüşü, dirsek, bilek eğimi (M3, DD73)"
+L09,"18650 3,0 Ah hücre (VTC6/P30B sınıfı)",cell,3,300,https://www.akakce.com/pil/18650-pil.html,3S1P; aynı parti ve eşit gerilim
+L10,3S 20 A BMS,power,1,120,tahmin,dengeleme ve aşırı deşarj koruması
+L11,"12,6 V 2 A Li-ion şarj adaptörü",power,1,250,tahmin,CC/CV; BMS üzerinden
+L12,Mini560 5 V 5 A buck (EN pinli),power,3,110,tahmin,mantık rayı + iki servo rayı A/B (EN=ACT_EN); EN eşiği doğrulanır
+L13,"Mantar E-stop 22 mm, 2 NC kontak bloğu",power,1,200,tahmin,"1. NC güç yolunu keser, 2. NC GPIO2'ye durum verir (R6); M3: en kötü ≈9,4 A, 12 V DC ≥10 A kesme değeri doğrulanır"
+L14,15 A bıçak sigorta + tutucu + ana anahtar + XT30,power,1,150,tahmin,batarya çıkışında (M3: iki servo rayı)
+L15,VL53L0X ToF modülü,tof,2,120,tahmin,ön tampon; tek XSHUT ile adresleme
+L16,WS2812B 8 LED çubuk,light,1,60,tahmin,"firmware ≤0,5 W"
+L17,74AHCT1G125 + SOT-23 adaptör + direnç/kondansatör seti,wiring,1,60,tahmin,"ışık verisi 5 V; bölücüler, pulldown, bulk kondansatörler"
+L18,Delikli pertinaks + pin header + JST-XH konnektörler,wiring,1,150,tahmin,modül taşıyıcı kart
+L19,6804-2RS rulman (20×32×7 mm),mechanical,3,80,tahmin,boyun + iki omuz (kol yükünü yan duvara verir)
+L20,Silikon kablo 18/22/26 AWG + makaron,wiring,1,280,tahmin,"motor 22 AWG, güç 18 AWG; kol boyunca servo uzatmaları"
+L21,M3 vida/somun + ısıl insert seti,mechanical,1,350,tahmin,"gövde, kelepçe, kapak, kol, çamurluk"
+L22,PETG filament 1 kg,filament,3,650,https://www.akakce.com/filament/petg-filament.html,"CAD: 2,25 kg baskı + %25 fire ≈2,81 kg"
+L23,TPU 95A filament 1 kg,filament,1,700,https://www.akakce.com/filament/tpu-filament.html,"lastik, tampon ve atma ağzı kapağı; CAD: 0,28 kg"
+L24,624ZZ rulman (4×13×5 mm),mechanical,2,15,tahmin,dirsek ve bilek çatalı boşta yatakları
+L25,"M4×12 cıvata + somun + 0,5 mm pul",mechanical,2,5,tahmin,"dirsek ve bilek 624 boşta yatakları; somun uzuvda gömülü (DD81)"
+L26,"7,5 Ω 10 W taş direnç",ballast,4,8,tahmin,"motor seri balastı (R4): tam pakette sıkışma ≤0,97 A; havalandırılan yere"
+L27,DS3218MG dijital servo 270° 20 kg,servo,1,1100,tahmin,"omuz J1, gövde içinde (DD73); 180° sürümü yerelde 1.064–1.159 TL; yedek RDS3115MG 270° 941 TL (5 V 15 kg·cm, stok yok)"
+L28,PCA9685 16 kanal I2C PWM servo sürücü,driver_servo,1,236,https://www.robotistan.com/pca9685-16-channel-i2c-pwmservo-driver-boardclon,8 servo; /OE = GPIO39 pull-up (DD75)
+L29,6704-2RS rulman (20×27×4 mm),mechanical,1,60,tahmin,üst kol dönüşü (J2)
+L30,25T alüminyum yuvarlak disk korna (Ø25; 4×M3 PCD 14),mechanical,3,90,tahmin,"twist, dirsek, bilek (DD81); yerelde yalnız kol tipi 59–68 TL, disk tipi yurt dışından; PCD gelince doğrulanır"
+L31,"Ø1,5 mm çelik itme çubuğu (RC, Z büküm uçlu)",mechanical,1,30,tahmin,"gizli tilt servosundan sol göze (DD83); Z büküm pense ile"

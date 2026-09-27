@@ -1,0 +1,237 @@
+{
+  "board": "ESP32-S3-DevKitC-1 v1.1 (ESP32-S3-WROOM-1 N16R8)",
+  "status": "A3 Lite pin plan, M3 servos on a PCA9685; verify against the purchased board revision before wiring",
+  "source": "Espressif ESP32-S3-DevKitC-1 v1.1 user guide, J1/J3 header tables (TX=GPIO43, RX=GPIO44)",
+  "headers": {
+    "J1": [
+      "3V3",
+      "3V3",
+      "RST",
+      "4",
+      "5",
+      "6",
+      "7",
+      "15",
+      "16",
+      "17",
+      "18",
+      "8",
+      "3",
+      "46",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "5V",
+      "G"
+    ],
+    "J3": [
+      "G",
+      "43",
+      "44",
+      "1",
+      "2",
+      "42",
+      "41",
+      "40",
+      "39",
+      "38",
+      "37",
+      "36",
+      "35",
+      "0",
+      "45",
+      "48",
+      "47",
+      "21",
+      "20",
+      "19",
+      "G",
+      "G"
+    ]
+  },
+  "unavailable": {
+    "0": "BOOT strapping pin",
+    "3": "JTAG strapping pin",
+    "45": "VDD_SPI strapping pin",
+    "46": "boot strapping pin",
+    "19": "native USB D-",
+    "20": "native USB D+",
+    "43": "UART0 TX console",
+    "44": "UART0 RX console",
+    "35": "octal flash/PSRAM (N16R8)",
+    "36": "octal flash/PSRAM (N16R8)",
+    "37": "octal flash/PSRAM (N16R8)",
+    "38": "on-board RGB LED (v1.1)",
+    "48": "on-board RGB LED (v1.0)"
+  },
+  "assignments": [
+    {
+      "signal": "M_FL_IN1",
+      "gpio": 4,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_FL_IN2",
+      "gpio": 5,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_FR_IN1",
+      "gpio": 6,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_FR_IN2",
+      "gpio": 7,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_RL_IN1",
+      "gpio": 15,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_RL_IN2",
+      "gpio": 16,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_RR_IN1",
+      "gpio": 17,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "M_RR_IN2",
+      "gpio": 18,
+      "peripheral": "MCPWM"
+    },
+    {
+      "signal": "ENC_FL_A",
+      "gpio": 11,
+      "peripheral": "PCNT"
+    },
+    {
+      "signal": "ENC_RL_A",
+      "gpio": 12,
+      "peripheral": "PCNT"
+    },
+    {
+      "signal": "ENC_FR_A",
+      "gpio": 13,
+      "peripheral": "PCNT"
+    },
+    {
+      "signal": "ENC_RR_A",
+      "gpio": 14,
+      "peripheral": "PCNT"
+    },
+    {
+      "signal": "SERVO_OE",
+      "gpio": 39,
+      "peripheral": "GPIO"
+    },
+    {
+      "signal": "LIGHT_DATA",
+      "gpio": 47,
+      "peripheral": "RMT"
+    },
+    {
+      "signal": "I2C_SDA",
+      "gpio": 8,
+      "peripheral": "I2C"
+    },
+    {
+      "signal": "I2C_SCL",
+      "gpio": 9,
+      "peripheral": "I2C"
+    },
+    {
+      "signal": "TOF_XSHUT",
+      "gpio": 10,
+      "peripheral": "GPIO"
+    },
+    {
+      "signal": "VBAT_SENSE",
+      "gpio": 1,
+      "peripheral": "ADC1"
+    },
+    {
+      "signal": "ACT_EN",
+      "gpio": 21,
+      "peripheral": "GPIO"
+    },
+    {
+      "signal": "ESTOP_SENSE",
+      "gpio": 2,
+      "peripheral": "GPIO"
+    }
+  ],
+  "notes": [
+    "ESTOP_SENSE reads the E-stop's second NC contact (closed to GND = released; open or broken wire = pressed) through a 10k pull-up and 1k/100n filter, edge-latched in an interrupt (R6)",
+    "Encoders: channel A only on all four motors (one PCNT unit each); direction comes from the command (R4 rear stall detection)",
+    "M3: PCA9685 /OE (SERVO_OE, GPIO39) is pulled up, so all eight servo PWM outputs are off through ESP32 reset and boot; firmware drives it Low only while ACT_EN is High"
+  ],
+  "spare": {
+    "40": "free since M3 (servos on the PCA9685)",
+    "41": "free since M3",
+    "42": "free since M3"
+  },
+  "tof_addresses": [
+    "0x29",
+    "0x30"
+  ],
+  "pca9685": {
+    "address": "0x40",
+    "bus": "I2C0 (I2C_SDA/I2C_SCL, shared with the two VL53L0X)",
+    "oe_signal": "SERVO_OE",
+    "pwm_hz": 50,
+    "channels": [
+      "SERVO_PAN",
+      "SERVO_TILT",
+      "SERVO_SHOULDER",
+      "SERVO_TWIST",
+      "SERVO_ELBOW",
+      "SERVO_WRIST",
+      "SERVO_ROLL",
+      "SERVO_GRIPPER"
+    ],
+    "servos": [
+      {
+        "signal": "SERVO_PAN",
+        "rail": "A"
+      },
+      {
+        "signal": "SERVO_TILT",
+        "rail": "A"
+      },
+      {
+        "signal": "SERVO_SHOULDER",
+        "rail": "A"
+      },
+      {
+        "signal": "SERVO_TWIST",
+        "rail": "B"
+      },
+      {
+        "signal": "SERVO_ELBOW",
+        "rail": "A"
+      },
+      {
+        "signal": "SERVO_WRIST",
+        "rail": "B"
+      },
+      {
+        "signal": "SERVO_ROLL",
+        "rail": "B"
+      },
+      {
+        "signal": "SERVO_GRIPPER",
+        "rail": "B"
+      }
+    ],
+    "note": "channel k = firmware joint k (servo_control.h); /OE active low with a 10k pull-up to 3V3; servo power from the two Mini560 rails, not the module V+ terminal"
+  }
+}

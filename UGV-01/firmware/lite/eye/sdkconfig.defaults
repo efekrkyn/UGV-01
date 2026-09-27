@@ -1,0 +1,8 @@
+CONFIG_IDF_TARGET="esp32"
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+# two VGA JPEG frame buffers live in the module's 4 MB PSRAM
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_USE_MALLOC=y
+# the camera, Wi-Fi and HTTP stacks fill 93% of the default 1 MB app slot
+CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y

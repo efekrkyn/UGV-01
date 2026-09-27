@@ -1,0 +1,16 @@
+reference,manufacturer,mpn,description,quantity,alternative,unit_cost_usd_estimate,supply_status,scope
+M1-M4,Pololu,4754,70:1 12V encoder gearmotor,4,TBD after dynamometer test,60.95,Official price observed 2026-09-22; backorder possible,replaces A0 motor line
+BRG1-BRG8,SKF,6000-2RSH,10x26x8 sealed bearing,8,Equivalent 6000 sealed subject to fit and rating review,8,Stock and quote unverified; price estimate,replaces A0 bearing allowance
+CPL-IN1-4,Ruland,MOCT25-6-A,6 mm round clamp hub,4,TBD torque and dimensional validation,30,Quote and stock unverified; price estimate,replaces coupling allowance
+CPL-DISC1-4,Ruland,OD16/25-AT,Acetal Oldham disk,4,TBD temperature and torque validation,15,Quote and stock unverified; price estimate,replaces coupling allowance
+CPL-OUT1-4,Ruland,MOCT25-10-A,10 mm round clamp hub,4,TBD torque and dimensional validation,30,Quote and stock unverified; price estimate,replaces coupling allowance
+040,UGV-01,UGV-MECH-040,6061 CNC carrier directional variants,4,Weight reduction after FEA,100,Not released for manufacture; machining estimate,replaces metal support allowance
+041,UGV-01,UGV-MECH-041,Bearing outer ring cap,4,TBD final screw layout,8,Not released for manufacture; estimate,replaces metal support allowance
+042,UGV-01,UGV-MECH-042,C45 integral shaft and hub flange,4,TBD certified material,40,Not released; fits and groove open,replaces hub and shaft allowance
+043,UGV-01,UGV-MECH-043,Inner bearing spacer,4,Precision shim stack after drawing,5,Not released; estimate,replaces bearing hardware allowance
+044,UGV-01,UGV-MECH-044,Outer bearing spacer,4,Precision shim stack after drawing,5,Not released; estimate,replaces bearing hardware allowance
+045,UGV-01,UGV-MECH-045,Inner retention washer,4,Selected precision washer MPN TBD,2,Not released; estimate,replaces bearing hardware allowance
+046,UGV-01,UGV-MECH-046,PAHT-CF keyed rim,4,Metal rim after mass review,8,Print coupon pending; material-only estimate,replaces wheel allowance
+047,UGV-01,UGV-MECH-047,TPU ribbed tire,4,Commercial tire with own rim after geometry review,5,Print coupon pending; material-only estimate,replaces tire allowance
+CLIP1-4,TBD,TBD,External retaining ring for 10 mm shaft,4,TBD matching groove drawing,1,MPN and groove not selected; estimate,replaces hardware allowance
+FASTENER-SET,TBD,TBD,16 M4 chassis plus 16 M3 motor plus 16 M3 rim plus 16 M2.5 cap and washers nuts,1,Standardization after cap access review,30,Lengths heads grades and locking not frozen; estimate,replaces fastener allowance subset

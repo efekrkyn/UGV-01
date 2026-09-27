@@ -1,0 +1,19 @@
+{
+  "revision": "D2A",
+  "status": "PRINT_AND_TEST_CANDIDATE",
+  "rim_saving_kg_per_wheel": 0.005473911039615003,
+  "tire_saving_kg_per_wheel": 0.01756676186590115,
+  "curb_mass_kg": 5.932800529035407,
+  "remaining_reserve_to_6kg_kg": 0.06719947096459314,
+  "unapproved_intersections_impossible_by_subset": true,
+  "mechanical_changes": [
+    "Four 22 mm diameter windows through the outboard rim web between M3 bolts",
+    "Tread bays thinner by 2 mm while eight key ribs remain full thickness"
+  ],
+  "conditions": [
+    "A 42CrMo4+QT 10 mm shaft with certified >=650 MPa yield is required for the 9 kg, mu=1.2 material screen",
+    "TPU abrasion and key torque tests pending",
+    "PAHT-CF rim bending, layer orientation and fastener fatigue tests pending",
+    "The remaining mass reserve is too small for release"
+  ]
+}

@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="ugv_01_geometry_concept">
+  <link name="base_link" />
+  <link name="chassis">
+    <visual>
+      <geometry>
+        <box size="0.3 0.236 0.169" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="chassis" />
+    <origin xyz="0.0 0.0 0.1255" />
+  </joint>
+  <link name="front_left_wheel">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.06" length="0.03" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="front_left_wheel" />
+    <origin xyz="0.105 0.139 0.06" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="front_left_motor">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.0125" length="0.0678" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_left_motor_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="front_left_motor" />
+    <origin xyz="0.105 0.08009999999999999 0.06" />
+  </joint>
+  <link name="front_right_wheel">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.06" length="0.03" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="front_right_wheel" />
+    <origin xyz="0.105 -0.139 0.06" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="front_right_motor">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.0125" length="0.0678" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_right_motor_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="front_right_motor" />
+    <origin xyz="0.105 -0.08009999999999999 0.06" />
+  </joint>
+  <link name="rear_left_wheel">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.06" length="0.03" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rear_left_wheel" />
+    <origin xyz="-0.105 0.139 0.06" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="rear_left_motor">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.0125" length="0.0678" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_left_motor_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="rear_left_motor" />
+    <origin xyz="-0.105 0.08009999999999999 0.06" />
+  </joint>
+  <link name="rear_right_wheel">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.06" length="0.03" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="rear_right_wheel" />
+    <origin xyz="-0.105 -0.139 0.06" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="rear_right_motor">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.0125" length="0.0678" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_right_motor_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="rear_right_motor" />
+    <origin xyz="-0.105 -0.08009999999999999 0.06" />
+  </joint>
+  <link name="battery">
+    <visual>
+      <geometry>
+        <box size="0.07 0.06 0.024" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="battery_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="battery" />
+    <origin xyz="-0.06 0.0 0.0535" />
+  </joint>
+  <link name="electronics">
+    <visual>
+      <geometry>
+        <box size="0.1 0.076 0.025" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="electronics_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="electronics" />
+    <origin xyz="0.06 0.0 0.0615" />
+  </joint>
+  <link name="sensor_mast_mount">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.006" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="sensor_mast_mount_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="sensor_mast_mount" />
+    <origin xyz="0.03 0.0 0.213" />
+  </joint>
+  <link name="head_pan">
+    <visual>
+      <geometry>
+        <box size="0.048 0.048 0.034" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="head_pan_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="head_pan" />
+    <origin xyz="0.03 0.0 0.25" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.5708" upper="1.5708" effort="1" velocity="2" />
+  </joint>
+  <link name="head_tilt">
+    <visual>
+      <geometry>
+        <box size="0.034 0.103 0.04" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="head_tilt_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="head_tilt" />
+    <origin xyz="0.03 0.0 0.332" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.5236" upper="1.0472" effort="1" velocity="2" />
+  </joint>
+  <link name="left_eye_camera">
+    <visual>
+      <geometry>
+        <box size="0.026 0.027 0.0405" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="left_eye_camera_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="left_eye_camera" />
+    <origin xyz="0.034 0.0305 0.332" />
+  </joint>
+  <link name="right_eye_camera">
+    <visual>
+      <geometry>
+        <box size="0.026 0.027 0.0405" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="right_eye_camera_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="right_eye_camera" />
+    <origin xyz="0.034 -0.0305 0.332" />
+  </joint>
+  <link name="right_shoulder">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="right_shoulder_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="right_shoulder" />
+    <origin xyz="0.125 -0.138 0.163" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.7853981633974483" upper="3.141592653589793" effort="1" velocity="2" />
+  </joint>
+  <link name="right_twist">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="right_twist_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="right_twist" />
+    <origin xyz="0.181 -0.138 0.163" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.3962634015954636" upper="1.5707963267948966" effort="1" velocity="2" />
+  </joint>
+  <link name="right_elbow">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="right_elbow_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="right_elbow" />
+    <origin xyz="0.225 -0.138 0.163" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.5235987755982988" upper="2.356194490192345" effort="1" velocity="2" />
+  </joint>
+  <link name="right_wrist">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="right_wrist_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="right_wrist" />
+    <origin xyz="0.305 -0.138 0.163" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.2217304763960306" upper="1.7453292519943295" effort="1" velocity="2" />
+  </joint>
+  <link name="right_roll">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="right_roll_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="right_roll" />
+    <origin xyz="0.335 -0.138 0.163" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.4835298641951802" upper="1.4835298641951802" effort="1" velocity="2" />
+  </joint>
+  <link name="left_arm">
+    <visual>
+      <geometry>
+        <box size="0.18 0.024 0.048" />
+      </geometry>
+    </visual>
+  </link>
+  <joint name="left_arm_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="left_arm" />
+    <origin xyz="0.215 0.138 0.163" />
+  </joint>
+</robot>

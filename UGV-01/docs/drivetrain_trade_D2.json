@@ -1,0 +1,54 @@
+{
+  "basis": "9 kg mechanical screen, 3 g over two wheels, 1.5 Nm drive torque",
+  "D1_10mm_6000_C45": {
+    "1": {
+      "shaft_yield_margin": 2.0667615284924765,
+      "bearing_static_margin": 2.7953059824290065,
+      "bearing_radial_n": 701.1754749999999,
+      "shaft_equivalent_mpa": 147.57387139021844
+    },
+    "1.2": {
+      "shaft_yield_margin": 1.7291963853659962,
+      "bearing_static_margin": 2.3935853621996883,
+      "bearing_radial_n": 818.8552749999999,
+      "shaft_equivalent_mpa": 176.38251073225825
+    }
+  },
+  "D1_10mm_6000_42CrMo4_QT": {
+    "1": {
+      "shaft_yield_margin": 4.4045737492462615,
+      "bearing_static_margin": 2.7953059824290065,
+      "bearing_radial_n": 701.1754749999999,
+      "shaft_equivalent_mpa": 147.57387139021844
+    },
+    "1.2": {
+      "shaft_yield_margin": 3.6851726245504834,
+      "bearing_static_margin": 2.3935853621996883,
+      "bearing_radial_n": 818.8552749999999,
+      "shaft_equivalent_mpa": 176.38251073225825
+    }
+  },
+  "D2_8mm_608_42CrMo4_QT": {
+    "1": {
+      "shaft_yield_margin": 2.2551417596140864,
+      "bearing_static_margin": 2.084018783004789,
+      "bearing_radial_n": 657.3837103448275,
+      "shaft_equivalent_mpa": 288.23021755902033
+    },
+    "1.2": {
+      "shaft_yield_margin": 1.886808383769848,
+      "bearing_static_margin": 1.7863018140041047,
+      "bearing_radial_n": 766.9476620689654,
+      "shaft_equivalent_mpa": 344.49709127394186
+    }
+  },
+  "D2_precise_parts_saving_kg_per_wheel": 0.02714972117323181,
+  "D2_optimistic_curb_kg_excluding_spacer_savings": 5.916364335964544,
+  "D2_remaining_mass_reduction_to_0p3kg_reserve_kg": 0.21636433596454374,
+  "decision": "Reject D2 8mm/608: at mu=1.2 both margins <2. Current D1 C45 shaft also <2; use certified 42CrMo4+QT 10 mm shaft or restrict the load envelope.",
+  "caveats": [
+    "Material minimum 650 MPa applies only to certified +QT stock and representative section size.",
+    "The D2 reduced housing shape and spacers were not modelled; mass saving is analytical.",
+    "Static screening is not fatigue, bearing life, fit or physical test."
+  ]
+}

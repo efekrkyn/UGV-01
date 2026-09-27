@@ -1,0 +1,2120 @@
+{
+  "parameters": {
+    "project": "UGV-01",
+    "revision": "A3",
+    "status": "preliminary_not_for_manufacture",
+    "units": {
+      "length": "mm",
+      "mass": "kg",
+      "time": "s"
+    },
+    "geometry": {
+      "overall_length_mm": 330,
+      "overall_width_mm": 308,
+      "body_length_mm": 300,
+      "body_width_mm": 236,
+      "body_top_z_mm": 210,
+      "plate_length_mm": 300,
+      "plate_width_mm": 232,
+      "plate_thickness_mm": 5,
+      "plate_bottom_z_mm": 36,
+      "wheel_diameter_mm": 120,
+      "wheel_width_mm": 30,
+      "wheelbase_mm": 210,
+      "track_mm": 278,
+      "wheel_axle_z_mm": 60,
+      "print_volume_mm": [
+        256,
+        256,
+        256
+      ],
+      "print_design_limit_mm": 240,
+      "module_seams_x_mm": [
+        -50,
+        50
+      ],
+      "mast_flange_mm": [
+        50,
+        50
+      ],
+      "mast_bolt_pattern_mm": [
+        40,
+        40
+      ],
+      "mast_hole_diameter_mm": 4.5,
+      "chassis_mount_x_mm": [
+        -140,
+        -70,
+        0,
+        70,
+        140
+      ],
+      "chassis_mount_y_mm": [
+        -108,
+        108
+      ],
+      "chassis_mount_diameter_mm": 4.5,
+      "battery_envelope_mm": [
+        70,
+        60,
+        24
+      ],
+      "battery_center_mm": [
+        -60,
+        0,
+        53.5
+      ],
+      "rail_length_mm": 150,
+      "rail_width_mm": 12,
+      "rail_height_mm": 15,
+      "rail_center_y_mm": 75,
+      "lid_thickness_mm": 3,
+      "wall_thickness_mm": 3,
+      "light_bar_opening_mm": [
+        8,
+        120,
+        6
+      ],
+      "light_bar_center_z_mm": 128,
+      "neck_axis_xy_mm": [
+        30,
+        0
+      ],
+      "tilt_axis_z_mm": 332,
+      "eye_center_y_mm": 30.5,
+      "eye_pod_mm": [
+        40,
+        42,
+        48
+      ],
+      "plate_seam_x_mm": -35,
+      "plate_density_g_cm3": 1.27,
+      "electronics_envelope_mm": [
+        100,
+        76,
+        25
+      ],
+      "electronics_center_mm": [
+        60,
+        0,
+        61.5
+      ],
+      "internal": {
+        "battery_mounts_mm": [
+          [
+            -90,
+            -36
+          ],
+          [
+            -90,
+            36
+          ],
+          [
+            -30,
+            -36
+          ],
+          [
+            -30,
+            36
+          ]
+        ],
+        "strap_slots_x_mm": [
+          -75,
+          -45
+        ],
+        "tray_mounts_mm": [
+          [
+            20,
+            -44
+          ],
+          [
+            20,
+            44
+          ],
+          [
+            100,
+            -44
+          ],
+          [
+            100,
+            44
+          ]
+        ],
+        "tray_standoffs_mm": [
+          [
+            14,
+            -34
+          ],
+          [
+            14,
+            34
+          ],
+          [
+            106,
+            -34
+          ],
+          [
+            106,
+            34
+          ]
+        ],
+        "ballast_mounts_mm": [
+          [
+            128,
+            -34
+          ],
+          [
+            128,
+            34
+          ]
+        ],
+        "ballast_resistor_mm": [
+          10,
+          48,
+          10
+        ],
+        "front_vents_z_mm": [
+          49,
+          63
+        ],
+        "neck_cable_hole_mm": 10,
+        "shoulder_cable_xy_mm": [
+          120,
+          -60
+        ],
+        "tof_cable_hole_mm": 6,
+        "cargo": {
+          "slot_mm": [
+            38,
+            54
+          ],
+          "slot_center_xy_mm": [
+            119,
+            -15
+          ],
+          "bin_x_mm": [
+            62,
+            140
+          ],
+          "bin_abs_y_mm": 46,
+          "bin_z_mm": [
+            108,
+            205
+          ],
+          "wall_mm": 2,
+          "leg_mounts_mm": [
+            [
+              68,
+              -45
+            ],
+            [
+              68,
+              45
+            ]
+          ],
+          "cover_mm": 1.5,
+          "flange_screw_y_mm": [
+            -25,
+            25
+          ],
+          "flange_screw_z_mm": 195
+        }
+      },
+      "motor_face_abs_y_mm": 114,
+      "motor_bracket_mm": [
+        40,
+        30
+      ],
+      "motor_bracket_bolt_dx_mm": 16,
+      "hub_set_screw_mm": 7,
+      "hub_ribs": 8,
+      "fasteners": {
+        "m3_insert_hole_mm": [
+          4.0,
+          6.0
+        ],
+        "m3_clear_mm": 3.4,
+        "m3_nut_af_mm": 5.7,
+        "m3_nut_t_mm": 2.8,
+        "m4_clear_mm": 4.5,
+        "m2_pilot_mm": 1.6,
+        "m2_clear_mm": 2.2
+      },
+      "tyre_inner_diameter_mm": 110,
+      "hub_web_mm": 3,
+      "estop_xy_mm": [
+        -115,
+        0
+      ],
+      "estop_head_mm": [
+        40,
+        22
+      ],
+      "estop_body_mm": [
+        22,
+        40
+      ],
+      "tof_center_y_mm": 50,
+      "tof_window_mm": [
+        16,
+        27,
+        13
+      ],
+      "tof_envelope_mm": [
+        4,
+        25,
+        11
+      ],
+      "eye_camera_envelope_mm": [
+        26,
+        27,
+        40.5
+      ],
+      "hub_boss_radius_mm": 8,
+      "hub_wall_hole_diameter_mm": 18,
+      "fender": {
+        "x_mm": [
+          -165,
+          110
+        ],
+        "split_x_mm": -30,
+        "z_mm": [
+          124,
+          128
+        ],
+        "flange_top_z_mm": 140,
+        "gusset_x_mm": [
+          -40,
+          35
+        ],
+        "screw_x_mm": [
+          -140,
+          -95,
+          -60,
+          -10,
+          35,
+          90
+        ],
+        "screw_z_mm": 134
+      },
+      "arm": {
+        "shoulder_xz_mm": [
+          125,
+          163
+        ],
+        "plane_abs_y_mm": 138,
+        "upper_mm": 100,
+        "forearm_mm": 80,
+        "grip_mm": 96,
+        "twist_bearing_mm": 56,
+        "joints": [
+          "shoulder",
+          "twist",
+          "elbow",
+          "wrist",
+          "roll"
+        ],
+        "limits_deg": [
+          [
+            -45,
+            180
+          ],
+          [
+            -80,
+            90
+          ],
+          [
+            -30,
+            135
+          ],
+          [
+            -70,
+            100
+          ],
+          [
+            -85,
+            85
+          ]
+        ],
+        "poses_deg": {
+          "stow": [
+            180,
+            90,
+            0,
+            0,
+            0
+          ],
+          "lift": [
+            90,
+            90,
+            0,
+            0,
+            0
+          ],
+          "up": [
+            90,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ready": [
+            45,
+            0,
+            45,
+            0,
+            0
+          ],
+          "reach_mid": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "reach_low": [
+            20,
+            0,
+            103,
+            7,
+            0
+          ],
+          "reach_center": [
+            -40,
+            90,
+            90,
+            -60,
+            0
+          ],
+          "store": [
+            90,
+            90,
+            50,
+            98,
+            0
+          ]
+        },
+        "pose_edges": [
+          [
+            "stow",
+            "lift"
+          ],
+          [
+            "lift",
+            "up"
+          ],
+          [
+            "lift",
+            "store"
+          ],
+          [
+            "up",
+            "ready"
+          ],
+          [
+            "ready",
+            "reach_mid"
+          ],
+          [
+            "ready",
+            "reach_low"
+          ],
+          [
+            "ready",
+            "reach_center"
+          ]
+        ],
+        "payload_kg": 0.15,
+        "servos": {
+          "shoulder": "DS3218MG-270",
+          "twist": "MG996R",
+          "elbow": "MG996R",
+          "wrist": "MG996R",
+          "roll": "MG90S",
+          "gripper": "MG90S"
+        },
+        "servo_stall_nm": {
+          "DS3218MG-270": 1.76,
+          "MG996R": 0.92,
+          "MG90S": 0.176
+        },
+        "servo_mass_kg": {
+          "DS3218MG-270": 0.06,
+          "MG996R": 0.055,
+          "MG90S": 0.0134
+        },
+        "source": "stall torques at 4.8-5 V: DSServo DS3218 18 kg.cm @5 V, TowerPro MG996R 9.4 kg.cm @4.8 V, MG90S 1.8 kg.cm @4.8 V; verify on arrival",
+        "servo_supply_min_v": 4.8,
+        "servo_case_max_c": 55,
+        "servo_limits_source": "N5: 4.8 V is the lower end of all three data sheets (DS3218 4.8-6.8 V, MG996R 4.8-6.6 V, MG90S 4.8-6 V) and the voltage the stall torques above hold at, so TL4 checks it at the servo connector under load; 55 C is the top of the MG996R operating range, read conservatively as a case limit measured beside the motor",
+        "path_rate_deg_s": 45,
+        "j1_spline_abs_y_mm": 94.5,
+        "horn_pcd_mm": 14,
+        "j1_frame_screw_dx_mm": 9,
+        "mg996r_mm": {
+          "case": [
+            40.7,
+            20,
+            36.6
+          ],
+          "spline_top": 42.9,
+          "spline_from_end": 10.2,
+          "ear_underside": 26.6,
+          "ear_t": 2.5,
+          "ear_span": 54.5,
+          "ear_holes": [
+            49.5,
+            10
+          ],
+          "source": "Handsontec MG996R drawing; verify on arrival"
+        },
+        "mg90s_mm": {
+          "case": [
+            22.8,
+            12.2,
+            27
+          ],
+          "spline_top": 31,
+          "spline_from_end": 6,
+          "ear_underside": 21,
+          "ear_t": 2.5,
+          "ear_span": 32.5,
+          "ear_hole_pitch": 28,
+          "source": "TowerPro MG90S drawing; verify on arrival",
+          "horn_hole_r": 7
+        },
+        "horn_25t_mm": {
+          "diameter": 25,
+          "face_above_spline": 2,
+          "note": "aluminium 25T disc horn, 4 x M3 tapped on horn_pcd_mm"
+        },
+        "idler_624_mm": [
+          4,
+          13,
+          5
+        ],
+        "fork_clear_mm": 22,
+        "pitch_wall_mm": 5.5,
+        "drive_poses": [
+          "stow"
+        ]
+      },
+      "eye_board_mm": [
+        1.6,
+        27,
+        40.5
+      ],
+      "eye_board_rear_from_pod_x_mm": -9,
+      "eye_lens_mm": [
+        8,
+        5
+      ],
+      "eye_pod_x_offset_mm": 0,
+      "head": {
+        "pan_base_r_mm": 26,
+        "bearing_z_mm": 252,
+        "cable_hole_xy_mm": [
+          13,
+          0
+        ],
+        "tilt_sweep_deg": [
+          -30,
+          60
+        ],
+        "note": "DD83: pan MG90S on the neck axis, 6804 carries the neck; tilt MG90S hidden in the neck housing, pushrod to the left eye",
+        "housing_z_mm": [
+          261,
+          287
+        ],
+        "tilt_servo_z_mm": 274,
+        "tilt_crank_r_mm": 8,
+        "rod_y_mm": 6.5,
+        "column_top_z_mm": 299,
+        "axle_d_mm": 9,
+        "rod_shroud_top_z_mm": 320
+      }
+    },
+    "motion": {
+      "gross_mass_kg": 5.1,
+      "curb_mass_limit_kg": 4.6,
+      "payload_kg": 0.5,
+      "maximum_speed_m_s": 0.3,
+      "grade_speed_limit_m_s": 0.15,
+      "minimum_controlled_speed_m_s": 0.03,
+      "grade_deg": 5,
+      "acceleration_m_s2": 0.5,
+      "turn_rate_rad_s": 0.45,
+      "rolling_resistance_hard": 0.03,
+      "rolling_resistance_rough": 0.08,
+      "friction_nominal": 0.6,
+      "wheel_load_factor": 1.5,
+      "loaded_cg_max_z_mm": 135,
+      "cg_max_abs_x_mm": 15,
+      "cg_max_abs_y_mm": 10,
+      "payload_cg_z_mm": 250
+    },
+    "motor": {
+      "manufacturer": "generic (JGA25-370 family)",
+      "mpn": "JGA25-370-12V-77RPM 1:78 with Hall encoder (all 4)",
+      "quantity": 4,
+      "encoder_quantity": 4,
+      "nominal_voltage_v": 12,
+      "gear_ratio": 78,
+      "no_load_rpm": 77,
+      "no_load_current_a": 0.07,
+      "rated_torque_kg_cm": 1.56,
+      "rated_current_a": 0.3,
+      "stall_current_a": 1.8,
+      "stall_torque_kg_cm": 7.6,
+      "encoder_counts_motor_rev": 22,
+      "ballast_ohm": 7.5,
+      "continuous_current_design_ceiling_a": 0.6,
+      "external_coupling_efficiency": 0.95,
+      "body_diameter_mm": 25,
+      "body_length_mm": 67.8,
+      "shaft_diameter_mm": 4,
+      "shaft_length_mm": 11.5,
+      "shaft_flat_to_mm": 3.5,
+      "mass_each_kg": 0.1,
+      "source": "Seeed 114090046 drawing (130 rpm 1:45: 4.4 kg.cm, 0.9 kg.cm rated, 1.8 A); 1:78 torques ratio-scaled from it; 11 PPR channel A both edges; ratio, PPR, winding resistance and stall current verify on arrival"
+    },
+    "motor_driver": {
+      "mpn": "TB6612FNG",
+      "quantity": 2,
+      "vm_max_v": 13.5,
+      "recommended_iout_max_a": 1.0,
+      "absolute_iout_max_a": 1.2,
+      "bridge_ohm_max": 0.7,
+      "bridge_ohm_typ": 0.5,
+      "pd_ic_only_w": 0.78,
+      "pd_board_50mm_w": 0.89,
+      "tj_max_c": 150,
+      "enclosure_ambient_c": 55,
+      "source": "Toshiba TB6612FNG datasheet 2026-05-13: Operating Range (VM <= 13.5 V, IOUT <= 1.0 A at VM >= 4.5 V) and Absolute Maximum Ratings (1.2 A ave; 2 A only for 20 ms pulses at <= 20 % duty)",
+      "backemf_limit_a": 0.9
+    },
+    "battery": {
+      "cell": "18650 3.0 Ah (Molicel P30B / Sony VTC6 class)",
+      "series": 3,
+      "parallel": 1,
+      "cell_voltage_nominal_v": 3.6,
+      "cell_voltage_full_v": 4.2,
+      "cell_voltage_cutoff_v": 3.2,
+      "cell_capacity_typ_ah": 3.0,
+      "cell_capacity_min_ah": 2.85,
+      "energy_use_fraction": 0.8,
+      "aging_factor": 0.85,
+      "duty_power_typical_w": 16.0,
+      "duty_power_heavy_w": 46.0,
+      "estimated_assembled_mass_kg": 0.2
+    },
+    "communications": {
+      "transport": "wifi_udp",
+      "command_hz": 50,
+      "command_timeout_ms": 100
+    },
+    "mass_budget": [
+      {
+        "name": "printed PETG base plate splice ribs and motor brackets",
+        "mass_kg": 0.4,
+        "x_mm": 0,
+        "z_mm": 43.5
+      },
+      {
+        "name": "body panels lids end walls fenders mast flange cargo bin and fixtures PETG",
+        "mass_kg": 1.2,
+        "x_mm": 13,
+        "z_mm": 143
+      },
+      {
+        "name": "TPU bumpers and slot cover",
+        "mass_kg": 0.12,
+        "x_mm": 4,
+        "z_mm": 110
+      },
+      {
+        "name": "wheels printed hubs and TPU tyres",
+        "mass_kg": 0.5,
+        "x_mm": 0,
+        "z_mm": 60
+      },
+      {
+        "name": "four JGA25-370 gearmotors",
+        "mass_kg": 0.42,
+        "x_mm": 0,
+        "z_mm": 60
+      },
+      {
+        "name": "3S1P 18650 pack BMS and holder",
+        "mass_kg": 0.2,
+        "x_mm": -60,
+        "z_mm": 53.5
+      },
+      {
+        "name": "ESP32-S3 PCA9685 motor drivers and three bucks",
+        "mass_kg": 0.2,
+        "x_mm": 60,
+        "z_mm": 61.5
+      },
+      {
+        "name": "harness connectors E-stop fuse and switch",
+        "mass_kg": 0.22,
+        "x_mm": -30,
+        "z_mm": 100
+      },
+      {
+        "name": "head neck pan tilt servos and two ESP32-CAM eyes",
+        "mass_kg": 0.3,
+        "x_mm": 35,
+        "z_mm": 298
+      },
+      {
+        "name": "arms right 5-axis left passive shoulder servo and bearings",
+        "mass_kg": 0.72,
+        "x_mm": 38,
+        "y_mm": -55,
+        "z_mm": 163
+      },
+      {
+        "name": "light bar and two ToF sensors",
+        "mass_kg": 0.02,
+        "x_mm": 150,
+        "z_mm": 120
+      },
+      {
+        "name": "screws inserts and small brackets",
+        "mass_kg": 0.13,
+        "x_mm": 0,
+        "z_mm": 100
+      },
+      {
+        "name": "design contingency mass",
+        "mass_kg": 0.15,
+        "x_mm": 0,
+        "z_mm": 110
+      }
+    ]
+  },
+  "status": "CONCEPT_NOT_FOR_MANUFACTURE",
+  "revision": "A3",
+  "parts": [
+    {
+      "name": "UGV-MECH-001-R",
+      "step": "cad/assembly/generated/UGV-MECH-001-R.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-001-F",
+      "step": "cad/assembly/generated/UGV-MECH-001-F.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-002--1",
+      "step": "cad/assembly/generated/UGV-MECH-002--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-002-+1",
+      "step": "cad/assembly/generated/UGV-MECH-002-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-010--1",
+      "step": "cad/assembly/generated/UGV-MECH-010--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-010-+1",
+      "step": "cad/assembly/generated/UGV-MECH-010-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-013-1",
+      "step": "cad/assembly/generated/UGV-MECH-013-1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.92,
+        0.65,
+        0.19
+      ]
+    },
+    {
+      "name": "UGV-MECH-011--1",
+      "step": "cad/assembly/generated/UGV-MECH-011--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-011-+1",
+      "step": "cad/assembly/generated/UGV-MECH-011-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-013-2",
+      "step": "cad/assembly/generated/UGV-MECH-013-2.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.92,
+        0.65,
+        0.19
+      ]
+    },
+    {
+      "name": "UGV-MECH-012--1",
+      "step": "cad/assembly/generated/UGV-MECH-012--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-012-+1",
+      "step": "cad/assembly/generated/UGV-MECH-012-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-013-3",
+      "step": "cad/assembly/generated/UGV-MECH-013-3.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.92,
+        0.65,
+        0.19
+      ]
+    },
+    {
+      "name": "UGV-MECH-022--1",
+      "step": "cad/assembly/generated/UGV-MECH-022--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-017--1",
+      "step": "cad/assembly/generated/UGV-MECH-017--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-022-+1",
+      "step": "cad/assembly/generated/UGV-MECH-022-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-017-+1",
+      "step": "cad/assembly/generated/UGV-MECH-017-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-MOTOR-RR",
+      "step": "cad/assembly/generated/REF-MOTOR-RR.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.66,
+        0.67,
+        0.69
+      ]
+    },
+    {
+      "name": "UGV-MECH-003-RR",
+      "step": "cad/assembly/generated/UGV-MECH-003-RR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-004-RR",
+      "step": "cad/assembly/generated/UGV-MECH-004-RR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-060-RR",
+      "step": "cad/assembly/generated/UGV-MECH-060-RR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-061-RR",
+      "step": "cad/assembly/generated/UGV-MECH-061-RR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-015-RR",
+      "step": "cad/assembly/generated/UGV-MECH-015-RR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.62,
+        0.4,
+        0.1
+      ]
+    },
+    {
+      "name": "REF-MOTOR-RL",
+      "step": "cad/assembly/generated/REF-MOTOR-RL.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.66,
+        0.67,
+        0.69
+      ]
+    },
+    {
+      "name": "UGV-MECH-003-RL",
+      "step": "cad/assembly/generated/UGV-MECH-003-RL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-004-RL",
+      "step": "cad/assembly/generated/UGV-MECH-004-RL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-060-RL",
+      "step": "cad/assembly/generated/UGV-MECH-060-RL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-061-RL",
+      "step": "cad/assembly/generated/UGV-MECH-061-RL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-015-RL",
+      "step": "cad/assembly/generated/UGV-MECH-015-RL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.62,
+        0.4,
+        0.1
+      ]
+    },
+    {
+      "name": "REF-MOTOR-FR",
+      "step": "cad/assembly/generated/REF-MOTOR-FR.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.66,
+        0.67,
+        0.69
+      ]
+    },
+    {
+      "name": "UGV-MECH-003-FR",
+      "step": "cad/assembly/generated/UGV-MECH-003-FR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-004-FR",
+      "step": "cad/assembly/generated/UGV-MECH-004-FR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-060-FR",
+      "step": "cad/assembly/generated/UGV-MECH-060-FR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-061-FR",
+      "step": "cad/assembly/generated/UGV-MECH-061-FR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-015-FR",
+      "step": "cad/assembly/generated/UGV-MECH-015-FR.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.62,
+        0.4,
+        0.1
+      ]
+    },
+    {
+      "name": "REF-MOTOR-FL",
+      "step": "cad/assembly/generated/REF-MOTOR-FL.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.66,
+        0.67,
+        0.69
+      ]
+    },
+    {
+      "name": "UGV-MECH-003-FL",
+      "step": "cad/assembly/generated/UGV-MECH-003-FL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-004-FL",
+      "step": "cad/assembly/generated/UGV-MECH-004-FL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-060-FL",
+      "step": "cad/assembly/generated/UGV-MECH-060-FL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.8,
+        0.53,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-061-FL",
+      "step": "cad/assembly/generated/UGV-MECH-061-FL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-015-FL",
+      "step": "cad/assembly/generated/UGV-MECH-015-FL.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.62,
+        0.4,
+        0.1
+      ]
+    },
+    {
+      "name": "REF-BATTERY",
+      "step": "cad/assembly/generated/REF-BATTERY.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.78,
+        0.46,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-ELECTRONICS",
+      "step": "cad/assembly/generated/REF-ELECTRONICS.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.16,
+        0.38,
+        0.68
+      ]
+    },
+    {
+      "name": "UGV-MECH-070",
+      "step": "cad/assembly/generated/UGV-MECH-070.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-071",
+      "step": "cad/assembly/generated/UGV-MECH-071.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "REF-BALLAST-1",
+      "step": "cad/assembly/generated/REF-BALLAST-1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.85,
+        0.85,
+        0.8
+      ]
+    },
+    {
+      "name": "REF-BALLAST-2",
+      "step": "cad/assembly/generated/REF-BALLAST-2.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.85,
+        0.85,
+        0.8
+      ]
+    },
+    {
+      "name": "REF-BALLAST-3",
+      "step": "cad/assembly/generated/REF-BALLAST-3.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.85,
+        0.85,
+        0.8
+      ]
+    },
+    {
+      "name": "REF-BALLAST-4",
+      "step": "cad/assembly/generated/REF-BALLAST-4.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.85,
+        0.85,
+        0.8
+      ]
+    },
+    {
+      "name": "UGV-MECH-072",
+      "step": "cad/assembly/generated/UGV-MECH-072.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-073",
+      "step": "cad/assembly/generated/UGV-MECH-073.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-018",
+      "step": "cad/assembly/generated/UGV-MECH-018.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-ESTOP",
+      "step": "cad/assembly/generated/REF-ESTOP.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.85,
+        0.1,
+        0.1
+      ]
+    },
+    {
+      "name": "REF-TOF--1",
+      "step": "cad/assembly/generated/REF-TOF--1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "name": "REF-TOF-+1",
+      "step": "cad/assembly/generated/REF-TOF-+1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "name": "UGV-MECH-030",
+      "step": "cad/assembly/generated/UGV-MECH-030.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-031",
+      "step": "cad/assembly/generated/UGV-MECH-031.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "REF-LIGHT-BAR",
+      "step": "cad/assembly/generated/REF-LIGHT-BAR.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.52,
+        0.72,
+        0.92
+      ]
+    },
+    {
+      "name": "UGV-MECH-040",
+      "step": "cad/assembly/generated/UGV-MECH-040.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "REF-SERVO-PAN",
+      "step": "cad/assembly/generated/REF-SERVO-PAN.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-BEARING-PAN",
+      "step": "cad/assembly/generated/REF-BEARING-PAN.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
+      "name": "UGV-MECH-041",
+      "step": "cad/assembly/generated/UGV-MECH-041.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.4,
+        0.41,
+        0.43
+      ]
+    },
+    {
+      "name": "UGV-MECH-046",
+      "step": "cad/assembly/generated/UGV-MECH-046.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "REF-SERVO-TILT",
+      "step": "cad/assembly/generated/REF-SERVO-TILT.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-042",
+      "step": "cad/assembly/generated/UGV-MECH-042.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "REF-TILT-ROD",
+      "step": "cad/assembly/generated/REF-TILT-ROD.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
+      "name": "UGV-MECH-045",
+      "step": "cad/assembly/generated/UGV-MECH-045.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "UGV-MECH-043--1",
+      "step": "cad/assembly/generated/UGV-MECH-043--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "UGV-MECH-044--1",
+      "step": "cad/assembly/generated/UGV-MECH-044--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "REF-EYE-CAMERA--1",
+      "step": "cad/assembly/generated/REF-EYE-CAMERA--1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.08,
+        0.2,
+        0.45
+      ]
+    },
+    {
+      "name": "UGV-MECH-043-+1",
+      "step": "cad/assembly/generated/UGV-MECH-043-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "UGV-MECH-044-+1",
+      "step": "cad/assembly/generated/UGV-MECH-044-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "REF-EYE-CAMERA-+1",
+      "step": "cad/assembly/generated/REF-EYE-CAMERA-+1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.08,
+        0.2,
+        0.45
+      ]
+    },
+    {
+      "name": "UGV-MECH-050--1",
+      "step": "cad/assembly/generated/UGV-MECH-050--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-051--1",
+      "step": "cad/assembly/generated/UGV-MECH-051--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.55,
+        0.56,
+        0.58
+      ]
+    },
+    {
+      "name": "UGV-MECH-052--1",
+      "step": "cad/assembly/generated/UGV-MECH-052--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.55,
+        0.56,
+        0.58
+      ]
+    },
+    {
+      "name": "UGV-MECH-053--1",
+      "step": "cad/assembly/generated/UGV-MECH-053--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-054--1",
+      "step": "cad/assembly/generated/UGV-MECH-054--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "UGV-MECH-058--1",
+      "step": "cad/assembly/generated/UGV-MECH-058--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-059--1",
+      "step": "cad/assembly/generated/UGV-MECH-059--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "REF-SERVO-TWIST-R",
+      "step": "cad/assembly/generated/REF-SERVO-TWIST-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-SERVO-ELBOW-R",
+      "step": "cad/assembly/generated/REF-SERVO-ELBOW-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-SERVO-WRIST-R",
+      "step": "cad/assembly/generated/REF-SERVO-WRIST-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-SERVO-ROLL-R",
+      "step": "cad/assembly/generated/REF-SERVO-ROLL-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-SERVO-GRIPPER-R",
+      "step": "cad/assembly/generated/REF-SERVO-GRIPPER-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "REF-BEARING-TWIST-R",
+      "step": "cad/assembly/generated/REF-BEARING-TWIST-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
+      "name": "REF-BEARING-SHOULDER--1",
+      "step": "cad/assembly/generated/REF-BEARING-SHOULDER--1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
+      "name": "UGV-MECH-050-+1",
+      "step": "cad/assembly/generated/UGV-MECH-050-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-051-+1",
+      "step": "cad/assembly/generated/UGV-MECH-051-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.55,
+        0.56,
+        0.58
+      ]
+    },
+    {
+      "name": "UGV-MECH-052-+1",
+      "step": "cad/assembly/generated/UGV-MECH-052-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.55,
+        0.56,
+        0.58
+      ]
+    },
+    {
+      "name": "UGV-MECH-053-+1",
+      "step": "cad/assembly/generated/UGV-MECH-053-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-054-+1",
+      "step": "cad/assembly/generated/UGV-MECH-054-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.72,
+        0.71,
+        0.66
+      ]
+    },
+    {
+      "name": "REF-BEARING-SHOULDER-+1",
+      "step": "cad/assembly/generated/REF-BEARING-SHOULDER-+1.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
+      "name": "REF-SERVO-SHOULDER-R",
+      "step": "cad/assembly/generated/REF-SERVO-SHOULDER-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.1,
+        0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-056--1",
+      "step": "cad/assembly/generated/UGV-MECH-056--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    },
+    {
+      "name": "UGV-MECH-057-+1",
+      "step": "cad/assembly/generated/UGV-MECH-057-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.27,
+        0.28,
+        0.3
+      ]
+    }
+  ],
+  "unapproved_intersections": [],
+  "arm_poses": {
+    "stow": {
+      "q": [
+        180,
+        90,
+        0,
+        0,
+        0
+      ],
+      "grip_mm": [
+        -151.0,
+        -138.0,
+        163.0
+      ],
+      "intersections": []
+    },
+    "lift": {
+      "q": [
+        90,
+        90,
+        0,
+        0,
+        0
+      ],
+      "grip_mm": [
+        125.0,
+        -138.0,
+        439.0
+      ],
+      "intersections": []
+    },
+    "up": {
+      "q": [
+        90,
+        0,
+        0,
+        0,
+        0
+      ],
+      "grip_mm": [
+        125.0,
+        -138.0,
+        439.0
+      ],
+      "intersections": []
+    },
+    "ready": {
+      "q": [
+        45,
+        0,
+        45,
+        0,
+        0
+      ],
+      "grip_mm": [
+        371.7,
+        -138.0,
+        233.7
+      ],
+      "intersections": []
+    },
+    "reach_mid": {
+      "q": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "grip_mm": [
+        401.0,
+        -138.0,
+        163.0
+      ],
+      "intersections": []
+    },
+    "reach_low": {
+      "q": [
+        20,
+        0,
+        103,
+        7,
+        0
+      ],
+      "grip_mm": [
+        228.7,
+        -138.0,
+        21.8
+      ],
+      "intersections": []
+    },
+    "reach_center": {
+      "q": [
+        -40,
+        90,
+        90,
+        -60,
+        0
+      ],
+      "grip_mm": [
+        265.3,
+        -10.0,
+        45.3
+      ],
+      "intersections": []
+    },
+    "store": {
+      "q": [
+        90,
+        90,
+        50,
+        98,
+        0
+      ],
+      "grip_mm": [
+        125.0,
+        -25.8,
+        233.0
+      ],
+      "intersections": []
+    }
+  },
+  "arm_edges": [
+    {
+      "pose": [
+        "stow",
+        "lift"
+      ],
+      "samples": 91,
+      "max_step_deg": 1.0,
+      "hits": []
+    },
+    {
+      "pose": [
+        "lift",
+        "up"
+      ],
+      "samples": 91,
+      "max_step_deg": 1.0,
+      "hits": []
+    },
+    {
+      "pose": [
+        "lift",
+        "store"
+      ],
+      "samples": 99,
+      "max_step_deg": 1.0,
+      "hits": []
+    },
+    {
+      "pose": [
+        "up",
+        "ready"
+      ],
+      "samples": 46,
+      "max_step_deg": 1.0,
+      "hits": []
+    },
+    {
+      "pose": [
+        "ready",
+        "reach_mid"
+      ],
+      "samples": 46,
+      "max_step_deg": 1.0,
+      "hits": []
+    },
+    {
+      "pose": [
+        "ready",
+        "reach_low"
+      ],
+      "samples": 59,
+      "max_step_deg": 1.0,
+      "hits": []
+    },
+    {
+      "pose": [
+        "ready",
+        "reach_center"
+      ],
+      "samples": 91,
+      "max_step_deg": 1.0,
+      "hits": []
+    }
+  ],
+  "arm_limp_rest": {
+    "angle_deg": 181.5,
+    "hits": [
+      {
+        "arm": "UGV-MECH-050--1",
+        "part": "UGV-MECH-015-FR",
+        "volume_mm3": 106.456
+      }
+    ]
+  },
+  "arm_clearance": [
+    {
+      "pose": [
+        "stow",
+        "lift"
+      ],
+      "moving_mm": 5.65,
+      "park_mm": 1.0
+    },
+    {
+      "pose": [
+        "lift",
+        "up"
+      ],
+      "moving_mm": 9.71,
+      "park_mm": null
+    },
+    {
+      "pose": [
+        "lift",
+        "store"
+      ],
+      "moving_mm": 6.35,
+      "park_mm": null
+    },
+    {
+      "pose": [
+        "up",
+        "ready"
+      ],
+      "moving_mm": 8.02,
+      "park_mm": null
+    },
+    {
+      "pose": [
+        "ready",
+        "reach_mid"
+      ],
+      "moving_mm": 12.0,
+      "park_mm": null
+    },
+    {
+      "pose": [
+        "ready",
+        "reach_low"
+      ],
+      "moving_mm": 12.0,
+      "park_mm": null
+    },
+    {
+      "pose": [
+        "ready",
+        "reach_center"
+      ],
+      "moving_mm": 5.26,
+      "park_mm": null
+    }
+  ],
+  "head_tilt": {
+    "range_deg": [
+      -30,
+      60
+    ],
+    "step_deg": 5,
+    "hits": [],
+    "min_clearance_mm": 1.6
+  },
+  "arm_chain": {
+    "joints": [
+      {
+        "origin": [
+          125,
+          0,
+          163
+        ],
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "sign": -1
+      },
+      {
+        "origin": [
+          181,
+          -138,
+          163
+        ],
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "sign": 1
+      },
+      {
+        "origin": [
+          225,
+          -138,
+          163
+        ],
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "sign": 1
+      },
+      {
+        "origin": [
+          305,
+          -138,
+          163
+        ],
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "sign": 1
+      },
+      {
+        "origin": [
+          335,
+          -138,
+          163
+        ],
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "sign": 1
+      }
+    ],
+    "links": {
+      "UGV-MECH-050--1": 0,
+      "UGV-MECH-051--1": 1,
+      "UGV-MECH-052--1": 2,
+      "UGV-MECH-053--1": 3,
+      "UGV-MECH-054--1": 4,
+      "UGV-MECH-058--1": 0,
+      "UGV-MECH-059--1": 1,
+      "REF-SERVO-TWIST-R": 0,
+      "REF-SERVO-ELBOW-R": 1,
+      "REF-SERVO-WRIST-R": 2,
+      "REF-SERVO-ROLL-R": 3,
+      "REF-SERVO-GRIPPER-R": 4,
+      "REF-BEARING-TWIST-R": 0
+    }
+  },
+  "not_modelled": [
+    "wiring and connector service sweeps, E-stop and battery wiring",
+    "ESP32-CAM FPC routing and antenna placement inside the eye pods",
+    "ToF window covers and cable routes",
+    "servo horns, screws, 624 idlers and M4 hardware (their holes, seats and nut pockets are modelled)",
+    "cables themselves, service loops and zip ties (DD85: exits, slots, the shoulder bore and the head channels are modelled)",
+    "fender flange screws into the side panels, shoulder-servo frame screws",
+    "eye camera mounts, lens windows, FFC routes and stereo calibration",
+    "arm sweeps are joint-space straight lines sampled at <= 5 deg; the planner must use the same path",
+    "gripper jaw kinematics and pad material (jaws drawn fixed)",
+    "left arm friction joints (drawn as the right arm without servos)",
+    "full load path from mast to chassis"
+  ]
+}

@@ -1,0 +1,4 @@
+reference,manufacturer,mpn,description,quantity,replaces,unit_cost_usd_estimate,supply_status
+042-B,UGV-01,UGV-MECH-042-B,Integral shaft and hub from certified 42CrMo4+QT billet minimum 650 MPa yield,4,UGV-MECH-042,65,Quote certificate and final machining drawing required
+046-B,UGV-01,UGV-MECH-046-B,PAHT-CF rim with four web windows,4,UGV-MECH-046,8,Print and torque coupons required
+047-B,UGV-01,UGV-MECH-047-B,TPU ribbed tire with thinner tread bays,4,UGV-MECH-047,5,Print abrasion and thermal coupons required

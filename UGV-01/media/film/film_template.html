@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<title>UGV-01 tanıtım filmi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=block" rel="stylesheet">
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; width: 1920px; height: 1080px; }
+  canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+</style>
+<div id="stage"><canvas id="gl" width="1920" height="1080"></canvas><canvas id="ui" width="1920" height="1080"></canvas></div>
+<script type="importmap">
+{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}
+</script>
+<script type="module">
+// UGV-01 film v2 (media/film). Every frame is a pure function of t: renderAt(t) drives and poses the real CAD robot,
+// moves the camera on the music's hits, draws the typography and the AI panel; render.mjs captures it frame by frame.
+import * as THREE from 'three';
+
+const $ = id => document.getElementById(id);
+const META = JSON.parse($('meta').textContent), TL = JSON.parse($('timeline').textContent);
+const CHECKS = JSON.parse($('checks').textContent), M = META.motion, WN = TL.windows;
+const W = 1920, H = 1080, rad = THREE.MathUtils.degToRad, BEAT = 60 / TL.bpm;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const smooth = x => { x = clamp(x); return x * x * (3 - 2 * x); };
+const ease = x => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = x => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const win = (t, a, b, fi = 0.35, fo = 0.35) => clamp((t - a) / fi) * clamp((b - t) / fo);
+const lerp = (a, b, k) => a + (b - a) * k;
+const ORANGE = '#ff9f1c', CREAM = '#f6efe6', MUTED = '#c9bcae', GREEN = '#7ee2a0', TEAL = '#2ec4b6', RED = '#ff4d3d';
+
+// ---- mesh data (tools/build_viewer.py): Int16 positions in 0.1 mm, then Uint16 per-part indices
+const raw = atob($('mesh').textContent.trim());
+const bin = new Uint8Array(raw.length);
+for (let k = 0; k < raw.length; k++) bin[k] = raw.charCodeAt(k);
+const nVerts = META.parts.reduce((s, p) => s + p.v[1], 0), nIdx = META.parts.reduce((s, p) => s + p.i[1], 0);
+const POS = new Int16Array(bin.buffer, 0, nVerts * 3), IDX = new Uint16Array(bin.buffer, nVerts * 6, nIdx);
+
+// ---- renderer, stage, lights
+const renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H, false);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x0b0806, 2400, 4600);
+function canvasTexture(w, h, paint) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  paint(c.getContext('2d'), w, h);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+scene.background = canvasTexture(1920, 1080, (g, w, h) => {
+  const gr = g.createRadialGradient(w * 0.5, h * 0.42, 40, w * 0.5, h * 0.5, w * 0.72);
+  gr.addColorStop(0, '#3a2a1c'); gr.addColorStop(0.45, '#1b130d'); gr.addColorStop(1, '#060403');
+  g.fillStyle = gr; g.fillRect(0, 0, w, h);
+});
+const camera = new THREE.PerspectiveCamera(30, W / H, 10, 12000);
+const hemi = new THREE.HemisphereLight(0xffe2c4, 0x140f0b, 0.55);
+const key = new THREE.DirectionalLight(0xffd2a0, 2.7);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -620, right: 620, top: 620, bottom: -620, near: 100, far: 3000 });
+key.shadow.bias = -0.0004;
+key.shadow.normalBias = 0.8;
+const rim = new THREE.DirectionalLight(0x9cc8ff, 1.7);
+const fill = new THREE.DirectionalLight(0xffb070, 0.35);
+scene.add(hemi, key, key.target, rim, fill);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.ShadowMaterial({ opacity: 0.6 }));
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+const grid = new THREE.GridHelper(8000, 80, 0xc98a4a, 0xc98a4a);
+grid.material.transparent = true;
+grid.material.opacity = 0.1;
+grid.position.y = 0.3;
+scene.add(grid);
+const glowTex = canvasTexture(256, 256, (g) => {
+  const gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+  gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.3, 'rgba(255,255,255,0.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+});
+const floorGlow = new THREE.Mesh(new THREE.PlaneGeometry(1500, 1500), new THREE.MeshBasicMaterial({
+  map: glowTex, color: 0xffa24a, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+floorGlow.rotation.x = -Math.PI / 2;
+floorGlow.position.y = 0.6;
+scene.add(floorGlow);
+const beamTex = canvasTexture(8, 256, (g) => {  // cone uv v: 0 at the base, 1 at the tip
+  const gr = g.createLinearGradient(0, 256, 0, 0);
+  gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.55, 'rgba(255,255,255,0.35)'); gr.addColorStop(1, 'rgba(255,255,255,1)');
+  g.fillStyle = gr; g.fillRect(0, 0, 8, 256);
+});
+function beam(color, radius, height) {
+  const m = new THREE.Mesh(new THREE.ConeGeometry(radius, height, 48, 1, true), new THREE.MeshBasicMaterial({
+    map: beamTex, color, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+  const holder = new THREE.Group();
+  m.position.y = -height / 2;  // tip at the holder
+  holder.add(m);
+  scene.add(holder);
+  return { holder, mesh: m };
+}
+const spot = beam(0xffd9a0, 430, 1500);
+const beamL = beam(0x2ec4b6, 260, 2400), beamR = beam(0xff9f1c, 260, 2400);
+
+// ---- the robot: world (z up) > rig (drives: x, y, yaw) > cad (pivots for arm joints, pan, tilt, wheels)
+const world = new THREE.Group();
+world.rotation.x = -Math.PI / 2;
+scene.add(world);
+const rig = new THREE.Group(), cad = new THREE.Group();
+world.add(rig);
+rig.add(cad);
+function pivot(parent, [x, y, z]) {
+  const pv = new THREE.Group(), inner = new THREE.Group();
+  pv.position.set(x, y, z);
+  inner.position.set(-x, -y, -z);
+  pv.add(inner);
+  parent.add(pv);
+  return { pv, inner };
+}
+const J = M.arm.joints, armJ = [];
+let parentJ = cad;
+for (const j of J) {
+  const pj = pivot(parentJ, j.origin);
+  pj.axis = new THREE.Vector3(...j.axis);
+  armJ.push(pj);
+  parentJ = pj.inner;
+}
+const pan = pivot(cad, M.pan.pivot), tilt = pivot(pan.inner, M.tilt.pivot);
+const starts = (name, list) => list.some(pre => name.startsWith(pre));
+const edgeMat = new THREE.LineBasicMaterial({ color: 0xffae42, transparent: true, opacity: 0, depthWrite: false });
+const SHELL = new Set(['body', 'lids', 'fenders', 'bumpers', 'fixtures']);
+const parts = [], eyes = [], wheels = [];
+const centre = new THREE.Vector3(0, 0, 120);
+for (const p of META.parts) {
+  const [vo, vc] = p.v, [io, ic] = p.i;
+  const f = new Float32Array(vc * 3);
+  for (let k = 0; k < f.length; k++) f[k] = POS[vo * 3 + k] / 10;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(f, 3));
+  g.setIndex(new THREE.BufferAttribute(IDX.slice(io, io + ic), 1));
+  g.computeVertexNormals();
+  g.computeBoundingBox();
+  const metal = /REF-MOTOR|REF-BEARING|REF-TILT-ROD/.test(p.name);
+  const mat = new THREE.MeshStandardMaterial({ color: p.color, roughness: metal ? 0.35 : 0.5, metalness: metal ? 0.6 : 0.04 });
+  const mesh = new THREE.Mesh(g, mat);
+  mesh.castShadow = mesh.receiveShadow = true;
+  mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), edgeMat));
+  const c = g.boundingBox.getCenter(new THREE.Vector3());
+  let parent = p.link != null ? armJ[p.link].inner : starts(p.name, M.tilt.parts) ? tilt.inner
+    : starts(p.name, M.pan.parts) ? pan.inner : cad;
+  if (p.group === 'wheels') {  // each wheel part spins about its own axle (CAD y)
+    const wv = pivot(cad, [c.x, c.y, c.z]);
+    wheels.push({ pv: wv.pv, left: c.y > 0 });
+    parent = wv.inner;
+  }
+  parent.add(mesh);
+  const part = { p, mesh, mat, c, dir: c.clone().sub(centre).normalize(), dist: c.distanceTo(centre),
+                 shell: SHELL.has(p.group), motor: p.group === 'drive', estop: p.name === 'REF-ESTOP' };
+  parts.push(part);
+  if (p.name.startsWith('REF-EYE-CAMERA')) {
+    const bb = g.boundingBox, glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTex, color: 0x9fe8ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    glow.position.set(bb.max.x + 1.5, (bb.min.y + bb.max.y) / 2, (bb.min.z + bb.max.z) / 2);
+    glow.scale.set(58, 58, 1);
+    parent.add(glow);
+    eyes.push({ mat, glow });
+  }
+}
+parts.sort((a, b) => a.c.z - b.c.z).forEach((q, k, all) => { q.rank = k / (all.length - 1); });
+
+// grip point (zero pose = reach_mid, all joints 0), the cube (on the floor, world) and the gizmos (robot frame)
+const grip = new THREE.Object3D();
+grip.position.set(401, -138, 163);
+armJ[4].inner.add(grip);
+const cubeSize = TL.grip.cube_mm;
+const cube = new THREE.Mesh(new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize),
+  new THREE.MeshStandardMaterial({ color: 0x2a7de1, roughness: 0.3, metalness: 0.05 }));
+cube.castShadow = true;
+world.add(cube);
+const lineMat = (color, dashed = false) => dashed
+  ? new THREE.LineDashedMaterial({ color, dashSize: 8, gapSize: 6, transparent: true, opacity: 0 })
+  : new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0 });
+const CG = new THREE.Vector3(9.9, -7.9, 131.1);  // body_mass_screen: stow, 0.5 kg on the lid (check_body_mass)
+const cgBall = new THREE.Mesh(new THREE.SphereGeometry(7, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffd35a, transparent: true, opacity: 0 }));
+cgBall.position.copy(CG);
+const cgDrop = new THREE.Line(new THREE.BufferGeometry().setFromPoints([CG, new THREE.Vector3(CG.x, CG.y, 0)]), lineMat(0xffd35a, true));
+cgDrop.computeLineDistances();
+const cgTip = new THREE.Line(new THREE.BufferGeometry().setFromPoints([CG, new THREE.Vector3(105, CG.y, 0)]), lineMat(0xffae42));
+const support = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(
+  [[105, 139], [105, -139], [-105, -139], [-105, 139]].map(([x, y]) => new THREE.Vector3(x, y, 1))), lineMat(0xffae42));
+cad.add(cgBall, cgDrop, cgTip, support);
+const TRAIL_N = 400;
+const trail = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(TRAIL_N * 3), 3)),
+  new THREE.PointsMaterial({ color: 0xffc46b, size: 5, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+cad.add(trail);
+
+// ---- motion from the timeline
+const P = M.arm.poses;
+function keyed(list, t, n) {  // eased interpolation through [t, v1, v2, ...] keyframes (numbers or arrays)
+  if (t <= list[0][0]) return list[0].slice(1, 1 + n);
+  for (let k = 0; k < list.length - 1; k++) {
+    const a = list[k], b = list[k + 1];
+    if (t <= b[0]) {
+      const e = ease((t - a[0]) / (b[0] - a[0]));
+      return a.slice(1, 1 + n).map((v, i) => Array.isArray(v) ? v.map((x, j) => lerp(x, b[1 + i][j], e)) : lerp(v, b[1 + i], e));
+    }
+  }
+  return list[list.length - 1].slice(1, 1 + n);
+}
+function armAt(t) {
+  let q = P.stow.slice();
+  for (const [t0, t1, pose] of TL.arm) {
+    if (t < t0) break;
+    const k = t1 > t0 ? ease((t - t0) / (t1 - t0)) : 1;
+    q = q.map((v, i) => lerp(v, P[pose][i], k));
+  }
+  for (const [w0, w1] of TL.wave) {
+    const wv = win(t, w0, w1, 0.25, 0.3);
+    q[4] += 38 * Math.sin((t - w0) * Math.PI / BEAT) * wv;  // one flick per beat
+    q[3] += 16 * Math.sin((t - w0) * Math.PI / BEAT + 1.2) * wv;
+  }
+  return q;
+}
+function legAt(t) {  // current graph edge: [from, to, fraction] or null
+  let from = 'stow';
+  for (const [t0, t1, pose] of TL.arm) {
+    if (t < t0) return null;
+    if (t <= t1 && t1 > t0) return [from, pose, ease((t - t0) / (t1 - t0))];
+    from = pose;
+  }
+  return null;
+}
+const baseAt = t => keyed(TL.base, t, 3);  // [x, y, yaw]
+function wheelTravel(t) {  // left / right tread distance (mm) from t = 0, integrated from the base motion
+  let [x0, y0, a0] = baseAt(0), l = 0, r = 0;
+  const dt = 1 / 120, half = 139;
+  for (let s = dt; s <= t + 1e-9; s += dt) {
+    const [x1, y1, a1] = baseAt(s);
+    const ds = (x1 - x0) * Math.cos(rad(a0)) + (y1 - y0) * Math.sin(rad(a0)), da = rad(a1 - a0);
+    l += ds - da * half; r += ds + da * half;
+    [x0, y0, a0] = [x1, y1, a1];
+  }
+  return [l, r];
+}
+function setArm(q) {
+  J.forEach((j, k) => armJ[k].pv.quaternion.setFromAxisAngle(armJ[k].axis, rad(j.sign * q[k])));
+}
+const tmp = new THREE.Vector3();
+function gripIn(frame, q) {  // grip point in `frame` coordinates for arm angles q
+  setArm(q);  // getWorldPosition refreshes the chain above the grip; the frames were refreshed at the top of update()
+  return frame.worldToLocal(grip.getWorldPosition(tmp)).clone();
+}
+const hitsOf = kinds => TL.hits.filter(([, k]) => kinds.includes(k)).map(([t]) => t);
+const pulse = (t, times, tau) => Math.max(0, ...times.map(h => (t >= h ? Math.exp(-(t - h) / tau) : 0)));
+
+// ---- 2D overlay helpers
+const ui = $('ui').getContext('2d');
+const grainCanvas = document.createElement('canvas');
+grainCanvas.width = grainCanvas.height = 256;
+{
+  const g = grainCanvas.getContext('2d'), img = g.createImageData(256, 256);
+  let s = 12345;
+  for (let k = 0; k < img.data.length; k += 4) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    const v = (s >> 16) & 255;
+    img.data[k] = img.data[k + 1] = img.data[k + 2] = v;
+    img.data[k + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+}
+function txt(str, x, y, font, color, alpha, align = 'left', spacing = 0, shadow = 24, scale = 1) {
+  if (alpha <= 0.001) return;
+  ui.save();
+  ui.globalAlpha = clamp(alpha);
+  ui.font = font;
+  ui.fillStyle = color;
+  ui.textAlign = align;
+  ui.letterSpacing = `${spacing}px`;
+  ui.shadowColor = 'rgba(0,0,0,0.55)';
+  ui.shadowBlur = shadow;
+  if (scale !== 1) { ui.translate(x, y); ui.scale(scale, scale); x = 0; y = 0; }
+  ui.fillText(str, x, y);
+  ui.restore();
+}
+function retro(str, x, y, size, alpha, align, scale = 1) {  // 60s title type: cream face, teal offset shadow
+  txt(str, x + 7, y + 7, `400 ${size}px Anton`, TEAL, alpha * 0.9, align, 4, 0, scale);
+  txt(str, x, y, `400 ${size}px Anton`, CREAM, alpha, align, 4, 30, scale);
+}
+function toScreen(v) {  // robot-frame (CAD) point -> overlay pixels
+  const p = cad.localToWorld(v.clone()).project(camera);
+  return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H];
+}
+function box(x, y, w, h, stroke, a, fillA = 0.62) {
+  ui.save();
+  ui.globalAlpha = a;
+  ui.fillStyle = `rgba(12,8,6,${fillA})`;
+  ui.fillRect(x, y, w, h);
+  ui.strokeStyle = stroke; ui.lineWidth = 2;
+  ui.strokeRect(x + 0.5, y + 0.5, w, h);
+  ui.restore();
+}
+
+// ---- overlays: pose graph, AI panel, link, scope, checks, marquee
+const NODES = { stow: [1250, 470], lift: [1370, 470], store: [1370, 590], up: [1490, 470], ready: [1610, 470],
+                reach_mid: [1740, 370], reach_low: [1750, 470], reach_center: [1740, 570] };
+function drawGraph(t, a) {
+  if (a <= 0) return;
+  box(1180, 300, 680, 380, 'rgba(255,159,28,0.4)', a, 0.55);
+  ui.save();
+  ui.globalAlpha = a;
+  txt('POSE GRAPH · config/vehicle.json', 1204, 336, '700 18px "JetBrains Mono"', ORANGE, a, 'left', 1, 0);
+  const leg = legAt(t), visited = new Set(['stow']);
+  for (const [t0, , pose] of TL.arm) if (t0 >= WN.graph[0] && t0 < WN.graph[1] && t >= t0) visited.add(pose);
+  for (const [u, v] of M.arm.edges) {
+    const [x0, y0] = NODES[u], [x1, y1] = NODES[v];
+    ui.strokeStyle = visited.has(u) && visited.has(v) ? 'rgba(255,159,28,0.85)' : 'rgba(201,188,174,0.35)';
+    ui.lineWidth = 3;
+    ui.beginPath(); ui.moveTo(x0, y0); ui.lineTo(x1, y1); ui.stroke();
+  }
+  for (const [name, [x, y]] of Object.entries(NODES)) {
+    ui.fillStyle = visited.has(name) ? ORANGE : '#3b2f25';
+    ui.strokeStyle = ORANGE; ui.lineWidth = 2;
+    ui.beginPath(); ui.arc(x, y, 11, 0, 2 * Math.PI); ui.fill(); ui.stroke();
+    txt(M.arm.names[name] || name, x, y + (name === 'reach_mid' ? -24 : 36), '500 17px "JetBrains Mono"', MUTED, a, 'center', 0, 0);
+  }
+  if (leg && t >= WN.graph[0] && t <= WN.graph[1] && NODES[leg[0]] && NODES[leg[1]]) {
+    const [x0, y0] = NODES[leg[0]], [x1, y1] = NODES[leg[1]];
+    ui.fillStyle = '#fff3d6'; ui.shadowColor = ORANGE; ui.shadowBlur = 24;
+    ui.beginPath(); ui.arc(lerp(x0, x1, leg[2]), lerp(y0, y1, leg[2]), 8, 0, 2 * Math.PI); ui.fill();
+  }
+  txt('adım 1° · kesişim 0 · en dar 5,65 mm', 1204, 656, '500 18px "JetBrains Mono"', GREEN, a, 'left', 0, 0);
+  ui.restore();
+}
+function voiceLevel(t) {  // operator speech envelope for the waveform (roughly the TTS length)
+  let v = 0;
+  for (const [t0, text, who] of TL.voice) {
+    if (who !== 'operator') continue;
+    const d = 0.35 + text.length * 0.065;
+    v = Math.max(v, win(t, t0, t0 + d, 0.05, 0.15));
+  }
+  return v;
+}
+function drawPanel(t) {
+  const Pn = TL.panel, a = win(t, Pn.show[0], Pn.show[1], 0.4, 0.4);
+  if (a <= 0) return;
+  const x = 70, y = 118, w = 690, h = 600, stopped = t >= Pn.stop[0];
+  const slide = (1 - back((t - Pn.show[0]) / 0.6)) * -80;
+  ui.save();
+  ui.translate(slide, 0);
+  box(x, y, w, h, stopped && t < Pn.stop[0] + 2.6 ? RED : 'rgba(46,196,182,0.6)', a, 0.7);
+  txt('OPERATÖR PANELİ · 127.0.0.1', x + 24, y + 38, '700 18px "JetBrains Mono"', TEAL, a, 'left', 2, 0);
+  txt('AI modu ●', x + w - 24, y + 38, '700 18px "JetBrains Mono"', stopped ? RED : GREEN, a, 'right', 1, 0);
+  // microphone + waveform
+  const lv = voiceLevel(t), my = y + 96;
+  ui.globalAlpha = a;
+  ui.fillStyle = lv > 0.05 ? TEAL : '#2a3533';
+  ui.beginPath(); ui.arc(x + 48, my, 22, 0, 2 * Math.PI); ui.fill();
+  ui.fillStyle = '#0c0806';
+  ui.beginPath(); ui.roundRect(x + 41, my - 13, 14, 20, 7); ui.fill();
+  ui.fillRect(x + 47, my + 8, 2, 7);
+  for (let k = 0; k < 44; k++) {
+    const n = Math.sin(k * 12.9898 + Math.floor(t * 24) * 78.233) * 43758.5453, r = n - Math.floor(n);
+    const hgt = 4 + lv * (8 + 34 * r * Math.sin(Math.PI * k / 44));
+    ui.fillStyle = lv > 0.05 ? TEAL : '#3a3a36';
+    ui.fillRect(x + 90 + k * 13, my - hgt / 2, 7, hgt);
+  }
+  txt('tr-TR konuşma tanıma · "dur" yerelde', x + 24, my + 52, '500 15px "JetBrains Mono"', MUTED, a, 'left', 0, 0);
+  // transcript + send
+  const typed = (tr) => tr && t >= tr[0] ? tr[2].slice(0, Math.floor(clamp((t - tr[0]) / (tr[1] - tr[0])) * tr[2].length)) : '';
+  const text = t >= Pn.transcript2[0] ? typed(Pn.transcript2) : typed(Pn.transcript);
+  box(x + 24, y + 176, w - 190, 52, 'rgba(201,188,174,0.35)', a, 0.5);
+  txt(`“${text}${Math.floor(t * 3) % 2 ? '▍' : ''}”`, x + 40, y + 211, '700 22px "Space Grotesk"', CREAM, a * (text ? 1 : 0.4), 'left', 0, 0);
+  const sent = pulse(t, [Pn.send, Pn.transcript2[1]], 0.35);
+  ui.globalAlpha = a;
+  ui.fillStyle = sent > 0.05 ? TEAL : '#1d2a28';
+  ui.beginPath(); ui.roundRect(x + w - 150, y + 176, 126, 52, 10); ui.fill();
+  txt('Gönder', x + w - 87, y + 210, '700 22px "Space Grotesk"', sent > 0.05 ? '#06201d' : TEAL, a, 'center', 0, 0);
+  // tool calls
+  txt('deepseek-flash · araç çağrıları', x + 24, y + 272, '700 17px "JetBrains Mono"', ORANGE, a, 'left', 1, 0);
+  const shown = Pn.calls.filter(([c]) => t >= c);
+  const first = Math.max(0, shown.length - 8);
+  shown.slice(first).forEach(([c, call], k) => {
+    const cy = y + 310 + k * 34, fresh = clamp((t - c) / 0.25), cut = call.startsWith('turn') && stopped;
+    const current = k === shown.length - first - 1 && !stopped;
+    ui.globalAlpha = a * fresh;
+    if (current) { ui.fillStyle = 'rgba(46,196,182,0.16)'; ui.fillRect(x + 18, cy - 23, w - 36, 32); }
+    txt(`${cut ? '✗' : t > c + 0.3 ? '✓' : '›'} ${call}`, x + 30 + (1 - fresh) * 20, cy, '500 20px "JetBrains Mono"',
+        cut ? RED : current ? CREAM : MUTED, a * fresh, 'left', 0, 0);
+    if (!cut && t > c + 0.3) txt('2 görüntü + durum', x + w - 30, cy, '500 14px "JetBrains Mono"', GREEN, a * fresh * 0.8, 'right', 0, 0);
+  });
+  if (stopped) {
+    const s = win(t, Pn.stop[0], Pn.show[1], 0.08, 0.4);
+    ui.globalAlpha = a * s;
+    ui.fillStyle = RED;
+    ui.fillRect(x, y + h - 74, w, 74);
+    txt('DUR · yerel STOP · AI\'a gitmedi · 1 tik', x + w / 2, y + h - 27, '700 24px "JetBrains Mono"', '#fff', a * s, 'center', 1, 0);
+  }
+  ui.restore();
+  txt(Pn.tag, W - 70, H - 96, '500 16px "JetBrains Mono"', MUTED, a * 0.9, 'right', 0.5, 0);
+}
+function drawLink(t, a) {
+  if (a <= 0) return;
+  const [rx, ry] = toScreen(new THREE.Vector3(30, 0, 250)), sx = 150, sy = 420, t0 = WN.link[0];
+  box(sx - 30, sy - 60, 230, 120, 'rgba(255,159,28,0.5)', a, 0.6);
+  txt('MacBook', sx, sy - 12, '700 30px "Space Grotesk"', CREAM, a, 'left', 0, 0);
+  txt('AI · panel · ağ geçidi', sx, sy + 24, '500 16px "JetBrains Mono"', MUTED, a, 'left', 0, 0);
+  ui.save();
+  ui.globalAlpha = a;
+  ui.setLineDash([6, 8]);
+  ui.strokeStyle = 'rgba(255,159,28,0.45)';
+  ui.beginPath(); ui.moveTo(sx + 200, sy); ui.lineTo(rx, ry); ui.stroke();
+  ui.setLineDash([]);
+  const labels = ['0x110 lease · hmac ✓', '0x100 drive · seq ✓', '0x122 kol · echo ✓', '0x1A2 tlm · bağlı ✓'];
+  for (let k = 0; k < 6; k++) {
+    const ph = ((t - t0) * 0.9 + k / 6) % 1, bad = k === 3 && t > t0 + 1.2 && t < t0 + 2.2;
+    const px = lerp(sx + 200, rx, ph), py = lerp(sy, ry, ph);
+    ui.fillStyle = bad ? RED : ORANGE; ui.shadowColor = ui.fillStyle; ui.shadowBlur = 16;
+    ui.fillRect(px - 7, py - 7, 14, 14);
+    ui.shadowBlur = 0;
+    txt(bad ? 'geç paket · ✗ atıldı' : labels[k % 4], px + 14, py - 14, '500 16px "JetBrains Mono"', bad ? '#ff8a80' : MUTED,
+        a * Math.sin(Math.PI * ph), 'left', 0, 0);
+  }
+  ui.restore();
+}
+function drawScope(t, a) {  // ACT_EN drops on the E-stop edge
+  if (a <= 0) return;
+  const x0 = 1300, y0 = 690, w = 480, h = 150, t0 = WN.estop[0], drop = t0 + 0.7;
+  box(x0, y0, w, h, 'rgba(255,77,61,0.6)', a, 0.6);
+  txt('ACT_EN', x0 + 16, y0 + 30, '700 18px "JetBrains Mono"', '#ff8a80', a, 'left', 1, 0);
+  ui.save();
+  ui.globalAlpha = a;
+  ui.strokeStyle = RED; ui.lineWidth = 3;
+  const k = clamp((t - t0) / 1.6), dropX = x0 + 20 + (w - 40) * 0.45, endX = x0 + 20 + (w - 40) * k;
+  ui.beginPath(); ui.moveTo(x0 + 20, y0 + 60);
+  if (endX < dropX) ui.lineTo(endX, y0 + 60);
+  else { ui.lineTo(dropX, y0 + 60); ui.lineTo(dropX, y0 + 120); ui.lineTo(endX, y0 + 120); }
+  ui.stroke();
+  ui.restore();
+  if (t > drop) txt('E-stop → Low · µs', dropX + 14, y0 + 108, '500 16px "JetBrains Mono"', MUTED, a, 'left', 0, 0);
+}
+function drawChecks(t, t0, a) {
+  const n = Math.min(CHECKS.length, Math.floor((t - t0) / 1.25 * CHECKS.length));
+  box(1180, 170, 640, 700, 'rgba(126,226,160,0.4)', a, 0.66);
+  txt(`${n} / ${CHECKS.length}  PASS`, 1210, 222, '700 30px "JetBrains Mono"', GREEN, a, 'left', 1, 0);
+  const first = Math.max(0, n - 18);
+  for (let k = first; k < n; k++)
+    txt(`✓ ${CHECKS[k]}`, 1210, 272 + (k - first) * 32, '500 19px "JetBrains Mono"', k === n - 1 ? CREAM : MUTED, a, 'left', 0, 0);
+}
+function drawMarquee(t, t0, t1, main, sub) {  // Vegas sign: chasing bulbs around the name
+  const a = win(t, t0, t1, 0.15, 0.4), pop = back((t - t0) / 0.45), left = !!sub;
+  const bw = 980, bh = sub ? 380 : 330, bx = left ? 90 : W / 2 - bw / 2, by = left ? 300 : H / 2 - bh / 2 - 30;
+  ui.save();
+  ui.globalAlpha = a;
+  ui.translate(bx + bw / 2, by + bh / 2);
+  ui.scale(0.85 + 0.15 * pop, 0.85 + 0.15 * pop);
+  ui.translate(-bw / 2, -bh / 2);
+  ui.fillStyle = 'rgba(28,12,6,0.72)';
+  ui.beginPath(); ui.roundRect(0, 0, bw, bh, 28); ui.fill();
+  ui.strokeStyle = ORANGE; ui.lineWidth = 5;
+  ui.beginPath(); ui.roundRect(14, 14, bw - 28, bh - 28, 20); ui.stroke();
+  const step = 34, pts = [];
+  for (let x = 30; x <= bw - 30; x += step) pts.push([x, 30], [x, bh - 30]);
+  for (let y = 30 + step; y < bh - 30; y += step) pts.push([30, y], [bw - 30, y]);
+  const chase = Math.floor(t / (BEAT / 2));
+  pts.forEach(([px, py], i) => {
+    const lit = (i + chase) % 3 !== 0;
+    ui.fillStyle = lit ? '#ffe8a3' : '#5a4630';
+    ui.shadowColor = '#ffcf5a'; ui.shadowBlur = lit ? 18 : 0;
+    ui.beginPath(); ui.arc(px, py, 7, 0, 2 * Math.PI); ui.fill();
+  });
+  ui.shadowBlur = 0;
+  ui.restore();
+  const cx = bx + bw / 2, cy = by + (sub ? 230 : 230);
+  retro(main, cx, cy, 230, a, 'center', 0.85 + 0.15 * pop);
+  if (sub) txt(sub, cx, by + 322, '700 40px "Space Grotesk"', ORANGE, a * clamp((t - t0 - 0.6) / 0.5), 'center', 1, 12);
+}
+function drawText(t) {
+  for (const [t0, t1, style, main, sub] of TL.texts) {
+    if (t < t0 - 0.05 || t > t1 + 0.05) continue;
+    const a = win(t, t0, t1, 0.25, 0.35), rise = (1 - smooth((t - t0) / 0.4)) * 30, pop = back((t - t0) / 0.35);
+    if (style === 'chapter') {
+      txt(sub, 124, 800 + rise, '700 26px "JetBrains Mono"', ORANGE, a, 'left', 4, 0);
+      retro(main, 116, 960 + rise, 190, a, 'left', 0.9 + 0.1 * pop);
+      ui.globalAlpha = a; ui.fillStyle = ORANGE;
+      ui.fillRect(124, 990 + rise, 300 * smooth((t - t0) / 0.6), 7);
+      ui.globalAlpha = 1;
+    } else if (style === 'slam') {
+      retro(main, W / 2, 600, 170, a, 'center', 1.4 - 0.4 * pop);
+    } else if (style === 'marquee') {
+      drawMarquee(t, t0, t1, main, sub);
+    } else if (style === 'stop') {
+      ui.fillStyle = `rgba(120,10,0,${0.35 * a})`; ui.fillRect(0, 0, W, H);
+      txt(main, 1340, 560, '400 280px Anton', RED, a, 'center', 6, 40, 1.3 - 0.3 * pop);  // right of the AI panel
+      txt(sub, 1340, 650, '700 30px "JetBrains Mono"', CREAM, a * clamp((t - t0 - 0.3) / 0.4), 'center', 1, 12);
+    } else if (style === 'word') {
+      txt(main, W / 2, 920 + rise * 0.4, '700 92px "Space Grotesk"', CREAM, a, 'center', -1, 24, 1.15 - 0.15 * pop);
+    } else if (style === 'line') {
+      txt(main, 120, 910 + rise, '700 64px "Space Grotesk"', CREAM, a, 'left', -1);
+      if (sub) txt(sub, 124, 962 + rise, '500 25px "JetBrains Mono"', ORANGE, a * clamp((t - t0 - 0.2) / 0.3), 'left', 0.5, 0);
+    } else if (style === 'stat') {
+      const n = Math.round(ease((t - t0) / 0.9) * Number(main));
+      txt(String(n), 110, 890 + rise, '400 300px Anton', ORANGE, a, 'left', 2, 30, 1.2 - 0.2 * pop);
+      txt(sub, 124, 960 + rise, '700 40px "Space Grotesk"', CREAM, a, 'left', 0);
+    } else if (style === 'checks') {
+      txt(main, 120, 910 + rise, '700 64px "Space Grotesk"', CREAM, a, 'left', -1);
+      drawChecks(t, t0, a);
+    } else if (style === 'speech') {
+      let [hx, hy] = toScreen(new THREE.Vector3(30, 0, 372));
+      ui.save();
+      ui.font = '700 36px "Space Grotesk"';
+      const w = ui.measureText(main).width + 56, h = 64;
+      hx = clamp(hx, w / 2 + 60, W - w / 2 - 60); hy = clamp(hy - 60, 110, H - 200);
+      ui.globalAlpha = a;
+      ui.translate(hx, hy);
+      ui.scale(0.8 + 0.2 * pop, 0.8 + 0.2 * pop);
+      ui.fillStyle = 'rgba(20,14,10,0.85)'; ui.strokeStyle = TEAL; ui.lineWidth = 2;
+      ui.beginPath(); ui.roundRect(-w / 2, -h / 2, w, h, 32); ui.fill(); ui.stroke();
+      ui.beginPath(); ui.moveTo(-10, h / 2 - 1); ui.lineTo(0, h / 2 + 16); ui.lineTo(10, h / 2 - 1); ui.fill();
+      ui.restore();
+      txt(main, hx, hy + 12, '700 36px "Space Grotesk"', CREAM, a, 'center', 0, 0);
+    } else if (style === 'credits') {
+      txt(main, W / 2, 890, '700 40px "Space Grotesk"', CREAM, a, 'center', 0);
+      txt(sub, W / 2, 944, '500 22px "JetBrains Mono"', MUTED, a * clamp((t - t0 - 0.5) / 0.6), 'center', 0.5, 0);
+    }
+  }
+}
+const SECTION = { intro: '', groove: 'UGV-01', engineering: '01 · MÜHENDİSLİK', ai: '02 · YAPAY ZEKÂ + SES',
+                  safety: '03 · GÜVEN', shout: 'GÖSTERİ', end: 'UGV-01' };
+const sceneAt = t => TL.scenes.reduce((s, [name, t0]) => (t >= t0 ? name : s), 'intro');
+function drawHud(t) {
+  const a = 0.6 * clamp((t - 7.3) / 0.8) * clamp((TL.duration_s - 2 - t) / 1.0);
+  txt('UGV-01 · A3 LITE', 70, 92, '700 18px "JetBrains Mono"', CREAM, a, 'left', 3, 0);
+  txt(SECTION[sceneAt(t)], W - 70, 92, '700 18px "JetBrains Mono"', ORANGE, a, 'right', 3, 0);
+  txt(`♪ ${TL.bpm} BPM SWING · BAR ${String(Math.floor(t / (4 * BEAT)) + 1).padStart(2, '0')}`, W - 70, H - 72,
+      '500 16px "JetBrains Mono"', MUTED, a * 0.8, 'right', 1, 0);
+  ui.save();
+  ui.globalAlpha = a * 0.7;
+  ui.strokeStyle = CREAM; ui.lineWidth = 2;
+  for (const [x, y, dx, dy] of [[50, 60, 1, 1], [W - 50, 60, -1, 1], [50, H - 60, 1, -1], [W - 50, H - 60, -1, -1]]) {
+    ui.beginPath(); ui.moveTo(x + 36 * dx, y); ui.lineTo(x, y); ui.lineTo(x, y + 36 * dy); ui.stroke();
+  }
+  ui.restore();
+}
+const CHAPTERS = TL.scenes.filter(([n]) => ['engineering', 'ai', 'safety', 'shout'].includes(n)).map(([, t0]) => t0);
+function drawGrade(t, frame) {
+  const flash = pulse(t, hitsOf(['big', 'button']), 0.16), red = pulse(t, hitsOf(['stop']), 0.25);
+  if (flash > 0.01) { ui.fillStyle = `rgba(255,236,210,${0.28 * flash})`; ui.fillRect(0, 0, W, H); }
+  if (red > 0.01) { ui.fillStyle = `rgba(255,60,40,${0.3 * red})`; ui.fillRect(0, 0, W, H); }
+  for (const c of CHAPTERS) {  // 60s title-sequence wipe: three slanted colour bars sweep across the cut
+    const k = (t - c + 0.22) / 0.5;
+    if (k <= 0 || k >= 1) continue;
+    [[ORANGE, 0], [TEAL, 0.12], [CREAM, 0.24]].forEach(([col, off]) => {
+      const x = lerp(-900, W + 300, ease(clamp((k - off) / (1 - 0.24))));
+      ui.fillStyle = col;
+      ui.beginPath(); ui.moveTo(x, 0); ui.lineTo(x + 520, 0); ui.lineTo(x + 220, H); ui.lineTo(x - 300, H); ui.fill();
+    });
+  }
+  const low = ui.createLinearGradient(0, 700, 0, H);
+  low.addColorStop(0, 'rgba(0,0,0,0)'); low.addColorStop(1, 'rgba(0,0,0,0.5)');
+  ui.fillStyle = low; ui.fillRect(0, 700, W, H - 700);
+  const vg = ui.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 1.05);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.62)');
+  ui.fillStyle = vg; ui.fillRect(0, 0, W, H);
+  ui.save();
+  ui.globalAlpha = 0.06;
+  ui.globalCompositeOperation = 'overlay';
+  ui.translate(-((frame * 97) % 256), -((frame * 57) % 256));
+  ui.fillStyle = ui.createPattern(grainCanvas, 'repeat');
+  ui.fillRect(0, 0, W + 256, H + 256);
+  ui.restore();
+  ui.fillStyle = '#000';
+  ui.fillRect(0, 0, W, 40); ui.fillRect(0, H - 40, W, 40);  // letterbox
+}
+
+// ---- one frame
+function update(t) {
+  // base: drive and turn, wheels roll with the tread distance
+  const [bx, by, byaw] = baseAt(t);
+  rig.position.set(bx, by, 0);
+  rig.rotation.z = rad(byaw);
+  const [dl, dr] = wheelTravel(t);
+  for (const w of wheels) w.pv.rotation.y = (w.left ? dl : dr) / 60;
+  scene.updateMatrixWorld(true);
+  // arm trail (graph scene), arm, cube, head, eyes
+  const trailOn = win(t, WN.graph[0], WN.graph[1] + 0.3, 0.4, 0.5), tpos = trail.geometry.attributes.position;
+  let n = 0;
+  if (trailOn > 0) {
+    for (let s = WN.graph[0]; s <= Math.min(t, WN.graph[1]) && n < TRAIL_N; s += 0.025, n++) {
+      const g = gripIn(cad, armAt(s));
+      tpos.setXYZ(n, g.x, g.y, g.z);
+    }
+  }
+  trail.geometry.setDrawRange(0, n);
+  tpos.needsUpdate = true;
+  trail.material.opacity = 0.85 * trailOn;
+  const q = armAt(t), g = gripIn(world, q), { close, open } = TL.grip;
+  cube.visible = t >= TL.panel.show[0] && t < open + 0.75;
+  if (t < close) cube.position.set(...TL.grip.cube_home);
+  else if (t < open) cube.position.copy(g);
+  else { const f = t - open; cube.position.set(g.x, g.y, g.z - 20 - 700 * f * f); }
+  cube.rotation.z = t < close ? 0.35 : 0.35 + rad(byaw) + (t - close) * 0.2;
+  let [hp, ht] = keyed(TL.head, t, 2);
+  const bob = Math.max(0, ...TL.bob.map(([a, b]) => win(t, a, b, 0.5, 0.5)));
+  hp += bob * 7 * Math.sin(Math.PI * t / (2 * BEAT));                  // sway over two beats
+  ht += bob * 7 * Math.pow(Math.max(0, Math.cos(Math.PI * (t / BEAT - 1))), 6);  // nod on 2 and 4
+  pan.pv.rotation.z = rad(hp);
+  tilt.pv.rotation.y = rad(ht);
+  let eyes01 = smooth((t - WN.lights_on) / 0.25) * (t > WN.lights_on + 0.1 && t < WN.lights_on + 0.3 ? 0.35 : 1);
+  for (const b of [9.6, 19.2, 29.5, 39.8, 61.3, 71.8, 86.8]) eyes01 *= 1 - 0.9 * Math.exp(-Math.pow((t - b) / 0.06, 2));
+  const boost = 1 + 0.5 * pulse(t, hitsOf(['big', 'button']), 0.3);
+  for (const e of eyes) {
+    e.mat.emissive.set(0x69d7ff);
+    e.mat.emissiveIntensity = 1.4 * eyes01 * boost;
+    e.glow.material.opacity = 0.5 * eyes01 * boost;
+  }
+  // explode, x-ray, blueprint edges, E-stop glow, CG gizmo
+  const [e0, e1, e2, e3] = WN.explode;
+  const xray = Math.max(win(t, WN.xray[0], WN.xray[1], 0.5, 0.5), 0.55 * win(t, WN.cg[0], WN.cg[1], 0.4, 0.4));
+  const estop = win(t, WN.estop[0], WN.estop[1], 0.2, 0.4) * (0.55 + 0.45 * Math.sin(t * 14));
+  edgeMat.opacity = 0.8 * win(t, WN.edges[0], WN.edges[1], 0.6, 0.8) + 0.5 * xray;
+  for (const part of parts) {
+    const out = ease((t - (e0 + (e1 - e0) * 0.6 * part.rank)) / ((e1 - e0) * 0.6)), bk = ease((t - (e2 + (e3 - e2) * 0.6 * (1 - part.rank))) / ((e3 - e2) * 0.6));
+    const e = t > e0 - 0.1 && t < e3 + 0.5 ? Math.min(out, 1 - bk) : 0;
+    part.mesh.position.copy(part.dir).multiplyScalar((50 + part.dist * 0.95) * e);
+    const op = part.shell ? 1 - 0.86 * xray : 1;
+    if ((op < 0.999) !== part.mat.transparent) { part.mat.transparent = op < 0.999; part.mat.needsUpdate = true; }
+    part.mat.opacity = op;
+    part.mat.depthWrite = op > 0.999;
+    part.mesh.castShadow = op > 0.5;
+    if (part.motor) { part.mat.emissive.set(0xff8a1c); part.mat.emissiveIntensity = 0.9 * win(t, WN.xray[0], WN.xray[1], 0.5, 0.5); }
+    if (part.estop) { part.mat.emissive.set(0xff2a1a); part.mat.emissiveIntensity = 1.6 * estop; }
+  }
+  const cgOn = win(t, WN.cg[0], WN.cg[1], 0.4, 0.4);
+  cgBall.material.opacity = cgOn;
+  cgDrop.material.opacity = cgTip.material.opacity = support.material.opacity = 0.9 * cgOn;
+  // stage: the spot snaps on with the first hit and follows the robot; beams sweep in the show
+  const rw = world.localToWorld(new THREE.Vector3(bx, by, 0));
+  const on = t >= WN.lights_on ? 1 - 0.5 * Math.exp(-(t - WN.lights_on) / 0.08) * (Math.sin(t * 90) > 0 ? 1 : 0.3) : 0.03;
+  const dark = clamp(1 - smooth((t - TL.duration_s + 2.4) / 2.2));
+  spot.holder.position.set(rw.x, 1500, rw.z);
+  spot.mesh.material.opacity = 0.16 * on * dark * (1 - 0.6 * win(t, WN.edges[0], WN.xray[1], 0.5, 0.5));
+  const beams = win(t, WN.beams[0], WN.beams[1], 0.3, 1.0);
+  for (const [b, side] of [[beamL, -1], [beamR, 1]]) {
+    b.holder.position.set(rw.x + side * 900, 2300, rw.z - 900);
+    b.holder.rotation.set(0.35 * Math.sin(t * 1.3 + side), 0, side * (0.45 + 0.25 * Math.sin(t * 1.7 + side * 2)));
+    b.mesh.material.opacity = 0.13 * beams;
+  }
+  floorGlow.position.set(rw.x, 0.6, rw.z);
+  floorGlow.material.opacity = (0.18 + 0.2 * beams) * on * dark;
+  key.position.set(rw.x + 420, 780, rw.z + 540);
+  key.target.position.set(rw.x, 120, rw.z);
+  rim.position.set(rw.x - 660, 460, rw.z - 520);
+  fill.position.set(rw.x - 300, 140, rw.z + 640);
+  key.intensity = (0.15 + 2.6 * on) * dark;
+  rim.intensity = (0.1 + 1.6 * on) * dark;
+  hemi.intensity = (0.08 + 0.5 * on) * dark;
+  // camera: keyframes relative to the robot, orbit in the show, a punch and a shake on the band's hits
+  let [pos, target, shift] = keyed(TL.camera, t, 3);
+  pos = new THREE.Vector3(...pos);
+  const [o0, o1, turn] = TL.orbit;
+  if (t > o0) pos.applyAxisAngle(new THREE.Vector3(0, 1, 0), turn * ease((t - o0) / (o1 - o0)));
+  const kick = pulse(t, hitsOf(['big', 'button', 'stop']), 0.12), tap = pulse(t, hitsOf(['stab']), 0.1);
+  pos.x += 5 * Math.sin(t * 0.63) + 2.5 * Math.sin(t * 1.71) + 10 * kick * Math.sin(t * 90);
+  pos.y += 4 * Math.sin(t * 0.47 + 1) + 2 * Math.sin(t * 1.37) + 8 * kick * Math.cos(t * 77);
+  camera.fov = 30 - 3.2 * kick - 1.4 * tap;
+  camera.updateProjectionMatrix();
+  camera.setViewOffset(W, H, shift, 0, W, H);
+  camera.position.copy(pos.add(rw));
+  camera.lookAt(new THREE.Vector3(...target).add(rw));
+  setArm(q);
+  scene.updateMatrixWorld(true);
+  return { cgOn };
+}
+function drawUI(t, frame, st) {
+  ui.clearRect(0, 0, W, H);
+  const black = Math.max(1 - smooth((t - 3.55) / 0.12) * (t < 3.636 ? 0.25 : 1), smooth((t - TL.duration_s + 1.8) / 1.8));
+  if (st.cgOn > 0) {
+    const [cx, cy] = toScreen(CG), [fx, fy] = toScreen(new THREE.Vector3(105, CG.y, 0));
+    txt('CG', cx + 16, cy - 12, '700 22px "JetBrains Mono"', '#ffd35a', st.cgOn, 'left', 1, 8);
+    txt('36°', fx + 14, fy - 10, '700 30px "JetBrains Mono"', ORANGE, st.cgOn, 'left', 0, 8);
+  }
+  drawGraph(t, win(t, WN.graph[0], WN.graph[1], 0.4, 0.4));
+  drawPanel(t);
+  drawLink(t, win(t, WN.link[0], WN.link[1], 0.3, 0.3));
+  drawScope(t, win(t, WN.estop[0], WN.estop[1], 0.3, 0.3));
+  if (black > 0) { ui.fillStyle = `rgba(0,0,0,${black})`; ui.fillRect(0, 0, W, H); }
+  if (t < WN.lights_on) {  // drum roll in the dark: a pin of light waits on stage
+    txt('● REC', 140, 200, '700 22px "JetBrains Mono"', RED, 0.7 * (Math.floor(t * 2) % 2), 'left', 2, 0);
+  }
+  drawHud(t);
+  drawText(t);
+  drawGrade(t, frame);
+}
+window.renderAt = t => {
+  const st = update(t);
+  renderer.render(scene, camera);
+  drawUI(t, Math.round(t * TL.fps), st);
+  return new Promise(r => requestAnimationFrame(() => r(true)));
+};
+await Promise.all(['400 200px Anton', '700 66px "Space Grotesk"', '500 26px "Space Grotesk"', '500 28px "JetBrains Mono"',
+                   '700 18px "JetBrains Mono"'].map(f => document.fonts.load(f, 'ÇĞİÖŞÜçğıöşüÂâ09')));
+await document.fonts.ready;
+await window.renderAt(0);
+const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info');
+window.__gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'unknown';
+window.__filmReady = true;
+if (location.search.includes('play')) {
+  const t0 = performance.now();
+  setInterval(() => window.renderAt(((performance.now() - t0) / 1000) % TL.duration_s), 1000 / 30);
+}
+</script>
+<script type="application/json" id="meta">__META__</script>
+<script type="application/json" id="timeline">__TIMELINE__</script>
+<script type="application/json" id="checks">__CHECKS__</script>
+<script type="text/plain" id="mesh">__MESH__</script>
+</html>

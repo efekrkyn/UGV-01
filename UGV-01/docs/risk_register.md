@@ -1,0 +1,59 @@
+# Teknik riskler — A0
+
+Ölçülmemiş riskler kapatılmış sayılmaz. Aşağıdaki önlemler ilgili fazın çıkış koşuludur.
+
+| ID | Risk / öncelik | Önlem ve kapanış kanıtı | Faz |
+|---|---|---|---|
+| R01 | 70:1 motorun sürekli termal kapasitesi / yüksek | 1,3 A hedef; dinamometre ve eğim testi; gerekirse oran/motor/yük değişimi | 3 |
+| R02 | Skid dönüşte yüksek sürtünme ve akım / yüksek | Yay dönüşü varsayılan; pivot akım ve süre sınırlı; farklı zemin testi | 12 |
+| R03 | Motor miline radyal/darbe yükü / yüksek | Ayrı yataklı hub; aksiyel paket ve yük yolu analizi | 4 |
+| R04 | Motor altındaki 2,5 mm boşluk toleransta kapanır / yüksek | Gerçek motor geometrisi, plaka sehim ölçümü; gerekirse yerleşim revizyonu | 4 |
+| R05 | IO, batarya ve kablolar dar hacme sığmaz / yüksek | Konektör, bükülme ve servis hacimleriyle 1:1 maket | 2/4 |
+| R06 | Rejenerasyon barası yükselir / yüksek | Dolu batarya ve açık kesicide klemp/direnç enerji testi; TVS tek başına yetmez | 6 |
+| R07 | E-stop sonrası eğimde geri kayma / yüksek | V1 gözetim/tether/takoz; park freni olmadan eğimde otonom görev yok | 12 |
+| R08 | Kaynak yapmış kesici veya kısa devre FET / yüksek | Farklı tip seri kesiciler, geri bildirim, tek arıza enjeksiyonu | 6/11 |
+| R09 | BMS kesmesi, kayıt bozulması / orta | Erken hücre uyarısı, shutdown ve güç kesilmesine dayanıklı kayıt | 13 |
+| R10 | CM5 5 V hattında düşüm/reset / yüksek | 5,1 V/6 A ray, kısa kalın demet, yük adımı testi | 6/11 |
+| R11 | Encoder gerilim/EMI sorunu / yüksek | 3,3 V seviyeleme, filtre, demet ayrımı ve T06 | 5/11 |
+| R12 | MCU timer/pin/ADC çakışması / orta | LQFP100 pinmap + gerçek paket/datasheet + CubeMX doğrulaması | 5 |
+| R13 | Polimer sünme/nem/katman kırığı / yüksek | Ana yük metal; sıcak/ıslak kupon ve insert testi | 10 |
+| R14 | Batarya ve kapalı hacimde hotspot / yüksek | Ayrı hava/yük yolları, NTC, 40 °C ortam testi | 11 |
+| R15 | Bayat komutun gateway'de yeniden tazelenmesi / yüksek | Kaynak sıra/zamanı, deadman, oturum ve MCU timeout | 8/12 |
+| R16 | CM5 Ubuntu kamera/CAN sürücü uyumu / orta | Hareketten önce boot, UVC ve SocketCAN kanıtı | 9/11 |
+| R17 | Görev süresi yetersiz / orta | %80 enerji kullanımı ve %85 yaşlanma, ölçülmüş görev profili | 13 |
+| R18 | Tedarik/fiyat değişimi / orta | Sipariş öncesi tarihli teklif ve alternatif doğrulaması | Her faz |
+| R19 | CAD–URDF ölçü/aks sapması / orta | Ortak JSON, mm→m ve eksen regresyon kontrolü | 9 |
+| R20 | Kule/yük nedeniyle CG sınırı aşımı / yüksek | Yük kapasitesi CG zarfına bağlı; her konfigürasyonda tartım | 4/12 |
+| R21 | D1 tahrik detayı boş kütleyi yaklaşık6,025 kg'a çıkarır; rezerv tükenir / yüksek | Tedarikçi ve baskı gerçek kütlesini ölç; en az0,3 kg rezerv için yaklaşık0,325 kg güvenli tasarruf veya hedef revizyonu; yük yolu yeniden hesaplanır | 4 |
+| R22 | Mil/yatak geçmesi ve21,5 mm aksiyel zincir sıkışma veya milde kayma yaratır / yüksek | SKF omuz ve geçme çizimi; gerçek boyut ölçümü, seçici şim, uygun pres fikstürü, endplay/ısı testi | 4/10 |
+| R23 | Pololu milinin kullanılabilir16 mm boyu ve Oldham göbeğin11,9 mm limiti arasında yalnız0,4 mm aksiyel pay / yüksek | Dört motor gerçek mili ölç; göbek işaretlemesi, tork/kayma ve sıcaklık testleri; gerekirse farklı kaplin/taşıyıcı istasyonu | 4/10 |
+| R24 | TPU tırnak ve PAHT-CF jantın ters tork/ısıl sürünme dayanımı / yüksek | Baskı kuponu, ±1,5 Nm/1000 çevrim ön tarama, yüklü dönüş ve sıcaklık testi; metal göbek alternatifi | 4/10 |
+| R25 | 9 kg/3g ve μ=1,2 taramasında mevcut C45 milin payı1,73 / yüksek | 42CrMo4+QT Ø56 kaynak stokta≥650 MPa sertifika, omuz/segman yorulması ve yük fikstürü; yeterli değilse geometri/yük sınırı revizyonu | 4 |
+| R26 | D2A'nın kâğıt üzerinde6 kg altındaki hesap boşluğu yalnız67 g / yüksek | Tüm BOM'u tart; baskı, kablo, vida, koruma ve alternatifler dahil en az0,25–0,30 kg montaj marjı hedefle; destekli hafifletme/tasarım revizyonu | 4/10 |
+| R27 | İlk ayrı GND demetinde hesaplanan yaklaşık3,7 A kontrol dönüş akımı; revize J-PWR'de tek GND kopuğu/başka kablodan paralel dönüş / yüksek | Ayrı düşük akım dönüşü kaldırıldı. İki AWG12 GND'nin her birini 17 A arıza zarfına göre değerlendir; şematik/PCB dönüşü, T02'de iki pin akımı, MCU referans kayması ve ADC/CAN/IMU hata oranını ölç; tek GND açık ve başka dönüş yollarını dene | 5/6/7/11 |
+| R28 | PWR kaynaklı güvenlik/status/I²C hatları, MCU güçsüz veya brownout iken 3,3 V rayını geri besleyebilir / yüksek | Power-off toleranslı arayüz ve lokal pasif seviye seç; T01/T03'te her iki kartın tekil güç sırasını ve `PWR_ACT_EN` kopuğu/kısa devresini akım sınırlı jig ile ölç; hiçbir durumda istemsiz aktüatör izni oluşmamalı | 5/6/11 |
+| R29 | AWG12 ağırlıklı J-PWR demeti ve diğer kablolar 0,30 kg toplam harness tahsisini aşabilir; D2A'nın 67 g hesap boşluğu çok dar / yüksek | Dik açılı J-PWR çıplak bakır+konnektör alt sınırı53,21 g, mevcut0,30 kg tahsisin içindedir ve ikinci kez düşülmez. Gerçek krimp/izolasyon/12 pin J-SIG/diğer tel/strain-relief takımını tart; CAD/BOM kütle bütçesine gir; en az0,25–0,30 kg tasarım marjı için destekli hafifletme veya hedef revizyonu yap | 4/5/10 |
+| R30 | Tek J-PWR içinde `ACT_BUS`–`5V_CONTROL` ezilme/yanlış krimp kısası, E-stop'ta kesilmiş motor barasını kontrol rayından geri besleyebilir / yüksek | Pozitif uçları üretici footprint'inde çapraz yerleştirmeyi doğrula; 5 V dalı akım/ters akım korumasını şematikte kanıtla; T13'te akım sınırlı kısa devre deneyi ve nSLEEP/K1/K2 bağımsız kesmesini ölç | 5/6/11 |
+| R31 | Önceki z81/86 yorumu PCB+bileşen zarfını çıplak PCB sayıyordu; gerçek çıplak yüzey önerisi z58,6 ile dikey marj nominal var, fakat 768250004 yatay çıkışında 14 mm iç koridor / 8–13 mm dış kabuk payı ve AWG12 servis süpürmesi kanıtlanmadı / yüksek | [Kesit](electronics_packaging_gate.md); resmi header+housing 3D modeli, iki kartın yeniden yerleşimi ve bükülme/mandal/servis süpürmesiyle tam montaj CAD'inde çakışma/çıkarma yolu kontrolü | 4/7 |
+| R32 | 0,4 m tek uçlu I²C motor EMI'sinde kilitlenebilir; yeni PCA9615 tasarımı henüz kart şematiği değil / yüksek | İki bükümlü diferansiyel çift ve 12 pin sözleşmesi; lokal sonlandırma/bias, güç sırası, bus recovery ve EMI/tek tel kopuk testi | 5/6/11 |
+| R33 | TPU yanağı pivotta aksiyel sıyrılabilir; D1 omuzları tork tırnaklarından ayrı güvence gerektirir / yüksek | Beadlock/dovetail adayını baskı ve kütle hesabıyla çiz; 40 N yanal ön tarama ve pivot çevrim testi | 4/10/12 |
+| R34 | TIM1/TIM8 faz/preload geçişi istenmeyen 11 brake darbesi üretebilir / yüksek | Master/slave ve 00 ara durumu; dört motor iki girişini logic analyzer ile başlatma/yön/reset/fault anında doğrula | 5/8/11 |
+| R35 | K1 bobini ham 4S'te aşırı gerilim; 5 V TE adayının 20 A/28 V DC katalog testi rezistif, K2 kısa iken motor yükünü açma garantisi değil / yüksek | [K1 seçim kapısı](k1_relay_selection.md): regüle bobin rayı, 16,8 V motor kesme üretici onayı/uygun eğri, kaynaklı kontak geri bildirimi ve T13 tek arıza testi; PH6'dan önce MPN dondurma | 6/11 |
+| R36 | K1'in K2-sonrası 4700 µF boş bulk'a kapanması veya K2/ön şarj FET'i kısa iken kapanması çok yüksek inrush/kontak kaynağı doğurabilir / yüksek | [K1/K2 tanı ve ön şarj sırası](precharge_and_separator_diagnostics.md); K1 öncesi tek-hata testi, 470 Ω bypass, üç gerilim ölçümü, osiloskopla inrush, resistor pulse ve E-stop bypass analizi; PH6 şematik ve T01/T13 | 6/11 |
+| R37 | TPS3431 varsayılan 170–230 ms watchdog süresi ≤100 ms hedefini kaçırır; EN/SET1 Low veya güçsüz WDO yanlış izin üretebilir / yüksek | [100 pF CWD ve PGOOD/ENOUT izin zinciri](watchdog_design.md); WDI/T03/T13 worst-case osiloskop ve brownout/EN/SET1 enjeksiyon testi | 6/11 |
+| R38 | PWR I²C expander son çıkışını High tutabilir; test enjeksiyon komut FET'i kısa K1'i bypass eder; ADC güçsüzken ray bölücüsü geri besler / yüksek | [İki seri test anahtarı ve ARMING](precharge_and_separator_diagnostics.md); NC/WD gate, harici Low bias, ADC giriş koruma ve güç sıra testi; T01/T13 tek arıza | 6/11 |
+| R39 | K2 kontrolcüsünde SLEEP OFF sanılıp 7 Ω iç bypass'ın aktüatörü beslemesi; iki FET'in küçük bakır alanında aşırı ısınması veya otomatik OCP retry / yüksek | [K2 aday hesabı](k2_separator_selection.md): donanım EN Low, SLEEP=EN, FLT latch, ayrı şönt, PCB termal model ve 15/20 A sıcaklık/tek hata osiloskop testi | 6/7/11 |
+| R40 | **KAPANDI (A2, DD62):** ön kamera podu kaldırıldı; göz kameraları başa taşındı. A1 kaydı: dış ön kamera podu için x yönünde yalnız3,25 mm koruma payı; 24×16 mm açıklıktan 25×24 mm kart geçmez | [Kamera seçim kapısı](front_camera_A1.md): üretici STEP'iyle servis yönü, M2 bağlantı, FFC/pencere, darbe ve gerekirse 330 mm zarf revizyonu; fiziksel T18 | 4/13 |
+| R41 | A1 gövdenin %100 dolu ASA/TPU CAD eşdeğeri 0,739 kg; 0,700 kg tahsisi ve D2A'nın 67 g dar payını tüketir / yüksek | [Katı hacim hesabı](body_mass_screen_A1.md), gerçek slicer/perimetre kütlesi, TPU darbe/ısı kuponu, montaj tartımı; en az0,25 kg güvenli kütle marjı veya gereksinim revizyonu | 4/10 |
+| R42 | TPS3431 `SET1` Low'a kısa kalırsa watchdog sessizce kapanır, `WD_OK` High kalır / yüksek | [PWR güvenlik yolu](pwr_safety_path.md): SELF_TEST'te WDI bilerek durdurulup `PWR_WD_OK` düşüşü görülür, ardından yerel reset; T03 `SET1` enjeksiyonu | 6/8 |
+| R43 | MCU watchdog süresinden (≈56,8 ms) hızlı yeniden başlarsa TCA9534A eski komut çıkışlarını korur; `MCU_RUN_REQ` dönünce izin açılabilir / yüksek | ARMING girişinde TCA çıkışları sıfırlanıp geri okunmadan `MCU_RUN_REQ` High yapılmaz (PH8 yazılım gereksinimi); T03 hızlı reset denemesi | 8 |
+| R44 | Aynı polariteli NC-A/NC-B kanalları arası veya 5 V'a kısa donanımda ayırt edilmez; E-stop bir kanalda etkisiz kalabilir / yüksek | MCU A/B tutarsızlığında FAULT; test darbeli kanal FMEA'sı; T13 kısa devre enjeksiyonu | 6/13 |
+| R45 | ACT_BUS TVS ve rejeneratif dump clamp çizilmedi; BSS84/BSS138 (50 V) ve CSD18540 (60 V) Vds sınırı korunmuş değil; küçük FET veri sayfaları doğrulanmadı / yüksek | Clamp/TVS sayfası, SOA hesabı ve T02/T13 regen enerji testi olmadan PCB yok | 6/7 |
+| R46 | A2 yüklü CG hesapta z106,7 mm; 110 mm sınırına yalnız 3,3 mm, kütle tahsisleri ölçülmemiş / yüksek | [A2 kütle/CG](exterior_language_A2.md): yük 1,5 kg ve CG z≤190 mm; tekerlik tartı + eğim deneyiyle CG yüksekliği; `check_design` ≥2 mm pay ister | 4/10 |
+| R47 | Kol/boyun servoları parmak kıstırabilir; kol arkadan/alttan dönerse zemine ve tekere çarpar / yüksek | Eklem aralığı [−55°, 180°] ve üstten geçiş yazılım sınırı; E-stop'ta servo rayı kesilir; AI modunda hız sınırı; kıstırma testi | 3/4 |
+| R48 | Servo rayı çalışma pozunda kesilirse sağ kol ve pençedeki yük zemine/nesneye düşer; ray kapalıyken sürüş kolu lastiğe/zemine sürtebilir / orta | [A2 elektronik](a2_electronics.md) firmware kuralı: ray kesimi = FAULT, sürüş yok; park pozunda CAD kolun orta kapağa oturduğunu gösterir (`check_cad`); T13'e kol düşme adımı | 3/4/13 |
+| R49 | MG90S/DS3218MG 3,3 V PWM sinyalini ve 1 kΩ seriyi güvenle algılamayabilir; stall akımı katalogdan yüksek olabilir / orta | Gelen partide sinyal eşiği, stall akımı ve ray akım eşikleri ölçümü; gerekirse 5 V tampon | 5/10 |
+| R50 | AI modeli görüntüyü yanlış yorumlayabilir veya kameradaki yazı talimat gibi davranabilir (istem enjeksiyonu) / yüksek | [AI kontrolü](ai_control.md): yerel sınırlar, 0,2 m/s + MCU 200 mm/s tavanı, ToF refleksi, kol–sürüş kilidi, `ask_operator`, canlı denetim ve dur sözü; ücretli duman testi ve kapalı alan denemesi | 4/10 |
+| R51 | Hobi servolarının mutlak konumu bilinmez; ray yeniden açılınca servo son hedefe tam hızla gidebilir / orta | Açılış prosedürü (kol park, baş ortada, düşük hız rampa), geri beslemeli servo değerlendirmesi, T13 servo adımı | 4/13 |
+
+Açık seçimler: gerçek lastik/rulman/mil paketi, BMS ve paket üreticisi, DC kesici, rejenerasyon direnci pulse curve, regülatör manyetikleri, insert ve servo MPN. İlk BOM bunları şartnameyle seçilecek kalem olarak gösterir; sahte parça numarası atanmaz.

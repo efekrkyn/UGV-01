@@ -1,0 +1,30 @@
+{
+  "mpn": "768250004",
+  "housing_mpn": "1700010104",
+  "footprint": "Connector_Molex:Molex_Mega-Fit_76825-0004_2x02_P5.70mm_Horizontal",
+  "pins": [
+    {"pad": 1, "net": "ACT_BUS", "awg": 12},
+    {"pad": 2, "net": "PGND_A", "awg": 12},
+    {"pad": 3, "net": "PGND_B", "awg": 12},
+    {"pad": 4, "net": "5V_CONTROL", "awg": 16}
+  ],
+  "signal_connector": {
+    "header_mpn": "BM12B-GHS-TBT",
+    "housing_mpn": "GHR-12V-S",
+    "footprint": "Connector_JST:JST_GH_BM12B-GHS-TBT_1x12-1MP_P1.25mm_Vertical",
+    "pins": [
+      {"pad": 1, "net": "MCU_RUN_REQ"},
+      {"pad": 2, "net": "MCU_WDI"},
+      {"pad": 3, "net": "PWR_ACT_EN"},
+      {"pad": 4, "net": "PWR_K1_FB"},
+      {"pad": 5, "net": "PWR_K2_FB"},
+      {"pad": 6, "net": "ESTOP_A_CLOSED"},
+      {"pad": 7, "net": "ESTOP_B_CLOSED"},
+      {"pad": 8, "net": "PWR_WD_OK"},
+      {"pad": 9, "net": "DI2C_SCL_P"},
+      {"pad": 10, "net": "DI2C_SCL_N"},
+      {"pad": 11, "net": "DI2C_SDA_P"},
+      {"pad": 12, "net": "DI2C_SDA_N"}
+    ]
+  }
+}

@@ -1,0 +1,2 @@
+dependencies:
+  espressif/esp32-camera: "==2.1.8"  # pinned to the version the first build resolved (26.09.2026)

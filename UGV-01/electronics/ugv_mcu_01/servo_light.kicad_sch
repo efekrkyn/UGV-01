@@ -1,0 +1,2132 @@
+(kicad_sch
+  (version 20250114) (generator "eeschema") (generator_version "10.0")
+  (uuid "9e2faa03-45ea-5cc1-b7cc-f10975540c62") (paper "A3")
+  (title_block (title "UGV-MCU-01 A2 servo rail, servo headers and light bar") (date "2026-09-24") (rev "P0")
+    (comment 1 "A2 servo/light P0: servo buck and board ERC open; not a PCB release"))
+  (lib_symbols
+(symbol "74xGxx:74LVC1G08"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "U"
+			(at -5.08 7.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "74LVC1G08"
+			(at 7.62 -7.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Single AND Gate, Low-Voltage CMOS"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "Single Gate AND LVC CMOS"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "SOT?23* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "74LVC1G08_0_1"
+			(arc
+				(start 0 5.08)
+				(mid 5.0579 0)
+				(end 0 -5.08)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 -5.08) (xy -7.62 -5.08) (xy -7.62 5.08) (xy 0 5.08)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "74LVC1G08_1_1"
+			(pin input line
+				(at -15.24 2.54 0)
+				(length 7.62)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -15.24 -2.54 0)
+				(length 7.62)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -10.16 90)
+				(length 5.08)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin output line
+				(at 12.7 0 180)
+				(length 7.62)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 10.16 270)
+				(length 5.08)
+				(name "VCC"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Device:R"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "R"
+			(at 2.032 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "R"
+			(at 0 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at -1.778 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "R res resistor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "R_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "R_0_1"
+			(rectangle
+				(start -1.016 -2.54)
+				(end 1.016 2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "R_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Device:C"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "C"
+			(at 0.635 2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "C"
+			(at 0.635 -2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0.9652 -3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "cap capacitor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "C_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "C_0_1"
+			(polyline
+				(pts
+					(xy -2.032 0.762) (xy 2.032 0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.032 -0.762) (xy 2.032 -0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "C_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 2.794)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 2.794)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Amplifier_Current:INA180A2"
+		(pin_names
+			(offset 0.127)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "U"
+			(at 3.81 3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "INA180A2"
+			(at 3.81 -2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-5"
+			(at 1.27 1.27 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ina180.pdf"
+			(at 3.81 3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Current Sense Amplifier, 1 Circuit, Rail-to-Rail, 26V, Gain 50 V/V, SOT-23-5"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "current monitor shunt sensor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "SOT?23*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "INA180A2_0_1"
+			(polyline
+				(pts
+					(xy 5.08 0) (xy -5.08 5.08) (xy -5.08 -5.08) (xy 5.08 0)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "INA180A2_1_1"
+			(pin output line
+				(at 7.62 0 180)
+				(length 2.54)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -2.54 -7.62 90)
+				(length 3.81)
+				(name "GND"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -7.62 2.54 0)
+				(length 2.54)
+				(name "+"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -7.62 -2.54 0)
+				(length 2.54)
+				(name "-"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -2.54 7.62 270)
+				(length 3.81)
+				(name "V+"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Connector_Generic:Conn_01x03"
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "J"
+			(at 0 5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x03"
+			(at 0 -5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "connector"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "Connector*:*_1x??_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "Conn_01x03_1_1"
+			(rectangle
+				(start -1.27 3.81)
+				(end 1.27 -3.81)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(rectangle
+				(start -1.27 2.667)
+				(end 0 2.413)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 0.127)
+				(end 0 -0.127)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -1.27 -2.413)
+				(end 0 -2.667)
+				(stroke
+					(width 0.1524)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 2.54 0)
+				(length 3.81)
+				(name "Pin_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 3.81)
+				(name "Pin_2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 -2.54 0)
+				(length 3.81)
+				(name "Pin_3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Device:C_Polarized"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "C"
+			(at 0.635 2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "C_Polarized"
+			(at 0.635 -2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0.9652 -3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Polarized capacitor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "cap capacitor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "CP_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "C_Polarized_0_1"
+			(rectangle
+				(start -2.286 0.508)
+				(end 2.286 1.016)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -1.778 2.286) (xy -0.762 2.286)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -1.27 2.794) (xy -1.27 1.778)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start 2.286 -0.508)
+				(end -2.286 -1.016)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type outline)
+				)
+			)
+		)
+		(symbol "C_Polarized_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 2.794)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 2.794)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "Device:Polyfuse"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "F"
+			(at -2.54 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Polyfuse"
+			(at 2.54 0 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 1.27 -5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resettable fuse, polymeric positive temperature coefficient"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "resettable fuse PTC PPTC polyfuse polyswitch"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "*polyfuse* *PTC*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "Polyfuse_0_1"
+			(polyline
+				(pts
+					(xy -1.524 2.54) (xy -1.524 1.524) (xy 1.524 -1.524) (xy 1.524 -2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start -0.762 2.54)
+				(end 0.762 -2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 2.54) (xy 0 -2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "Polyfuse_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "74xGxx:74AHCT1G125"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "U"
+			(at -2.54 3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "74AHCT1G125"
+			(at 0 -3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/sg/scyt129e/scyt129e.pdf"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Single Buffer Gate Tri-State, Low-Voltage CMOS"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "Single Gate Buff Tri-State LVC CMOS"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "SOT* SG-*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "74AHCT1G125_0_1"
+			(polyline
+				(pts
+					(xy -7.62 6.35) (xy -7.62 -6.35) (xy 5.08 0) (xy -7.62 6.35)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "74AHCT1G125_1_1"
+			(pin input inverted
+				(at 0 10.16 270)
+				(length 7.62)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -15.24 0 0)
+				(length 7.62)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -5.08 -10.16 90)
+				(length 5.08)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin tri_state line
+				(at 12.7 0 180)
+				(length 7.62)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -5.08 10.16 270)
+				(length 5.08)
+				(name "VCC"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "power:PWR_FLAG"
+		(power global)
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "#FLG"
+			(at 0 1.905 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 0 3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "flag power"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "PWR_FLAG_0_0"
+			(pin power_out line
+				(at 0 0 90)
+				(length 0)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(symbol "PWR_FLAG_0_1"
+			(polyline
+				(pts
+					(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+  )
+  (symbol (lib_id "74xGxx:74LVC1G08") (at 38.1 50.8 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "51cc1d85-dfef-509f-bea1-8d0d9d545d22")
+    (property "Reference" "U701" (at 40.64 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "74LVC1G08" (at 40.64 54.61 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 38.1 50.8 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "f090decf-5310-5e12-83dd-e6ddf558034f"))
+    (pin "2" (uuid "833b1dca-9e65-5046-84a1-b4c343906d4c"))
+    (pin "3" (uuid "fc3acc57-2cc1-5482-8b83-be9553a41c23"))
+    (pin "4" (uuid "8e311a35-965b-5bdc-a2ce-c31e4351d9c2"))
+    (pin "5" (uuid "f20cd3b9-2ebd-5152-a6a3-418a2e0bab7c"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "U701") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "U701") (unit 1)))))
+  (wire (pts (xy 22.86 48.26) (xy 20.32 48.26))
+    (stroke (width 0) (type default)) (uuid "619a018f-de11-5d13-9ca6-2d0b2647eb5c"))
+  (global_label "SERVO_PWR_REQ" (shape passive) (at 20.32 48.26 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "c19298fa-ed09-55c8-aa49-a06817ad798c"))
+  (wire (pts (xy 22.86 53.34) (xy 20.32 53.34))
+    (stroke (width 0) (type default)) (uuid "adc5f115-4fe3-5d98-a1f5-ac9fe026f1a6"))
+  (global_label "ACT_PERMIT_BUF" (shape passive) (at 20.32 53.34 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "3f950bcd-c84d-54cd-8c4e-fd9fa743499c"))
+  (wire (pts (xy 38.1 60.96) (xy 38.1 63.5))
+    (stroke (width 0) (type default)) (uuid "00a8e7a0-5f66-54ce-9ea6-33a69170170e"))
+  (global_label "PGND" (shape passive) (at 38.1 63.5 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "8222001b-7168-5947-bdea-599fede3f28f"))
+  (wire (pts (xy 50.8 50.8) (xy 53.34 50.8))
+    (stroke (width 0) (type default)) (uuid "8861b159-e305-5351-b75b-abca289da5a1"))
+  (global_label "SERVO_BUCK_EN" (shape passive) (at 53.34 50.8 0)
+    (effects (font (size 1 1)) (justify left)) (uuid "5737c2df-406e-5bc2-b895-2bb0ecb8f453"))
+  (wire (pts (xy 38.1 40.64) (xy 38.1 38.1))
+    (stroke (width 0) (type default)) (uuid "74aba10d-3e4f-50eb-b035-ac6254c0c582"))
+  (global_label "MCU_3V3" (shape passive) (at 38.1 38.1 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "4a4f7c96-c7d9-5db9-adb4-cba6f34174f8"))
+  (symbol (lib_id "Device:R") (at 76.2 50.8 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "73a33200-75e3-5c1d-8961-bef776a00597")
+    (property "Reference" "R701" (at 78.74 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "10k" (at 78.74 54.61 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 76.2 50.8 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "d5223997-0a28-53ec-8803-c4a81ed05cff"))
+    (pin "2" (uuid "c4fdcd1d-f828-5443-ab8d-96becde7128b"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R701") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R701") (unit 1)))))
+  (wire (pts (xy 76.2 46.99) (xy 76.2 44.45))
+    (stroke (width 0) (type default)) (uuid "18bc2d97-7756-5b12-8cd1-8704a9bb2f30"))
+  (global_label "SERVO_PWR_REQ" (shape passive) (at 76.2 44.45 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "826c0add-dd5d-5862-9ec3-8f83cbe9831e"))
+  (wire (pts (xy 76.2 54.61) (xy 76.2 57.15))
+    (stroke (width 0) (type default)) (uuid "95524f47-b0a1-5be7-893b-3c91c984e490"))
+  (global_label "PGND" (shape passive) (at 76.2 57.15 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "01f9e60f-27a0-566d-bf6c-b8be07d5ebdd"))
+  (symbol (lib_id "Device:R") (at 101.6 50.8 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "347b470b-a038-59dc-a741-11b4a63f313d")
+    (property "Reference" "R702" (at 104.14 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "100k" (at 104.14 54.61 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 101.6 50.8 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "b7e1eb7e-a438-5a1d-97d4-f408c710c878"))
+    (pin "2" (uuid "27934ebc-b7d4-5798-a7ae-1b713196175b"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R702") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R702") (unit 1)))))
+  (wire (pts (xy 101.6 46.99) (xy 101.6 44.45))
+    (stroke (width 0) (type default)) (uuid "4d9945df-0d50-513b-9ab3-556fd43cf6a7"))
+  (global_label "SERVO_BUCK_EN" (shape passive) (at 101.6 44.45 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "4e77f296-62f8-5617-baeb-2ba66a08899f"))
+  (wire (pts (xy 101.6 54.61) (xy 101.6 57.15))
+    (stroke (width 0) (type default)) (uuid "8d5af786-3bc0-551c-9c7b-6b6c76da4a83"))
+  (global_label "PGND" (shape passive) (at 101.6 57.15 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "7f56b445-6adb-5d26-bc0f-9b676359dc42"))
+  (symbol (lib_id "Device:C") (at 127 50.8 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "0d49a96c-b75b-52a8-af55-75d8af65fb02")
+    (property "Reference" "C704" (at 129.54 46.99 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "100n" (at 129.54 54.61 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric" (at 127 50.8 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "542f6a35-f8e8-5d35-ae33-94cd21e6638b"))
+    (pin "2" (uuid "799229ab-085a-5740-9884-ca66a6f77198"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "C704") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "C704") (unit 1)))))
+  (wire (pts (xy 127 46.99) (xy 127 44.45))
+    (stroke (width 0) (type default)) (uuid "41fc467a-0428-5485-9ec8-7acc8ca0eefa"))
+  (global_label "MCU_3V3" (shape passive) (at 127 44.45 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "b6c78ae2-4617-50be-b061-5e3ed0ad95f9"))
+  (wire (pts (xy 127 54.61) (xy 127 57.15))
+    (stroke (width 0) (type default)) (uuid "a08a4389-f175-5f43-be56-f049154d144e"))
+  (global_label "PGND" (shape passive) (at 127 57.15 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "f41a3eb3-ebc5-5407-a02c-699081f778c5"))
+  (symbol (lib_id "Device:R") (at 38.1 101.6 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "b74ea85f-96fe-51cd-b367-d4bcd7e2e3b0")
+    (property "Reference" "R703" (at 40.64 97.79 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "0R01 1% 1W" (at 40.64 105.41 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_2512_6332Metric" (at 38.1 101.6 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "fff671e6-381e-5f83-871b-755f2d8ad8c6"))
+    (pin "2" (uuid "49b0b8ed-bc38-5c85-98e9-ba4eb33e1677"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R703") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R703") (unit 1)))))
+  (wire (pts (xy 38.1 97.79) (xy 38.1 95.25))
+    (stroke (width 0) (type default)) (uuid "c1fa8ce3-f177-500b-b720-233c58466f48"))
+  (global_label "SERVO_6V_BUCK" (shape passive) (at 38.1 95.25 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "6f0c7e3d-d9be-53ac-84a9-dd68ad431896"))
+  (wire (pts (xy 38.1 105.41) (xy 38.1 107.95))
+    (stroke (width 0) (type default)) (uuid "1a209cd2-cfc6-5ee8-bfff-1829a8b199ec"))
+  (label "SERVO_6V" (at 38.1 107.95 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "a92d3d77-4d63-5c0f-a203-7856a4109333"))
+  (symbol (lib_id "Amplifier_Current:INA180A2") (at 76.2 101.6 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "0add4f23-54b7-5b65-b4b5-e9edcb3ef5e0")
+    (property "Reference" "U702" (at 78.74 97.79 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "INA180A2" (at 78.74 105.41 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 76.2 101.6 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "579b8312-27ec-54e6-95d5-a6d00af19140"))
+    (pin "2" (uuid "ae38efea-d08a-56c3-b83b-f6d7b10aad4c"))
+    (pin "3" (uuid "d9eb5802-34a6-55b5-b26e-0ba95dd7167c"))
+    (pin "4" (uuid "1a3f3f56-89e5-5114-a9db-0b042fae943c"))
+    (pin "5" (uuid "9576c6ee-1904-585f-ba29-ed8cbd21c916"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "U702") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "U702") (unit 1)))))
+  (wire (pts (xy 83.82 101.6) (xy 86.36 101.6))
+    (stroke (width 0) (type default)) (uuid "74450140-9c7c-5620-9569-f1db5ee85df3"))
+  (label "SERVO_I_AMP" (at 86.36 101.6 0)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "324ce40e-b650-56ea-9de8-b3f044f7c04b"))
+  (wire (pts (xy 73.66 109.22) (xy 73.66 111.76))
+    (stroke (width 0) (type default)) (uuid "b9cc248c-b924-57ad-8ee0-7f74aa1f5c3a"))
+  (global_label "PGND" (shape passive) (at 73.66 111.76 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "04f67bc8-5b11-5bd3-b4c1-cec6c616c0c7"))
+  (wire (pts (xy 68.58 99.06) (xy 66.04 99.06))
+    (stroke (width 0) (type default)) (uuid "c371e8f4-fce4-5c0b-81a0-2fe98f2a9a00"))
+  (global_label "SERVO_6V_BUCK" (shape passive) (at 66.04 99.06 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "4839cc2a-b671-59f7-9ebc-f826c35bf8cb"))
+  (wire (pts (xy 68.58 104.14) (xy 66.04 104.14))
+    (stroke (width 0) (type default)) (uuid "7c0dc6fa-000d-5e67-9124-5ba2f716e6af"))
+  (label "SERVO_6V" (at 66.04 104.14 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "3841aeee-e86f-5a01-a526-304dc7b03b9e"))
+  (wire (pts (xy 73.66 93.98) (xy 73.66 91.44))
+    (stroke (width 0) (type default)) (uuid "f7a5b2a9-1da7-524e-9fc6-62959aade47d"))
+  (global_label "MCU_3V3" (shape passive) (at 73.66 91.44 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "c09e5e22-df95-55b6-be69-370000ee6ccc"))
+  (symbol (lib_id "Device:R") (at 114.3 101.6 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "af195ce5-f7d8-528b-b578-1ff9ac898f29")
+    (property "Reference" "R704" (at 116.84 97.79 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "1k" (at 116.84 105.41 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 114.3 101.6 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "cff04b3d-6e3e-536a-a2e0-85f2fbcc8ada"))
+    (pin "2" (uuid "961f5ea0-3fb3-59f9-9470-ed8ef0ff5165"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R704") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R704") (unit 1)))))
+  (wire (pts (xy 114.3 97.79) (xy 114.3 95.25))
+    (stroke (width 0) (type default)) (uuid "a0f72bed-3b07-5376-ba3b-c803d53bfd63"))
+  (label "SERVO_I_AMP" (at 114.3 95.25 90)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "e5c1f934-aacf-5594-b58f-a357d5a12d09"))
+  (wire (pts (xy 114.3 105.41) (xy 114.3 107.95))
+    (stroke (width 0) (type default)) (uuid "4f398c02-00b1-54ec-98ba-f8d079b9e6a5"))
+  (global_label "SERVO_I_SENSE" (shape passive) (at 114.3 107.95 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "4bf80375-0e4c-5fc1-93fb-0e1bde7c07e3"))
+  (symbol (lib_id "Device:C") (at 139.7 101.6 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "0bf0c8b3-dc91-5c42-86f7-345100c17ccf")
+    (property "Reference" "C701" (at 142.24 97.79 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "10n" (at 142.24 105.41 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric" (at 139.7 101.6 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "031ac0a6-0394-5611-a733-567de8311bf2"))
+    (pin "2" (uuid "060a13cd-d42d-5c54-8671-267d91c4a765"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "C701") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "C701") (unit 1)))))
+  (wire (pts (xy 139.7 97.79) (xy 139.7 95.25))
+    (stroke (width 0) (type default)) (uuid "94b2c1e1-037c-5504-90c9-2eb8b446cb73"))
+  (global_label "SERVO_I_SENSE" (shape passive) (at 139.7 95.25 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "affba842-f22a-5d01-bd2e-6c27578a1008"))
+  (wire (pts (xy 139.7 105.41) (xy 139.7 107.95))
+    (stroke (width 0) (type default)) (uuid "ad92770c-cfe7-51e6-8027-d851814bec84"))
+  (global_label "PGND" (shape passive) (at 139.7 107.95 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "7132e295-df6c-5927-b47e-5ba8fb7c7cf1"))
+  (symbol (lib_id "Device:C") (at 165.1 101.6 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "3aaf697b-c2b0-5e3f-8da3-876a23ecc676")
+    (property "Reference" "C705" (at 167.64 97.79 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "100n" (at 167.64 105.41 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric" (at 165.1 101.6 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "72966ffb-807b-5435-97f9-27abf22d0e3d"))
+    (pin "2" (uuid "60bafc1e-3c3e-5990-8069-7fe776ffa0a1"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "C705") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "C705") (unit 1)))))
+  (wire (pts (xy 165.1 97.79) (xy 165.1 95.25))
+    (stroke (width 0) (type default)) (uuid "aa5eb636-6492-563f-a254-aa83fd0cf33f"))
+  (global_label "MCU_3V3" (shape passive) (at 165.1 95.25 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "4db82081-fa55-54f1-a35d-384b83401f30"))
+  (wire (pts (xy 165.1 105.41) (xy 165.1 107.95))
+    (stroke (width 0) (type default)) (uuid "a28bffa6-4383-579b-9b08-0c70724f9ccd"))
+  (global_label "PGND" (shape passive) (at 165.1 107.95 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "06decd4e-2fae-591b-b585-e71a63c54bf4"))
+  (symbol (lib_id "Device:R") (at 38.1 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "53747fee-dd49-561e-8644-602b4ce20c34")
+    (property "Reference" "R705" (at 40.64 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "1k" (at 40.64 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 38.1 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "79ab062f-60d8-5c14-96f0-d99c9d43a5cd"))
+    (pin "2" (uuid "bd793853-224e-5108-8e88-86188aa349b6"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R705") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R705") (unit 1)))))
+  (wire (pts (xy 38.1 148.59) (xy 38.1 146.05))
+    (stroke (width 0) (type default)) (uuid "aa2a7d27-4404-5753-b186-f9a5c1fd457d"))
+  (global_label "SERVO_PAN" (shape passive) (at 38.1 146.05 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "a3b39086-cf60-5607-86af-733ebc68869e"))
+  (wire (pts (xy 38.1 156.21) (xy 38.1 158.75))
+    (stroke (width 0) (type default)) (uuid "dbe7557d-405d-5857-995c-73b51fd8d0b0"))
+  (label "SERVO_PAN_OUT" (at 38.1 158.75 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "c97d9325-8a63-5ccd-ae30-d6ec66b67d54"))
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 76.2 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "348e1c0b-8cf8-5db3-8de9-0f8e0501d841")
+    (property "Reference" "J701" (at 78.74 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "SERVO PAN" (at 78.74 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" (at 76.2 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "80708853-c92e-5729-b0b6-c94906e766f5"))
+    (pin "2" (uuid "027a05ea-46b2-5cf8-bce0-de1052025e2b"))
+    (pin "3" (uuid "4da5997f-c72b-5adc-9b5e-47ec13a337b6"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "J701") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "J701") (unit 1)))))
+  (wire (pts (xy 71.12 149.86) (xy 68.58 149.86))
+    (stroke (width 0) (type default)) (uuid "fde1f6d0-880c-5820-8f8f-f6010eba440c"))
+  (label "SERVO_PAN_OUT" (at 68.58 149.86 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "343e4b4d-7948-5bb2-bb0a-e345e6bc73ab"))
+  (wire (pts (xy 71.12 152.4) (xy 68.58 152.4))
+    (stroke (width 0) (type default)) (uuid "dd48df21-9f70-5ffe-9ed2-3d3412fe2771"))
+  (label "SERVO_6V" (at 68.58 152.4 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "60f3e619-3139-5edf-8772-42ee9c25357b"))
+  (wire (pts (xy 71.12 154.94) (xy 68.58 154.94))
+    (stroke (width 0) (type default)) (uuid "c53824c2-dfd6-53a0-be62-9649be9d3730"))
+  (global_label "PGND" (shape passive) (at 68.58 154.94 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "4e897a97-df53-5b40-a5cf-278456175863"))
+  (symbol (lib_id "Device:R") (at 101.6 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "d3590e84-631c-5c10-939e-9f8a226c59da")
+    (property "Reference" "R706" (at 104.14 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "1k" (at 104.14 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 101.6 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "aec4b5ea-47a0-5a97-88b5-764e5418388f"))
+    (pin "2" (uuid "95f3b1c8-23b4-5306-88db-818a045c223a"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R706") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R706") (unit 1)))))
+  (wire (pts (xy 101.6 148.59) (xy 101.6 146.05))
+    (stroke (width 0) (type default)) (uuid "7488a290-4f45-5d42-ab59-d22d9ca3652e"))
+  (global_label "SERVO_TILT" (shape passive) (at 101.6 146.05 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "7140b096-5685-5173-affc-1396d154f2be"))
+  (wire (pts (xy 101.6 156.21) (xy 101.6 158.75))
+    (stroke (width 0) (type default)) (uuid "098cb2b0-2048-5252-99b0-5892cf79baa2"))
+  (label "SERVO_TILT_OUT" (at 101.6 158.75 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "0bbde343-3e15-5629-98f2-cde22092176a"))
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 139.7 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "2134c9dd-a65d-5940-b016-fbd41930b2a6")
+    (property "Reference" "J702" (at 142.24 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "SERVO TILT" (at 142.24 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" (at 139.7 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "49d06299-9894-5c6e-aa42-6226889fa17f"))
+    (pin "2" (uuid "edf98756-7208-5e38-bd16-4876252daa2d"))
+    (pin "3" (uuid "e9f003a7-05b8-5fa1-92f2-2dbc1e4a9848"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "J702") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "J702") (unit 1)))))
+  (wire (pts (xy 134.62 149.86) (xy 132.08 149.86))
+    (stroke (width 0) (type default)) (uuid "cd07cc81-0dae-5617-82f6-a7722ef4087b"))
+  (label "SERVO_TILT_OUT" (at 132.08 149.86 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "c82b237d-744b-5980-baa9-74b089de705d"))
+  (wire (pts (xy 134.62 152.4) (xy 132.08 152.4))
+    (stroke (width 0) (type default)) (uuid "77489554-1c84-52d6-afb7-da76c3ea8873"))
+  (label "SERVO_6V" (at 132.08 152.4 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "d532f8e3-146b-5306-a9c0-dcdeb46de098"))
+  (wire (pts (xy 134.62 154.94) (xy 132.08 154.94))
+    (stroke (width 0) (type default)) (uuid "0a3e0289-d7d4-562b-8542-3c4af5dfd0ca"))
+  (global_label "PGND" (shape passive) (at 132.08 154.94 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "3c440177-1550-56b8-baec-59e68b0b251a"))
+  (symbol (lib_id "Device:R") (at 165.1 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "e1e34e7c-a9d0-5f05-ad9c-7e1f53bb7a82")
+    (property "Reference" "R707" (at 167.64 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "1k" (at 167.64 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 165.1 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "0deb72e8-f35a-5aa2-9200-cb1f81d0ed9d"))
+    (pin "2" (uuid "291ff115-6986-5662-ba11-4ea61b089101"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R707") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R707") (unit 1)))))
+  (wire (pts (xy 165.1 148.59) (xy 165.1 146.05))
+    (stroke (width 0) (type default)) (uuid "049657a0-a432-5b04-9c8d-73b5daf49c6a"))
+  (global_label "SERVO_SHOULDER" (shape passive) (at 165.1 146.05 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "4a60ac55-3006-51ed-9821-7e8752a433c7"))
+  (wire (pts (xy 165.1 156.21) (xy 165.1 158.75))
+    (stroke (width 0) (type default)) (uuid "36b66134-a3bf-59d0-895a-405d86333624"))
+  (label "SERVO_SHOULDER_OUT" (at 165.1 158.75 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "9cefea0b-3e7a-5998-a84b-5d93be9a6021"))
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 203.2 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "628dd4f6-6be8-56d3-9962-003b5076b384")
+    (property "Reference" "J703" (at 205.74 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "SERVO SHOULDER" (at 205.74 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" (at 203.2 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "a49265b3-7e36-5cb8-b07a-7a9173553235"))
+    (pin "2" (uuid "9466857d-5be0-5bb0-90c7-27d9ecb8120f"))
+    (pin "3" (uuid "80677e2d-3aa8-52af-a022-fa8765c5e556"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "J703") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "J703") (unit 1)))))
+  (wire (pts (xy 198.12 149.86) (xy 195.58 149.86))
+    (stroke (width 0) (type default)) (uuid "63597a80-6f2b-5b0d-8212-4cb828a509fb"))
+  (label "SERVO_SHOULDER_OUT" (at 195.58 149.86 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "9afebe9f-b142-56b5-9c07-fdb921523bb9"))
+  (wire (pts (xy 198.12 152.4) (xy 195.58 152.4))
+    (stroke (width 0) (type default)) (uuid "de81e15f-a75e-50a4-8c4b-95d046949e99"))
+  (label "SERVO_6V" (at 195.58 152.4 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "33b37710-0fc3-57d3-8a78-a8886203f51c"))
+  (wire (pts (xy 198.12 154.94) (xy 195.58 154.94))
+    (stroke (width 0) (type default)) (uuid "f0baaf5e-8701-5ce2-970c-ba84d6a005ad"))
+  (global_label "PGND" (shape passive) (at 195.58 154.94 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "9290010e-3fe7-5e3c-83f6-e1cf10131755"))
+  (symbol (lib_id "Device:R") (at 228.6 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "ee57734e-ada9-5adb-b4ce-a6b3d90c003e")
+    (property "Reference" "R708" (at 231.14 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "1k" (at 231.14 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 228.6 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "9c4bfee8-d5b8-54fb-88ef-6f7716205c2c"))
+    (pin "2" (uuid "f0e3019b-003d-51d5-bebf-82a67d1826ee"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R708") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R708") (unit 1)))))
+  (wire (pts (xy 228.6 148.59) (xy 228.6 146.05))
+    (stroke (width 0) (type default)) (uuid "0ec5eead-86be-54c8-8c61-56cd8372bb46"))
+  (global_label "SERVO_GRIPPER" (shape passive) (at 228.6 146.05 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "083471fc-d19c-5ae4-906a-675a2f6533ad"))
+  (wire (pts (xy 228.6 156.21) (xy 228.6 158.75))
+    (stroke (width 0) (type default)) (uuid "c16c8bab-d052-5b1c-90f7-c9d0e1a6508b"))
+  (label "SERVO_GRIPPER_OUT" (at 228.6 158.75 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "7a207427-3269-5ddf-afb1-5bf6578d7bcc"))
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 266.7 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "9849dc8c-8663-5679-ab49-eaf3288a9778")
+    (property "Reference" "J704" (at 269.24 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "SERVO GRIPPER" (at 269.24 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" (at 266.7 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "dddd0760-2702-5f85-93ca-ede1b99d2a99"))
+    (pin "2" (uuid "53f14d36-f3ab-5bbd-85b5-99bbdc0b1f6f"))
+    (pin "3" (uuid "4d697718-7698-58c4-ad2f-649d212b22da"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "J704") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "J704") (unit 1)))))
+  (wire (pts (xy 261.62 149.86) (xy 259.08 149.86))
+    (stroke (width 0) (type default)) (uuid "c47b4ee1-761e-518b-85c4-f5576d44f74f"))
+  (label "SERVO_GRIPPER_OUT" (at 259.08 149.86 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "2b5d5510-891b-5572-8bd8-8800fb990faf"))
+  (wire (pts (xy 261.62 152.4) (xy 259.08 152.4))
+    (stroke (width 0) (type default)) (uuid "9417da91-3da6-5078-b43a-4ebc89596b69"))
+  (label "SERVO_6V" (at 259.08 152.4 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "c49e7ba1-9984-5716-b0c3-c41f4b9e2d6b"))
+  (wire (pts (xy 261.62 154.94) (xy 259.08 154.94))
+    (stroke (width 0) (type default)) (uuid "05f59a68-64cd-56c0-b8e9-d47833c54614"))
+  (global_label "PGND" (shape passive) (at 259.08 154.94 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "45dac1ab-80b5-55df-9e88-83e2a2823f2c"))
+  (symbol (lib_id "Device:C_Polarized") (at 304.8 152.4 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "6d3555e2-9aed-5147-b343-8d21c23fd07f")
+    (property "Reference" "C702" (at 307.34 148.59 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "470u 16V" (at 307.34 156.21 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Capacitor_SMD:CP_Elec_8x10" (at 304.8 152.4 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "c8d4b338-ff61-5c82-8279-88a57c45d528"))
+    (pin "2" (uuid "6da39f68-05cb-58cf-856e-8e4bd544d7dd"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "C702") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "C702") (unit 1)))))
+  (wire (pts (xy 304.8 148.59) (xy 304.8 146.05))
+    (stroke (width 0) (type default)) (uuid "a62cd392-4259-5591-9cb7-7b2c76a0aac1"))
+  (label "SERVO_6V" (at 304.8 146.05 90)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "3ddbe486-fa1c-5646-af2c-d67860f092ef"))
+  (wire (pts (xy 304.8 156.21) (xy 304.8 158.75))
+    (stroke (width 0) (type default)) (uuid "e67406c9-ee85-51f3-bb5c-1ddc33ee5d55"))
+  (global_label "PGND" (shape passive) (at 304.8 158.75 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "8a4c7bfe-370d-5815-973c-01e7ea4928ca"))
+  (symbol (lib_id "Device:Polyfuse") (at 38.1 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "e5293e8f-7dde-5bd7-b04a-4871b8a92fe2")
+    (property "Reference" "F701" (at 40.64 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "PTC 0.2A hold" (at 40.64 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Fuse:Fuse_1206_3216Metric" (at 38.1 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (property "Status" "SELECTION-OPEN: PTC MPN" (at 38.1 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "4522a99b-3532-5349-a3fc-fe5e1da8b2b3"))
+    (pin "2" (uuid "33824636-d87c-5d2a-9449-75b5ad53d0e8"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "F701") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "F701") (unit 1)))))
+  (wire (pts (xy 38.1 212.09) (xy 38.1 209.55))
+    (stroke (width 0) (type default)) (uuid "0a8e9767-2cb1-5213-8be9-a6962f8ab5ff"))
+  (global_label "5V_CONTROL" (shape passive) (at 38.1 209.55 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "a66a4efe-a69d-5ebb-bd5f-f3c018147b0d"))
+  (wire (pts (xy 38.1 219.71) (xy 38.1 222.25))
+    (stroke (width 0) (type default)) (uuid "bd6c35f0-2b97-5888-8cde-e55c506f29b9"))
+  (label "LIGHT_5V" (at 38.1 222.25 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "d7fed2e8-b722-5ea9-b17d-553a4275fa08"))
+  (symbol (lib_id "74xGxx:74AHCT1G125") (at 88.9 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "f3699636-3e0f-51d7-9fde-40e78b0c400d")
+    (property "Reference" "U703" (at 91.44 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "74AHCT1G125" (at 91.44 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 88.9 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "87ecec4d-67ba-50bb-a27a-895b4a2453fa"))
+    (pin "2" (uuid "c0e275e3-c1e7-50fe-b961-5e4c13460e74"))
+    (pin "3" (uuid "b1973770-e58f-5adc-831a-8463f471367c"))
+    (pin "4" (uuid "60e9d97c-13b6-5b62-8495-fbfee4a7e39a"))
+    (pin "5" (uuid "aa7e3e21-1b30-55ff-adc9-f0423b49f74f"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "U703") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "U703") (unit 1)))))
+  (wire (pts (xy 88.9 205.74) (xy 88.9 203.2))
+    (stroke (width 0) (type default)) (uuid "c5bf7a02-e288-583b-830d-55a0f9a5a547"))
+  (global_label "PGND" (shape passive) (at 88.9 203.2 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "a43e7f2a-0a13-5c1f-aece-2ef3e8e2fa2a"))
+  (wire (pts (xy 73.66 215.9) (xy 71.12 215.9))
+    (stroke (width 0) (type default)) (uuid "2ab45472-22a3-5de0-9b2b-b5720352faa2"))
+  (global_label "LIGHT_DATA" (shape passive) (at 71.12 215.9 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "0c165f28-5a7b-52bd-8d98-974d0e70e1e1"))
+  (wire (pts (xy 83.82 226.06) (xy 83.82 228.6))
+    (stroke (width 0) (type default)) (uuid "7573fada-f16e-5399-bb7d-adbe73b1434b"))
+  (global_label "PGND" (shape passive) (at 83.82 228.6 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "7ad9b2f4-4dcf-5378-8135-22898057d717"))
+  (wire (pts (xy 101.6 215.9) (xy 104.14 215.9))
+    (stroke (width 0) (type default)) (uuid "48908733-79d9-511e-b2f7-e072564396c6"))
+  (label "LIGHT_DOUT" (at 104.14 215.9 0)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "4baf11b4-c7cc-5a7d-8e0b-514e65381695"))
+  (wire (pts (xy 83.82 205.74) (xy 83.82 203.2))
+    (stroke (width 0) (type default)) (uuid "6e734dfc-e245-529a-b15f-871ca3df9d36"))
+  (label "LIGHT_5V" (at 83.82 203.2 90)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "13b6f7b5-1f39-59be-b3b9-05e79ab01f78"))
+  (symbol (lib_id "Device:R") (at 127 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "3ef4e064-afde-5452-8f20-cd73918652d9")
+    (property "Reference" "R709" (at 129.54 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "100k" (at 129.54 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 127 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "2c232cfa-87d1-5199-930b-460c703221a4"))
+    (pin "2" (uuid "7a0bec4c-ebba-52f6-b950-c6589e228fe3"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R709") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R709") (unit 1)))))
+  (wire (pts (xy 127 212.09) (xy 127 209.55))
+    (stroke (width 0) (type default)) (uuid "53aa21a2-2389-592c-8f08-231090d284a6"))
+  (global_label "LIGHT_DATA" (shape passive) (at 127 209.55 90)
+    (effects (font (size 1 1)) (justify left)) (uuid "0f335b9b-06cb-5373-a4f0-3ffd0c45666d"))
+  (wire (pts (xy 127 219.71) (xy 127 222.25))
+    (stroke (width 0) (type default)) (uuid "3e98718a-0138-56dd-8ca7-9bf8cf86643b"))
+  (global_label "PGND" (shape passive) (at 127 222.25 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "b87d58da-264b-500f-88d6-614205b11396"))
+  (symbol (lib_id "Device:R") (at 152.4 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "2ad6950b-ece3-5690-8aa0-ecb311ad79de")
+    (property "Reference" "R710" (at 154.94 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "33R" (at 154.94 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric" (at 152.4 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "b344c206-03ad-5548-a3b2-202ae89836aa"))
+    (pin "2" (uuid "4332d662-f259-5155-916d-07eda2e91e5f"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "R710") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "R710") (unit 1)))))
+  (wire (pts (xy 152.4 212.09) (xy 152.4 209.55))
+    (stroke (width 0) (type default)) (uuid "d2210670-033f-5f70-9097-3dcd1adbeb07"))
+  (label "LIGHT_DOUT" (at 152.4 209.55 90)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "c9f355f1-4126-526e-a79f-21c2eb86503c"))
+  (wire (pts (xy 152.4 219.71) (xy 152.4 222.25))
+    (stroke (width 0) (type default)) (uuid "33899860-33f7-5801-99d6-e5db3b5f01c3"))
+  (label "LIGHT_DIN" (at 152.4 222.25 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "ae4700ff-5174-5951-ac8c-7495721e37e5"))
+  (symbol (lib_id "Connector_Generic:Conn_01x03") (at 190.5 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "5cdba6a4-5f33-58ee-9e5d-f294faae607c")
+    (property "Reference" "J705" (at 193.04 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "LIGHT BAR" (at 193.04 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical" (at 190.5 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "d2ccdc60-7150-573e-b653-78908b93a595"))
+    (pin "2" (uuid "35b6164f-18a5-569a-912a-22cda5781ff6"))
+    (pin "3" (uuid "44a555f9-0d03-5f5f-a5b4-cd9823b3957a"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "J705") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "J705") (unit 1)))))
+  (wire (pts (xy 185.42 213.36) (xy 182.88 213.36))
+    (stroke (width 0) (type default)) (uuid "0d08456b-5db9-5a5b-abab-24e1fa6d964f"))
+  (label "LIGHT_5V" (at 182.88 213.36 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "eda52371-f21a-591e-82fe-f32fd1a2dddc"))
+  (wire (pts (xy 185.42 215.9) (xy 182.88 215.9))
+    (stroke (width 0) (type default)) (uuid "60baa083-1dce-530d-b41f-b6886fc5aa08"))
+  (label "LIGHT_DIN" (at 182.88 215.9 180)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "232aad5b-f079-5c7a-900b-8b2c268215a8"))
+  (wire (pts (xy 185.42 218.44) (xy 182.88 218.44))
+    (stroke (width 0) (type default)) (uuid "eb6cce93-5af9-56d8-a768-80c7a68f37c0"))
+  (global_label "PGND" (shape passive) (at 182.88 218.44 180)
+    (effects (font (size 1 1)) (justify right)) (uuid "64c24311-6c45-5661-bc87-09105e99e3ca"))
+  (symbol (lib_id "Device:C_Polarized") (at 228.6 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "737433ec-f5a1-5a0f-ba13-1dba6c2c0df7")
+    (property "Reference" "C703" (at 231.14 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "100u 10V" (at 231.14 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Capacitor_SMD:CP_Elec_6.3x7.7" (at 228.6 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "d19f59f9-f2b3-538c-9346-9e570a7fff8f"))
+    (pin "2" (uuid "f54e2917-4886-5503-8193-6c09b3f77db7"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "C703") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "C703") (unit 1)))))
+  (wire (pts (xy 228.6 212.09) (xy 228.6 209.55))
+    (stroke (width 0) (type default)) (uuid "e832fa34-66ad-5714-ba20-1873558bf985"))
+  (label "LIGHT_5V" (at 228.6 209.55 90)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "a781c7cb-6a76-5fd4-898e-aa5c8ba69afc"))
+  (wire (pts (xy 228.6 219.71) (xy 228.6 222.25))
+    (stroke (width 0) (type default)) (uuid "565b7b66-acf4-5ede-a271-12886cce5c0f"))
+  (global_label "PGND" (shape passive) (at 228.6 222.25 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "b7e88a0c-900f-5fd1-aba8-d111261dd940"))
+  (symbol (lib_id "Device:C") (at 254 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no) (uuid "df478100-98e4-5c43-8e4d-9d435afc3cbc")
+    (property "Reference" "C706" (at 256.54 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "100n" (at 256.54 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "Capacitor_SMD:C_0603_1608Metric" (at 254 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "b0b52025-5d3b-5035-8d38-1949f6666398"))
+    (pin "2" (uuid "2319db20-0919-5a0d-a27e-6400745cb296"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "C706") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "C706") (unit 1)))))
+  (wire (pts (xy 254 212.09) (xy 254 209.55))
+    (stroke (width 0) (type default)) (uuid "4532eb0f-e859-5786-86fe-e645f14503d0"))
+  (label "LIGHT_5V" (at 254 209.55 90)
+    (effects (font (size 1 1)) (justify left bottom)) (uuid "6b185307-6a05-56a8-98cb-fd1aef7199e3"))
+  (wire (pts (xy 254 219.71) (xy 254 222.25))
+    (stroke (width 0) (type default)) (uuid "9bc2330d-f6e5-5a21-88e0-27000094ebaa"))
+  (global_label "PGND" (shape passive) (at 254 222.25 270)
+    (effects (font (size 1 1)) (justify right)) (uuid "a77e1f8e-27ed-589a-9e8d-960a3de7e9bb"))
+  (symbol (lib_id "power:PWR_FLAG") (at 279.4 215.9 0) (unit 1)
+    (exclude_from_sim no) (in_bom no) (on_board no) (dnp no) (uuid "8807aa11-b2f2-507e-afcd-0e8e565923c6")
+    (property "Reference" "#FLG701" (at 281.94 212.09 0)
+      (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "PWR_FLAG" (at 281.94 219.71 0)
+      (effects (font (size 1 1)) (justify left)))
+    (property "Footprint" "" (at 279.4 215.9 0)
+      (effects (font (size 1.27 1.27)) (hide yes)))
+    (pin "1" (uuid "8d1c74d7-6940-5d13-8566-1a4c1247c921"))
+    (instances (project "servo_light" (path "/9e2faa03-45ea-5cc1-b7cc-f10975540c62" (reference "#FLG701") (unit 1)))
+      (project "ugv_mcu_01" (path "/89eb5a83-b132-5fd7-97e3-d5fc7125eb32/680fcc5e-5007-5299-8ad1-f858d0a91e28" (reference "#FLG701") (unit 1)))))
+  (wire (pts (xy 279.4 215.9) (xy 279.4 218.44))
+    (stroke (width 0) (type default)) (uuid "b0cb3486-58ff-5a47-9af9-2ac9c9b992a9"))
+  (label "LIGHT_5V" (at 279.4 218.44 270)
+    (effects (font (size 1 1)) (justify right bottom)) (uuid "adba1a91-3c9c-51fd-93e9-79f119e8ec93"))
+  (text "PARTIAL MCU sheet. 6 V/4 A servo buck (input ACT_BUS), MCU and supplies are other sheets." (exclude_from_sim no) (at 38.1 250 0)
+    (effects (font (size 1.27 1.27)) (justify left)) (uuid "dc912a54-1255-58e2-ba46-a545a9153209"))
+  (text "SERVO_BUCK_EN = SERVO_PWR_REQ AND ACT_PERMIT_BUF; both pulled Low. E-stop also removes ACT_BUS." (exclude_from_sim no) (at 38.1 255.08 0)
+    (effects (font (size 1.27 1.27)) (justify left)) (uuid "36dc160e-75c0-537e-b1e8-b62523dfa3a6"))
+  (text "Servo relax = rail off: digital servos may hold position without PWM pulses." (exclude_from_sim no) (at 38.1 260.16 0)
+    (effects (font (size 1.27 1.27)) (justify left)) (uuid "0bb3d18c-214b-5836-b2e6-1d7abd920ad1"))
+  (text "INA180A2 50 V/V x 10 mohm = 0.5 V/A; 6.6 A full scale at 3.3 V; RC 1k/10n to ADC2_IN5." (exclude_from_sim no) (at 38.1 265.24 0)
+    (effects (font (size 1.27 1.27)) (justify left)) (uuid "2eb26135-036e-56f8-b17d-a7aee2fe8a22"))
+  (text "Firmware drives servo PWM Low before SERVO_PWR_REQ Low; 1k series limits back-feed." (exclude_from_sim no) (at 38.1 270.32 0)
+    (effects (font (size 1.27 1.27)) (justify left)) (uuid "c48df7c9-7572-5912-9b7c-29eaa2bd2424"))
+  (text "Light bar: 8 addressable LEDs, firmware brightness cap <=0.5 W; F701 PTC MPN open." (exclude_from_sim no) (at 38.1 275.4 0)
+    (effects (font (size 1.27 1.27)) (justify left)) (uuid "c5bf4544-0a5d-532f-896c-4042b277e54b"))
+  (sheet_instances (path "/" (page "1")))
+  (embedded_fonts no)
+)
