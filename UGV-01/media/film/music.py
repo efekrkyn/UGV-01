@@ -9,6 +9,7 @@ import json
 import math
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 
 import numpy as np
@@ -357,7 +358,7 @@ def sax_pads(bar0, bar1, vel=0.35):
             put(horn(v, BAR * 0.95, vel, 'sax'), at(bar, 0), 0.1 + 0.05 * k, verb=0.3)
 
 
-def compose():
+def compose(vocal=False):
     # intro (0-4): snare roll into two band hits, then a walk-up into the groove
     put(roll(at(2) - 0.05, 0.08, 0.9), 0.0, -0.1, verb=0.2)
     swell = hp(noise(int(at(2) * SR)), 3000) * np.linspace(0, 1, int(at(2) * SR)) ** 3 * 0.05
@@ -373,17 +374,25 @@ def compose():
     walking_bass(4, 12)
     swing_kit(4, 12, snaps=True, vel=0.5)
     piano_comp(4, 12)
-    play_melody(MEL_A, 4, kind='mute', vel=0.7)
+    if vocal:  # the singer has the tune: muted trumpet answers at the ends of the lines
+        for bar in (5, 7, 11):
+            for beat, m in ((2.667, 72), (3, 74), (3 + SWING, 77)):
+                put(horn(m, BEAT * 0.3, 0.45, 'mute'), at(bar, beat), -0.3, verb=0.3)
+    else:
+        play_melody(MEL_A, 4, kind='mute', vel=0.7)
     sax_pads(8, 12, 0.28)
     # engineering (12-20): sax soli on the tune, brass stabs on the hits
     walking_bass(12, 20)
     swing_kit(12, 20, sticks=True, vel=0.6)
     piano_comp(12, 20)
-    for note in MEL_A:
-        b, beat, beats, m = note[:4]
-        root, qual = chord_at(12 + b, beat)
-        for k, v in enumerate(voicing(root, qual, m - 12, 4)):
-            put(horn(v, beats * BEAT * 0.9, 0.55, 'sax', len(note) > 4 and k == 0), at(12 + b, beat), 0.1 + 0.06 * k, verb=0.25)
+    if vocal:
+        sax_pads(12, 20, 0.3)
+    else:
+        for note in MEL_A:
+            b, beat, beats, m = note[:4]
+            root, qual = chord_at(12 + b, beat)
+            for k, v in enumerate(voicing(root, qual, m - 12, 4)):
+                put(horn(v, beats * BEAT * 0.9, 0.55, 'sax', len(note) > 4 and k == 0), at(12 + b, beat), 0.1 + 0.06 * k, verb=0.25)
     # AI + voice (20-32): lounge two-feel, brushes, snaps, vibraphone bridge, a muted build towards "dur"
     walking_bass(20, 32, two_feel=True, vel=0.6)
     brushes(20, 32)
@@ -397,12 +406,22 @@ def compose():
     walking_bass(32, 38)
     swing_kit(32, 38, sticks=True, vel=0.65)
     piano_comp(32, 38)
-    play_melody(MEL_A, 32, harmonise=4, vel=0.62, bars=6)
+    if vocal:  # pads under the singer, brass punches on the offbeats
+        sax_pads(32, 38, 0.3)
+        for bar in range(32, 38):
+            tutti(at(bar, 1 + SWING), CHART[bar][0], dur=0.2, vel=0.45, fall=False, top=77)
+    else:
+        play_melody(MEL_A, 32, harmonise=4, vel=0.62, bars=6)
     # shout chorus in G (38-45): full band, tune harmonised, sax riffs, crashes on the phrase heads
     walking_bass(38, 46, vel=0.8)
     swing_kit(38, 46, sticks=True, vel=0.75)
     piano_comp(38, 46, 0.45)
-    play_melody(MEL_A, 38, shift=2, harmonise=4, vel=0.8, bars=7)
+    if vocal:  # shout backgrounds: the band punches between the singer's phrases
+        for bar in range(38, 45):
+            for beat in (1 + SWING, 3):
+                tutti(at(bar, beat), CHART[bar][-1 if beat > 2 else 0], dur=0.22, vel=0.6, fall=False, top=79)
+    else:
+        play_melody(MEL_A, 38, shift=2, harmonise=4, vel=0.8, bars=7)
     for bar in range(38, 45):
         if bar in (38, 42):
             put(crash(0.7), at(bar), 0.3, verb=0.25)
@@ -463,7 +482,17 @@ def say(text, robot):
 
 
 def main():
-    compose()
+    vocal = '--vocal' in sys.argv  # the sung version (vocals.py): robot crooner + announcer, same band
+    compose(vocal)
+    vocal_bus = np.zeros((N, 2))
+    if vocal:
+        sys.path.insert(0, str(HERE))
+        import vocals
+        sung = vocals.sing(N, at, BEAT)
+        d = int(0.09 * SR)
+        sung = sung + 0.16 * np.concatenate([np.zeros(d), sung[:-d]])  # slap-back
+        put(sung, 0.0, 0.0, verb=0.22, bus=vocal_bus)
+        put(vocals.announce(N) * 0.8, 0.0, 0.0, verb=0.15, bus=voice_bus)
     for t, text, who in T['voice']:
         put(say(text, who == 'robot'), t, 0.0 if who == 'robot' else -0.05, verb=0.12, bus=voice_bus)
     ir_t = np.arange(int(2.2 * SR)) / SR
@@ -479,15 +508,21 @@ def main():
     music *= np.clip(gate, 0, 1)[:, None]
     level = np.abs(voice_bus).max(axis=1)
     duck = 1 - 0.5 * np.clip(signal.sosfiltfilt(signal.butter(1, 3, 'low', fs=SR, output='sos'), level) / 0.1, 0, 1)
-    mix = music * duck[:, None] + voice_bus
+    if vocal:  # the singer sits a little above the band, which dips slightly under him
+        on = np.abs(vocal_bus).max(axis=1) > 0.02
+        vocal_bus *= 1.15 * np.sqrt(np.mean(music[on] ** 2)) / (np.sqrt(np.mean(vocal_bus[on] ** 2)) + 1e-9)
+        vl = signal.sosfiltfilt(signal.butter(1, 4, 'low', fs=SR, output='sos'), np.abs(vocal_bus).max(axis=1))
+        duck = duck * (1 - 0.25 * np.clip(vl / (np.max(vl) + 1e-9) * 3, 0, 1))
+    mix = music * duck[:, None] + voice_bus + vocal_bus
     mix = signal.sosfilt(signal.butter(2, 13000, 'low', fs=SR, output='sos'), mix, axis=0)  # tame the top octave
     mix = signal.sosfilt(signal.butter(2, 35, 'high', fs=SR, output='sos'), mix, axis=0)  # and the rumble
     mix *= np.clip((DUR - t) / 2.5, 0, 1)[:, None] * np.clip(t / 0.05, 0, 1)[:, None]
     mix = np.tanh(mix / (np.max(np.abs(mix)) + 1e-9) * 1.8) / np.tanh(1.8) * 0.89
     out = HERE / 'out'
     out.mkdir(exist_ok=True)
-    wavfile.write(out / 'score.wav', SR, (mix[: int(SR * DUR)] * 32767).astype(np.int16))
-    print(f'wrote {out / "score.wav"}: {DUR} s')
+    name = 'score_vocal.wav' if vocal else 'score.wav'
+    wavfile.write(out / name, SR, (mix[: int(SR * DUR)] * 32767).astype(np.int16))
+    print(f'wrote {out / name}: {DUR} s')
 
 
 if __name__ == '__main__':
