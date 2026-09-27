@@ -482,7 +482,7 @@ def say(text, robot):
 
 
 def main():
-    vocal = '--vocal' in sys.argv  # the sung version (vocals.py): robot crooner + announcer, same band
+    vocal = '--vocal' in sys.argv  # the sung version (vocals.py): Turkish female singer + announcer, same band
     compose(vocal)
     vocal_bus = np.zeros((N, 2))
     if vocal:
@@ -490,8 +490,8 @@ def main():
         import vocals
         sung = vocals.sing(N, at, BEAT)
         d = int(0.09 * SR)
-        sung = sung + 0.16 * np.concatenate([np.zeros(d), sung[:-d]])  # slap-back
-        put(sung, 0.0, 0.0, verb=0.22, bus=vocal_bus)
+        sung = sung + 0.1 * np.concatenate([np.zeros(d), sung[:-d]])  # slap-back
+        put(sung, 0.0, 0.0, verb=0.26, bus=vocal_bus)
         put(vocals.announce(N) * 0.8, 0.0, 0.0, verb=0.15, bus=voice_bus)
     for t, text, who in T['voice']:
         put(say(text, who == 'robot'), t, 0.0 if who == 'robot' else -0.05, verb=0.12, bus=voice_bus)
@@ -508,7 +508,7 @@ def main():
     music *= np.clip(gate, 0, 1)[:, None]
     level = np.abs(voice_bus).max(axis=1)
     duck = 1 - 0.5 * np.clip(signal.sosfiltfilt(signal.butter(1, 3, 'low', fs=SR, output='sos'), level) / 0.1, 0, 1)
-    if vocal:  # the singer sits a little above the band, which dips slightly under him
+    if vocal:  # the singer sits a little above the band, which dips slightly under her
         on = np.abs(vocal_bus).max(axis=1) > 0.02
         vocal_bus *= 1.15 * np.sqrt(np.mean(music[on] ** 2)) / (np.sqrt(np.mean(vocal_bus[on] ** 2)) + 1e-9)
         vl = signal.sosfiltfilt(signal.butter(1, 4, 'low', fs=SR, output='sos'), np.abs(vocal_bus).max(axis=1))

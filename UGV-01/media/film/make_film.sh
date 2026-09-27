@@ -6,7 +6,7 @@ cd "${0:A:h}"
 FRAMES=${FRAMES:-/tmp/ugv-film-frames}
 PORT=8777
 python3 music.py
-python3 music.py --vocal   # sung version: robot crooner (vocals.py)
+uv run --no-project --with pyworld --with 'setuptools<81' --with numpy --with scipy python music.py --vocal  # sung version (vocals.py, WORLD vocoder)
 ../../.venv/bin/python build_film.py
 python3 -m http.server $PORT --bind 127.0.0.1 --directory out >/dev/null 2>&1 &
 SERVER=$!
