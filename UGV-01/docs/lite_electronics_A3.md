@@ -8,7 +8,7 @@
 
 | Blok | Parça | Bağlantı |
 |---|---|---|
-| Güç girişi | 3S1P 18650 + 3S BMS → 10 A bıçak sigorta → ana anahtar → `VBAT_SW` | Şarj 12,6 V CC/CV adaptörle BMS üzerinden |
+| Güç girişi | 3S1P 18650 + 3S BMS → 15 A yavaş bıçak sigorta (M3, BOM L14) → ana anahtar → `VBAT_SW` | Şarj 12,6 V CC/CV adaptörle BMS üzerinden |
 | Fiziksel E-stop | Mantar buton, **2 NC kontak bloğu**: 1. NC `VBAT_SW` → `VM_ACT` | İki TB6612'nin VM'ini ve iki servo buck girişini **doğrudan keser** (en kötü ≈9,4 A); 2. NC durumu doğrudan GPIO2'ye verir. ESP32, gözler ve ToF açık kalıp durumu raporlar |
 | Mantık rayı | Mini560 5 V (girişi E-stop'tan önce) → `5V_LOGIC` | DevKitC 5V pini, iki ESP32-CAM, ışık şeridi, 74AHCT1G125; DevKitC LDO'su `3V3` verir |
 | Servo rayları (M3) | 2 × Mini560 5 V 5 A (girişleri E-stop'tan sonra, EN = `ACT_EN`) → `5V_SERVO_A`, `5V_SERVO_B` | A: omuz (DS3218MG), dirsek (MG996R), pan, tilt. B: üst kol dönüşü ve bilek eğimi (MG996R), bilek dönüşü ve pençe (MG90S). PCA9685'in V+ ucu kullanılmaz |

@@ -1,0 +1,5 @@
+9 ihlal bulundu
+Elektriksel Kural Kontrolü Raporu /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmp_x9hk8sd/erc.txt'ye kaydedildi
+9 ihlal bulundu
+Elektriksel Kural Kontrolü Raporu /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmpvaniactp/erc.txt'ye kaydedildi
+PASS: both board interface drafts match connector and PCA9615 pin contract; ERC has only 9 expected external-net warnings per sheet

@@ -10,7 +10,7 @@ result = module.screen(root)
 groups = result['groups']
 assert result['revision'] == 'A3'
 assert {k: v['parts'] for k, v in groups.items()} == {
-    'base': 12, 'body': 21, 'bumpers': 3, 'wheels': 8, 'head': 15, 'arms': 23}, groups
+    'base': 12, 'body': 21, 'bumpers': 3, 'wheels': 8, 'head': 15, 'arms': 42}, groups  # DD93: claw jaws, pads, washer; DD94: left stand-ins (R04), jaw B spacers (R05)
 for name, group in groups.items():
     assert group['printed_kg'] <= group['solid_kg'] + 1e-9, (name, group)
     assert group['printed_margin_kg'] > 0, (name, group)  # print estimate inside its allocation
@@ -40,11 +40,13 @@ for pose in arm['drive_poses']:
     for case in ('lid', 'bin'):
         assert inside(cg[pose][case]), (pose, case, cg[pose][case])
 # Teeth: the raised poses the review found (lift/up z ~139, ready x ~26) fail the same test, and a 150 g object held
-# in the gripper at ready tips at < 30 deg; that is why driving needs the arm at stow and the gripper open (executor).
+# in the gripper at ready tips at < 30 deg; that is why driving needs the arm at stow (core and executor).
 assert not any(inside(cg[p]['lid']) for p in ('lift', 'up', 'ready')), {p: cg[p]['lid'] for p in ('lift', 'up', 'ready')}
 assert cg['ready']['gripper']['pitch_tip_deg'] < 30, cg['ready']['gripper']
-held = cg['stow']['gripper']  # held at stow: over the 10 mm y target, still >= 30 deg both ways
-assert abs(held['y']) > motion['cg_max_abs_y_mm'] and held['pitch_tip_deg'] >= 30 and held['roll_tip_deg'] >= 30, held
+# Held at stow (at the real grasp datum, R06): since the left arm's stand-ins (R04) balance the arms, it stays inside
+# the y target and >= 30 deg; the claw still drives closed and empty (DD93/94: its envelope, objects ride in the bin).
+held = cg['stow']['gripper']
+assert abs(held['y']) <= motion['cg_max_abs_y_mm'] and held['pitch_tip_deg'] >= 30 and held['roll_tip_deg'] >= 30, held
 print('PASS: A3 printed mass estimates inside allocations; filament fits 3 PETG + 1 TPU spools; N4: CG inside '
       'x/y/z limits and >= 30 deg static tip for every drive pose and payload placement (arm entry = CAD stow '
-      'centroid); raised poses and a held object shown to break it')
+      'centroid); raised poses shown to break it')

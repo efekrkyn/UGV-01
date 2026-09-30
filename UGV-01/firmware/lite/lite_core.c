@@ -26,17 +26,19 @@ void lite_core_init(LiteCore *c, const uint8_t *key, size_t key_len, uint32_t no
     c->state = LITE_IDLE;
     c->need_idle = 1;  /* the first session starts with an IDLE handshake */
     c->arm_limp = 1;   /* power-on: where the arm is, only the operator knows (0x123) */
-    c->key_len = key_len < sizeof c->key ? key_len : sizeof c->key;
-    memcpy(c->key, key, c->key_len);
+    c->grip_empty = 0; /* DD94: power-on (or a watchdog reset): whether the claw holds something is unknown (0x123) */
+    c->key_len = key && key_len == LITE_KEY_LEN ? LITE_KEY_LEN : 0;  /* A01: no usable key = no link at all */
+    if (c->key_len) memcpy(c->key, key, LITE_KEY_LEN);
     c->last_ms = c->tlm_at = now_ms;
     for (int m = 0; m < LITE_MOTORS; ++m) c->moving_at[m] = now_ms;
 }
 
-/* 0x123 (M3 review): the operator parked the arm at stow by hand. Accepted only with the actuators off, the
-   session tag and a forward sequence (per session); the core then trusts the stow pose again. */
+/* 0x123 (M3 review, DD94): the operator parked the arm at stow by hand AND closed the claw and emptied it (payload
+   1, 1, 0, 0: both statements are required). Accepted only with the actuators off, the session tag and a forward
+   sequence (per session); the core then trusts the stow pose and a closed, empty claw again - and nothing older. */
 static int park_confirm(LiteCore *c, const uint8_t p[8]) {
     const uint16_t seq = (uint16_t)(p[4] | p[5] << 8), tag = (uint16_t)(p[6] | p[7] << 8);
-    if (p[0] != 1 || p[1] || p[2] || p[3] || !c->cmd.have_session || tag != (uint16_t)c->cmd.session ||
+    if (p[0] != 1 || p[1] != 1 || p[2] || p[3] || !c->cmd.have_session || tag != (uint16_t)c->cmd.session ||
         c->state == LITE_ARMED || c->state == LITE_DRIVING) return 0;
     if (c->park_session != c->cmd.session) c->have_park_seq = 0, c->park_session = c->cmd.session;
     if (c->have_park_seq && (int16_t)(seq - c->park_seq) <= 0) return 0;
@@ -48,13 +50,42 @@ static int park_confirm(LiteCore *c, const uint8_t p[8]) {
     ugv_arm_path_cdeg(&c->arm, stow);
     for (int j = 0; j < UGV_ARM_JOINTS; ++j)
         c->servo.pos_cdeg[UGV_SERVO_SHOULDER + j] = c->servo.target_cdeg[UGV_SERVO_SHOULDER + j] = stow[j];
+    c->servo.pos_cdeg[UGV_SERVO_GRIPPER] = c->servo.target_cdeg[UGV_SERVO_GRIPPER] = 0;  /* closed, as confirmed */
+    c->grip_empty = 1;
     return 1;
+}
+
+static int settled_node(const LiteCore *c) {  /* the pose the arm is known to be settled at, or -1 */
+    const uint8_t node = c->arm.frac == 65535 ? c->arm.to : c->arm.frac == 0 ? c->arm.from : 0xFF;
+    return !c->arm_limp && node < UGV_ARM_POSES && lite_core_arm_settled(c) ? node : -1;
+}
+
+static int claw_closed(const LiteCore *c) {  /* commanded closed and there */
+    return !c->servo.target_cdeg[UGV_SERVO_GRIPPER] && !c->servo.pos_cdeg[UGV_SERVO_GRIPPER];
+}
+
+/* DD93 (M01): an "open" counts only with the arm settled at an OPEN pose (else the jaws stay put; the frame's AI flag
+   still counts). DD94: a close keeps "empty" only settled at a RELEASE pose (over the cargo bin); anywhere else it may
+   hold an object, so "empty" clears until the claw has been fully open again (lite_core_tick). */
+static void claw_command(LiteCore *c, uint8_t close) {
+    const int g = UGV_SERVO_GRIPPER, node = settled_node(c);
+    if (c->arm_limp) return;  /* DD94 recheck: no pulse while limp, so no target either - the claw stays unknown */
+    if (close) {
+        if (c->servo.target_cdeg[g] && (node < 0 || !((UGV_ARM_RELEASE_MASK >> node) & 1))) c->grip_empty = 0;
+        ugv_servo_set_target(&c->servo, g, 0);
+    } else if (node >= 0 && ((UGV_ARM_OPEN_MASK >> node) & 1)) {
+        ugv_servo_set_target(&c->servo, g, UGV_GRIP_OPEN_CDEG);
+    }
+}
+
+static int open_edge(uint8_t from, uint8_t to) {  /* both ends swept with the jaws open */
+    return from < UGV_ARM_POSES && to < UGV_ARM_POSES && ((UGV_ARM_OPEN_MASK >> from) & 1) && ((UGV_ARM_OPEN_MASK >> to) & 1);
 }
 
 int lite_core_receive(LiteCore *c, const uint8_t *dgram, size_t len, uint32_t now_ms) {
     uint16_t id;
     uint8_t p[8];
-    if (!ugv_lite_unpack(dgram, len, UGV_LITE_CMD, &id, p, c->key, c->key_len)) return 0;
+    if (c->key_len != LITE_KEY_LEN || !ugv_lite_unpack(dgram, len, UGV_LITE_CMD, &id, p, c->key, c->key_len)) return 0;
     if (id == 0x123) return park_confirm(c, p);
     if (id >= 0x120 && id <= 0x122) {
         if (!ugv_can_servo_receive(&c->servo_cmd, &c->cmd, id, p, 8, now_ms)) return 0;
@@ -63,17 +94,20 @@ int lite_core_receive(LiteCore *c, const uint8_t *dgram, size_t len, uint32_t no
             ugv_servo_set_target(&c->servo, UGV_SERVO_PAN, v->pan_cdeg);
             ugv_servo_set_target(&c->servo, UGV_SERVO_TILT, v->tilt_cdeg);
         } else if (id == 0x121) {  /* M3: gripper + AI flag only; the arm joints follow the path */
-            ugv_servo_set_target(&c->servo, UGV_SERVO_GRIPPER, v->gripper ? 9000 : 0);  /* closed/open */
+            claw_command(c, v->gripper);
         } else {
-            return !c->arm_limp && ugv_arm_path_command(&c->arm, v->path_from, v->path_to, v->path_target);
+            if (c->arm_limp || (!claw_closed(c) && !open_edge(v->path_from, v->path_to)) ||
+                !ugv_arm_path_command(&c->arm, v->path_from, v->path_to, v->path_target)) return 0;
+            c->path_ack = v->path_seq;  /* A06: the echo moves only with a command the arm took (a refused one, new
+                                           sequence or not, still burns its sequence against replay) */
         }
         return 1;
     }
     const uint8_t may_start = c->state != LITE_ARMED && c->state != LITE_DRIVING;
     if (!ugv_can_command_receive(&c->cmd, id, p, 8, now_ms, may_start)) return 0;
     if (id == 0x110) {  /* telemetry binding follows the accepted lease stream (sequence extended to 32 bits) */
-        if (!c->bound || c->cmd.session != c->tlm_session)
-            c->bound = 1, c->tlm_session = c->cmd.session, c->lease_ext = c->cmd.lease_seq;
+        if (!c->bound || c->cmd.session != c->tlm_session)  /* new session: no arm command taken in it yet */
+            c->bound = 1, c->tlm_session = c->cmd.session, c->lease_ext = c->cmd.lease_seq, c->path_ack = 0;
         else
             c->lease_ext += (uint16_t)(c->cmd.lease_seq - (uint16_t)c->lease_ext);
     }
@@ -152,6 +186,8 @@ LiteOutputs lite_core_tick(LiteCore *c, const LiteInputs *in, uint32_t now_ms) {
     const uint8_t driving = c->state == LITE_DRIVING;
     const uint8_t blocked = !in->tof_mm[0] || !in->tof_mm[1] || in->tof_mm[0] < LITE_TOF_STOP_MM ||
                             in->tof_mm[1] < LITE_TOF_STOP_MM;
+    /* DD94: a sensor that saw nothing in range is no clear road: forward at a creep only (0xFFFF, vl53l0x.h) */
+    const uint8_t blind = !blocked && (in->tof_mm[0] == 0xFFFF || in->tof_mm[1] == 0xFFFF);
     const int32_t cap = driving ? ugv_can_speed_cap_mm_s(&c->servo_cmd, LITE_MAX_SPEED_MM_S, now_ms) : 0;
     const uint8_t arm_ok = (uint8_t)lite_core_arm_allows_drive(c);
     const int32_t want[2] = {c->cmd.left_mm_s, c->cmd.right_mm_s};
@@ -159,6 +195,7 @@ LiteOutputs lite_core_tick(LiteCore *c, const LiteInputs *in, uint32_t now_ms) {
     for (int s = 0; s < 2; ++s) {
         int32_t w = driving ? (want[s] > cap ? cap : want[s] < -cap ? -cap : want[s]) : 0;
         if (blocked && w > 0) w = 0;
+        if (blind && w > LITE_TOF_BLIND_MM_S) w = LITE_TOF_BLIND_MM_S;
         if (!arm_ok) w = 0;  /* DD84: ramped stop while the arm is out of a drive pose */
         if ((blocked && c->target_mm_s[s] > 0) || !driving) c->target_mm_s[s] = 0;
         const int32_t d = w - c->target_mm_s[s];
@@ -223,8 +260,9 @@ LiteOutputs lite_core_tick(LiteCore *c, const LiteInputs *in, uint32_t now_ms) {
     }
     /* M3 review: the servo rails follow ACT_EN, so the arm goes limp and droops when it drops. Settled at stow it
        rests on the fender (swept limp rest); anywhere else its pose is unknown afterwards: latch it limp. */
-    if (c->act_was && !out.act_en && !(lite_core_arm_settled(c) && ugv_arm_path_at_node(&c->arm, UGV_ARM_STOW)))
-        c->arm_limp = 1;
+    if (c->act_was && !out.act_en &&
+        !(lite_core_arm_settled(c) && ugv_arm_path_at_node(&c->arm, UGV_ARM_STOW) && claw_closed(c)))
+        c->arm_limp = 1, c->grip_empty = 0;  /* DD94: the claw too - what it held or where it went is unknown until 0x123 */
     c->act_was = out.act_en;
     ugv_servo_enable(&c->servo, out.act_en, now_ms);
     /* N1: the arm advances along its edge only while the actuators are enabled; all five joint targets come
@@ -236,8 +274,11 @@ LiteOutputs lite_core_tick(LiteCore *c, const LiteInputs *in, uint32_t now_ms) {
     for (int j = 0; j < UGV_ARM_JOINTS; ++j) ugv_servo_set_target(&c->servo, UGV_SERVO_SHOULDER + j, arm_cdeg[j]);
     ugv_servo_tick(&c->servo, now_ms, 0, out.act_en && !in->estop_level);  /* Lite: no servo current sense */
     for (int j = 0; j < UGV_SERVO_COUNT; ++j) out.servo_us[j] = ugv_servo_pulse_us(&c->servo, j);
+    if (!c->arm_limp && c->servo.target_cdeg[UGV_SERVO_GRIPPER] == UGV_GRIP_OPEN_CDEG &&
+        c->servo.pos_cdeg[UGV_SERVO_GRIPPER] == UGV_GRIP_OPEN_CDEG)
+        c->grip_empty = 1;  /* DD93: fully open (and driven: not limp), nothing can be held */
     if (c->arm_limp)  /* no pulse: the powered arm servos stay limp; head and gripper still run */
-        for (int j = 0; j < UGV_ARM_JOINTS; ++j) out.servo_us[UGV_SERVO_SHOULDER + j] = 0;
+        for (int j = 0; j <= UGV_ARM_JOINTS; ++j) out.servo_us[UGV_SERVO_SHOULDER + j] = 0;  /* DD94: claw too */
 
     static const uint8_t MODE[] = {UGV_LIGHT_IDLE, UGV_LIGHT_ARMED, UGV_LIGHT_DRIVING, UGV_LIGHT_ESTOP, UGV_LIGHT_FAULT};
     uint8_t mode = MODE[c->state];
@@ -248,7 +289,8 @@ LiteOutputs lite_core_tick(LiteCore *c, const LiteInputs *in, uint32_t now_ms) {
     out.state = c->state;
     out.faults = c->faults;
     out.forward_blocked = blocked;
-    c->flags = (uint8_t)(c->need_idle | blocked << 1 | out.act_en << 2 | !arm_ok << 3);
+    out.forward_blind = blind;
+    c->flags = (uint8_t)(c->need_idle | blocked << 1 | out.act_en << 2 | !arm_ok << 3 | c->grip_empty << 4 | blind << 5);
     c->last = *in;
     return out;
 }
@@ -261,12 +303,12 @@ int lite_core_arm_settled(const LiteCore *c) {
 }
 
 int lite_core_arm_allows_drive(const LiteCore *c) {
-    const uint8_t node = c->arm.frac == 65535 ? c->arm.to : c->arm.frac == 0 ? c->arm.from : 0xFF;
-    return !c->arm_limp && node < UGV_ARM_POSES && ((UGV_ARM_DRIVE_MASK >> node) & 1) && lite_core_arm_settled(c);
+    const int node = settled_node(c);  /* A04/DD93: and the claw closed and empty */
+    return node >= 0 && ((UGV_ARM_DRIVE_MASK >> node) & 1) && claw_closed(c) && c->grip_empty;
 }
 
 int lite_core_telemetry(LiteCore *c, uint32_t now_ms, uint8_t out[4][UGV_LITE_DGRAM_LEN]) {
-    if (now_ms - c->tlm_at < LITE_TLM_PERIOD_MS) return 0;
+    if (c->key_len != LITE_KEY_LEN || now_ms - c->tlm_at < LITE_TLM_PERIOD_MS) return 0;
     c->tlm_at = now_ms;
     const uint32_t s = c->bound ? c->tlm_session : 0, e = c->bound ? c->lease_ext : 0;  /* lease binding */
     uint8_t p[8];
@@ -276,7 +318,8 @@ int lite_core_telemetry(LiteCore *c, uint32_t now_ms, uint8_t out[4][UGV_LITE_DG
     put32(p + 4, now_ms);
     ugv_lite_pack_bound(out[0], UGV_LITE_TLM, 0x190, p, c->key, c->key_len, s, e);
     put16(p, c->last.vbat_mv);
-    put16(p + 2, c->flags);  /* bit0 needs IDLE handshake, bit1 forward blocked, bit2 ACT_EN, bit3 arm blocks drive */
+    put16(p + 2, c->flags);  /* bit0 needs IDLE handshake, bit1 forward blocked, bit2 ACT_EN, bit3 arm/claw blocks drive,
+                                bit4 claw empty (DD93), bit5 forward blind (DD94) */
     put16(p + 4, c->last.tof_mm[0]);
     put16(p + 6, c->last.tof_mm[1]);
     ugv_lite_pack_bound(out[1], UGV_LITE_TLM, 0x1A0, p, c->key, c->key_len, s, e);
@@ -287,8 +330,13 @@ int lite_core_telemetry(LiteCore *c, uint32_t now_ms, uint8_t out[4][UGV_LITE_DG
     p[1] = c->arm.to;
     put16(p + 2, c->arm.frac);
     put16(p + 4, c->arm.target);
-    p[6] = (uint8_t)((!c->arm_limp && lite_core_arm_settled(c)) | c->arm_limp << 1);  /* bit0 settled, bit1 limp */
-    p[7] = (uint8_t)c->servo_cmd.path_seq;  /* N3: low byte of the last 0x122 sequence taken (forward only) */
+    const int g = UGV_SERVO_GRIPPER;
+    const int live = !c->arm_limp;  /* DD94 recheck: a limp claw gets no pulse, so the model is no evidence */
+    p[6] = (uint8_t)((live && lite_core_arm_settled(c)) | c->arm_limp << 1 |          /* bit0 settled, bit1 limp */
+                     (live && c->servo.target_cdeg[g] == 0) << 2 |                     /* bit2 claw closed */
+                     (live && c->servo.pos_cdeg[g] == c->servo.target_cdeg[g]) << 3 |  /* bit3 gripper settled */
+                     (c->path_ack >> 8 & 0x0F) << 4);                                    /* echo bits 8-11 */
+    p[7] = (uint8_t)c->path_ack;  /* N3/A06: the last 0x122 the arm took, low byte */
     ugv_lite_pack_bound(out[3], UGV_LITE_TLM, 0x1A2, p, c->key, c->key_len, s, e);
     return 4;
 }

@@ -23,9 +23,9 @@
 | Aşama | Parça | Malzeme | Yön | Destek | Duvar / dolgu | Kütle g | Not |
 |---|---|---|---|---|---|---:|---|
 | 1 Şasi | `UGV-MECH-001-F` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 165 | iki yarı; ek yeri x=−35 |
-| 1 Şasi | `UGV-MECH-001-R` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 103 | iki yarı; ek yeri x=−35 |
-| 1 Şasi | `UGV-MECH-002-+1` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 17 | ek kirişi, iki yarıyı üstten bağlar |
-| 1 Şasi | `UGV-MECH-002--1` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 17 | ek kirişi, iki yarıyı üstten bağlar |
+| 1 Şasi | `UGV-MECH-001-R` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 104 | iki yarı; ek yeri x=−35 |
+| 1 Şasi | `UGV-MECH-002-+1` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 17 | ek kirişi: iki yarıyı üstten köprüler; plaka altından 4 × M3 × 10 dört insertine (M02) |
+| 1 Şasi | `UGV-MECH-002--1` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 17 | ek kirişi: iki yarıyı üstten köprüler; plaka altından 4 × M3 × 10 dört insertine (M02) |
 | 1 Şasi | `UGV-MECH-003-FL` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 10 | motor kelepçesi alt yuvası |
 | 1 Şasi | `UGV-MECH-003-FR` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 10 | motor kelepçesi alt yuvası |
 | 1 Şasi | `UGV-MECH-003-RL` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 10 | motor kelepçesi alt yuvası |
@@ -56,7 +56,8 @@
 | 3 Gövde | `UGV-MECH-030` | PETG | Montaj yönünde, alt yüz tablada | yok | 5 / %40 | 11 |  |
 | 3 Gövde | `UGV-MECH-031` | PETG | Montaj yönünde, alt yüz tablada; havşalar tablaya açılır | yok | 5 / %40 | 30 |  |
 | 4 İç düzen | `UGV-MECH-056--1` | PETG | Servo plakası tablada, kollar yukarı | yok | 5 / %40 | 16 |  |
-| 4 İç düzen | `UGV-MECH-057-+1` | PETG | Halka yüzü tablada | yok | 5 / %40 | 3 |  |
+| 4 İç düzen | `UGV-MECH-057-+1` | PETG | Halka yüzü tablada | yok | 5 / %40 | 5 | yarıklı bilezik: M3 × 12 + somun ile mile sıkılır (M03) |
+| 4 İç düzen | `UGV-MECH-065-+1` | TPU | Pul yüzü tablada | yok | 2 / %100 | 1 | TPU 95A sürtünme pulu: bilezik ile duvar göbeği arasında |
 | 4 İç düzen | `UGV-MECH-070` | PETG | Montaj yönünde, alt yüz tablada | yok | 4 / %25 | 12 |  |
 | 4 İç düzen | `UGV-MECH-071` | PETG | Montaj yönünde, alt yüz tablada | yok | 4 / %25 | 22 |  |
 | 4 İç düzen | `UGV-MECH-072` | PETG | Montaj yönünde, alt yüz tablada | yok | 4 / %25 | 28 | direnç rafı: PETG ısıya ≈70 °C'ye kadar dayanır; TL1'de ölçülür |
@@ -85,18 +86,34 @@
 | 7 Kollar | `UGV-MECH-052--1` | PETG | Yan yüz tablada | yok | 5 / %40 | 40 | dirsek çatalı (624 yuvası yatay: önce deneme) + bilek MG996R yuvası |
 | 7 Kollar | `UGV-MECH-053-+1` | PETG | Yan yüz tablada | yok | 5 / %40 | 21 | bilek çatalı + MG90S dönüş yuvası |
 | 7 Kollar | `UGV-MECH-053--1` | PETG | Yan yüz tablada | yok | 5 / %40 | 21 | bilek çatalı + MG90S dönüş yuvası |
-| 7 Kollar | `UGV-MECH-054-+1` | PETG | Dış yüz tablada, kulak yüzü yukarı | yalnız çenelerin altına | 5 / %40 | 12 | pençe MG90S kulakları ve dönüş kornası M2 ile |
-| 7 Kollar | `UGV-MECH-054--1` | PETG | Dış yüz tablada, kulak yüzü yukarı | yalnız çenelerin altına | 5 / %40 | 12 | pençe MG90S kulakları ve dönüş kornası M2 ile |
+| 7 Kollar | `UGV-MECH-054-+1` | PETG | Dış yüz tablada, kulak yüzü yukarı | yok | 5 / %40 | 10 | pençe MG90S kulakları ve dönüş kornası M2 ile; çene B direği dikey (M3 pim vidası 2,5 mm kılavuza) |
+| 7 Kollar | `UGV-MECH-054--1` | PETG | Dış yüz tablada, kulak yüzü yukarı | yok | 5 / %40 | 10 | pençe MG90S kulakları ve dönüş kornası M2 ile; çene B direği dikey (M3 pim vidası 2,5 mm kılavuza) |
+| 7 Kollar | `UGV-MECH-055-+1` | PETG | Park yönünde: dişli dış yüzü tablada | yok | 4 / %60 | 3 | çene A: 16T m0,625 dişli + MG90S kol kornasına 2 × M2; dişli çifti önce deneme baskısı (M01) |
+| 7 Kollar | `UGV-MECH-055--1` | PETG | Park yönünde: dişli dış yüzü tablada | yok | 4 / %60 | 3 | çene A: 16T m0,625 dişli + MG90S kol kornasına 2 × M2; dişli çifti önce deneme baskısı (M01) |
+| 7 Kollar | `UGV-MECH-058-+1` | PETG | Düz | yok | 3 / %40 | 5 | twist servo kapağı |
 | 7 Kollar | `UGV-MECH-058--1` | PETG | Düz | yok | 3 / %40 | 5 | twist servo kapağı |
+| 7 Kollar | `UGV-MECH-059-+1` | PETG | Flanş tablada | yok | 6 / %100 | 3 | twist adaptörü: 25T korna ↔ 6704 iç bileziği; %100 dolgu, istenirse alüminyumdan tornalanır |
 | 7 Kollar | `UGV-MECH-059--1` | PETG | Flanş tablada | yok | 6 / %100 | 3 | twist adaptörü: 25T korna ↔ 6704 iç bileziği; %100 dolgu, istenirse alüminyumdan tornalanır |
+| 7 Kollar | `UGV-MECH-062-+1` | PETG | Park yönünde: dişli dış yüzü tablada | yok | 4 / %60 | 3 | çene B: Ø5 naylon burç üstünde döner, M3 × 16 burcu direğe sıkar; eksenel boşluk 0,5 mm (R05) |
+| 7 Kollar | `UGV-MECH-062--1` | PETG | Park yönünde: dişli dış yüzü tablada | yok | 4 / %60 | 3 | çene B: Ø5 naylon burç üstünde döner, M3 × 16 burcu direğe sıkar; eksenel boşluk 0,5 mm (R05) |
+| 7 Kollar | `UGV-MECH-063--1` | TPU | Geniş yüz tablada | yok | 2 / %100 | 0 | TPU 95A ped, çene A yüzüne yapıştırılır |
+| 7 Kollar | `UGV-MECH-064--1` | TPU | Geniş yüz tablada | yok | 2 / %100 | 0 | TPU 95A ped, çene B yüzüne yapıştırılır |
+| 7 Kollar | `UGV-MECH-066-+1` | PETG | Geniş yan yüz tablada | korna diskinin altına | 4 / %40 | 19 | sol twist taklidi (R04) |
+| 7 Kollar | `UGV-MECH-067-+1` | PETG | Ters: kasa sırtı tablada | kulakların altına | 4 / %40 | 18 | sol dirsek taklidi (R04) |
+| 7 Kollar | `UGV-MECH-068-+1` | PETG | Ters: kasa sırtı tablada | kulakların altına | 4 / %40 | 18 | sol bilek taklidi (R04) |
+| 7 Kollar | `UGV-MECH-069-+1` | PETG | Yan yüz tablada | kulakların altına | 4 / %40 | 7 | sol dönüş taklidi; iki pim E’nin kılavuzlarına |
+| 7 Kollar | `UGV-MECH-074-+1` | PETG | Yan yüz tablada | kulakların altına | 4 / %40 | 6 | sol pençe servosu taklidi |
+| 7 Kollar | `UGV-MECH-075-+1` | PETG | Halka yüzü tablada | yok | 4 / %100 | 1 | sol twist halkası (6704 yerine) |
+| 7 Kollar | `UGV-MECH-076-+1` | PETG | Halka yüzü tablada | yok | 4 / %100 | 1 | sol dirsek burcu (624 yerine) |
+| 7 Kollar | `UGV-MECH-077-+1` | PETG | Halka yüzü tablada | yok | 4 / %100 | 1 | sol bilek burcu (624 yerine) |
 
-Basılmaya hazır parçaların baskı tahmini: PETG ≈2249 g, TPU ≈281 g (bekleyenler hariç; tamamı için [Lite mekanik](lite_mechanical_A3.md)).
+Basılmaya hazır parçaların baskı tahmini: PETG ≈2337 g, TPU ≈283 g (bekleyenler hariç; tamamı için [Lite mekanik](lite_mechanical_A3.md)).
 
 ## Vida, insert ve rulman
 
 | Kalem | Adet |
 |---|---:|
-| M3 ısıl insert (Ø4,0 × 6 delik) | 34 |
+| M3 ısıl insert (Ø4,0 × 6 delik) | 50 |
 | M3 × 10: kapaklar → panel insertleri | 12 |
 | M3 × 25: boyun köprüsü → kapak → flanş → pan tabanı insertleri | 4 |
 | M2 × 6 kendinden kılavuzlu: pan ve tilt MG90S kulakları 4, pan kornası → boyun 2, sütun kapağı → blok 4 | 10 |
@@ -116,9 +133,18 @@ Basılmaya hazır parçaların baskı tahmini: PETG ≈2249 g, TPU ≈281 g (bek
 | M3 × 12: üst kol B → twist adaptörü (B'nin servo cebinden) | 2 |
 | M4 × 12 + somun + 0,5 mm pul: 624 boşta yatakları (dirsek, bilek) | 2 |
 | M2 × 8 kendinden kılavuzlu: twist kapağı 4, MG90S kulakları 4, dönüş kornası → pençe 2 | 10 |
+| M3 × 10: ek kirişleri → plaka altından insertlere (M02) | 8 |
+| M2 × 6: çene A → MG90S kol kornası, 12 mm’de kesilmiş (sağ kol) | 2 |
+| M3 × 16 + yaylı rondela + pul: çene B pimi, naylon burcun üstünden direğe (2,5 mm kılavuz, 0,4 N·m), iki kol | 2 |
+| M3 naylon ara burç Ø5/Ø3,2, 8 mm’den 7,5 mm’ye kısaltılır: çene B (R05) | 2 |
+| Sol kol (R04): twist kapağı 4 × M2 × 8; adaptör → twist taklidi 4 × M3 × 8; üst kol B → adaptör 2 × M3 × 12 | 10 |
+| Sol kol (R04): dirsek/bilek taklidi kulakları 8 × M3 × 10 insertlere; çatal iç yanağı → taklit diski 8 × M3 × 8 | 16 |
+| Sol kol (R04): M4 × 12 + somun, çatal dış yanakları burçlardan | 2 |
+| Sol kol (R04): dönüş ve pençe taklidi kulakları 4 × M2 × 8; pençe → dönüş taklidi merkez M3 × 10 + pul; çene A → korna taklidi 2 × M2 × 6 | 7 |
+| M3 × 12 + somun: sol omuz bileziği sıkma vidası (M03) | 1 |
 | Rulman 6804-2RS (boyun + iki omuz) | 3 |
 | Rulman 6704-2RS (üst kol dönüşü) | 1 |
 | Rulman 624ZZ (dirsek, bilek) | 2 |
 | 25T alüminyum disk korna (twist, dirsek, bilek) | 3 |
 
-Ek kirişlerin plakaya bağlanması (yapıştırma ya da vida) ve göz kapaklarının yapıştırılması montajda karar verilir.
+Ek kirişleri plakaya vidayla bağlanır (M02, yapıştırıcı yok). Göz kapaklarının yapıştırılması montajda karar verilir.

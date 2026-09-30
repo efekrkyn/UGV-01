@@ -20,10 +20,10 @@
 | Araç | Sınır |
 |---|---|
 | `look(pan_deg, tilt_deg)` | pan −90…90°, tilt −60…+30° |
-| `drive(distance_m, speed_mps)` | ±1,0 m, 0,02–0,2 m/s; ön ToF <0,25 m ileri sürüşü keser; kol stow'da ve pençe açık değilken yok (N4: kaldırılmış duruşlar yüklü ağırlık merkezini sınırın dışına taşır; nesne kutuda taşınır); DD84: çekirdek de kol duruşunu denetler |
-| `turn(angle_deg)` | ±180°, 0,6 rad/s; kol `reach_*` iken yok |
-| `arm(pose)` | `stow` 180°, `ready` 90°, `reach_mid` 0°, `reach_low` −55°. DD80: kol "limp" ise (açılış ya da stow dışında güç kesilmesi) reddedilir; operatör kolu elle park edip panelden onaylamalıdır |
-| `gripper(action)` | `open` / `close`; ≤150 g |
+| `drive(distance_m, speed_mps)` | ±1,0 m, 0,02–0,2 m/s; ön ToF <0,25 m ileri sürüşü keser; ToF menzilde hedef görmezse (DD94) 0,1 m/s ile çağrı başına en fazla 0,3 m ilerleyip durur (toplam sınır değil: her sonuç yeni kamera görüntüleriyle modele döner; panel kör modun başını ve sonunu bildirir, DD95); kol stow'da ve pençe kapalı ve boş değilken yok (N4, DD93: kaldırılmış duruşlar yüklü ağırlık merkezini sınırın dışına taşır; nesne kutuda taşınır); DD84: çekirdek de kol duruşunu denetler |
+| `turn(angle_deg)` | ±180°, 0,45 rad/s; `drive` ile aynı kol/pençe koşulu |
+| `arm(pose)` | `stow`, `up`, `ready`, `reach_mid`, `reach_low`, `reach_center`, `store` (eklem açıları `config/vehicle.json`; M3 beş eksen, duruş grafiği üzerinden). DD92/A05: çekirdek komutları almıyorsa ~10 s'de açık hata. DD80: kol "limp" ise (açılış ya da stow dışında güç kesilmesi) reddedilir; operatör kolu elle park edip panelden onaylamalıdır |
+| `gripper(action)` | `open` / `close`; ≤150 g, ≤50 mm. DD93: yalnız hazır, öne, yere, öne-orta, depola duruşlarında açılır; DD94: yalnız depola'da açılıp kapanınca "boş" sayılır, başka her kapanış "dolu". DD92/A04: çekirdek telemetrisi pençeyi o konumda gösterene dek bekler (≤2 s), gelmezse isteği geri alır ve hata döner. DD95: kol ve pençe gevşekken (limp) istek gönderilmeden reddedilir; pençe darbe almaz, operatörün park onayı gerekir |
 | `wait(seconds)` | 0–10 s, durarak |
 | `say(text)`, `ask_operator(question)` | ≤200 karakter, panelde gösterilir; araç üstü hoparlör yok |
 | `finish(summary)` | ≤500 karakter, görevi bitirir |

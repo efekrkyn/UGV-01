@@ -1,0 +1,1 @@
+PASS: deepseek-flash default + claude option request shapes, env-only keys, observation images/state, tool_result pairing, error results, refusal/max_tokens, step/cost caps, permit loss, lapsed-lease/refocus stale replies (R2), per-task image logs (R10), stop word, API failure

@@ -57,9 +57,10 @@ def arm_path(from_pose, to_pose, target, seq, session):
 
 
 def arm_parked(seq, session):
-    """0x123 (M3 review): the operator parked the arm at stow by hand. The core accepts it only with the actuators
-    off, and only then trusts the stow pose again (it latches the arm limp after an unknown-pose power drop)."""
-    return struct.pack("<BBBBHH", 1, 0, 0, 0, seq & 0xFFFF, session & 0xFFFF)
+    """0x123 (M3 review, DD94): the operator parked the arm at stow by hand and closed and emptied the claw (bytes 0 and
+    1 both 1). The core accepts it only with the actuators off, and only then trusts the stow pose and a closed, empty
+    claw again (it latches both unknown after a power drop away from stow or with the claw not closed, and at power-on)."""
+    return struct.pack("<BBBBHH", 1, 1, 0, 0, seq & 0xFFFF, session & 0xFFFF)
 
 
 def stop(reason=0):
@@ -73,18 +74,24 @@ def status(p):
 
 
 def sense(p):
-    """0x1A0: pack voltage, flags (needs IDLE handshake, forward blocked, ACT_EN, arm blocks drive), front ToF."""
+    """0x1A0: pack voltage, flags (needs IDLE handshake, forward blocked, ACT_EN, arm or claw blocks drive, claw empty:
+    fully open since its last close away from store, DD93/94; forward blind: a ToF saw nothing in range, DD94), front
+    ToF (0 invalid, 0xFFFF nothing in range)."""
     vbat, flags, left, right = struct.unpack("<HHHH", p)
     return {"vbat_mv": vbat, "needs_idle": bool(flags & 1), "forward_blocked": bool(flags & 2),
-            "act_en": bool(flags & 4), "arm_blocks_drive": bool(flags & 8), "tof_mm": (left, right)}
+            "act_en": bool(flags & 4), "arm_blocks_drive": bool(flags & 8), "gripper_empty": bool(flags & 16),
+            "forward_blind": bool(flags & 32),
+            "tof_mm": (left, right)}
 
 
 def arm_state(p):
     """0x1A2 (M3/N1): the core's arm path: from/to pose numbers, fraction, target, settled, limp (needs parking),
-    echo = low byte of the last 0x122 sequence the core took (N3)."""
-    frm, to, frac, target, flags, echo = struct.unpack("<BBHHBB", p)
+    gripper commanded closed and at its target (A04), echo = the last 0x122 sequence the arm took, 12 bits: byte 7 and
+    flag bits 4-7 (N3, A05/A06; 0 = none yet in this lease session)."""
+    frm, to, frac, target, flags, low = struct.unpack("<BBHHBB", p)
     return {"from": frm, "to": to, "frac": frac, "target": target, "settled": bool(flags & 1),
-            "limp": bool(flags & 2), "echo": echo}
+            "limp": bool(flags & 2), "gripper_closed": bool(flags & 4), "gripper_settled": bool(flags & 8),
+            "echo": low | (flags >> 4) << 8}
 
 
 def odometry(p):

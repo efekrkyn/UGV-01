@@ -1,0 +1,1 @@
+PASS: SHA-256 and HMAC RFC 4231 vectors; Lite datagram pack/verify, bit flips, wrong key, reflection, length; signed replay after a mode switch dropped (R3); telemetry bound to its lease (session + sequence)

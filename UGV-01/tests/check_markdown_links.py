@@ -22,6 +22,8 @@ def broken_links(root):
             for target in LINK.findall(line):
                 if target.startswith(("http://", "https://", "mailto:", "#")):
                     continue
+                if target.lstrip("<").startswith("/"):  # outside the repo (e.g. a reviewer's temp checkout)
+                    continue
                 path = target.split("#")[0]
                 if path and not (md.parent / path).exists():
                     bad.append(f"{md.relative_to(root)}:{number}: {target}")
@@ -30,7 +32,7 @@ def broken_links(root):
 
 with tempfile.TemporaryDirectory() as tmp:
     base = Path(tmp)
-    (base / "a.md").write_text("[ok](b.md) [web](https://x.y) [anchor](#top) [bad](missing.md#x)\n")
+    (base / "a.md").write_text("[ok](b.md) [web](https://x.y) [anchor](#top) [bad](missing.md#x) [abs](</tmp/x.md:3>)\n")
     (base / "b.md").write_text("[up](a.md)\n```md\n[example](inside_fence.md)\n```\n")
     assert broken_links(base) == ["a.md:1: missing.md#x"], broken_links(base)
 

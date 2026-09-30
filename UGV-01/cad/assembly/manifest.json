@@ -68,6 +68,12 @@
       "rail_width_mm": 12,
       "rail_height_mm": 15,
       "rail_center_y_mm": 75,
+      "rail_bolt_x_mm": [
+        -65,
+        -50,
+        -20,
+        -5
+      ],
       "lid_thickness_mm": 3,
       "wall_thickness_mm": 3,
       "light_bar_opening_mm": [
@@ -497,7 +503,25 @@
         "pitch_wall_mm": 5.5,
         "drive_poses": [
           "stow"
-        ]
+        ],
+        "gripper": {
+          "type": "twin geared claw (M01, DD93): jaw A on the MG90S horn, jaw B on an M3 pin in the palm post",
+          "pivot_spacing_mm": 10,
+          "gear_module": 0.625,
+          "gear_teeth": 16,
+          "open_deg": 60,
+          "open_poses": [
+            "ready",
+            "reach_mid",
+            "reach_low",
+            "reach_center",
+            "store"
+          ],
+          "release_poses": [
+            "store"
+          ],
+          "source": "open_poses: the CAD sweeps every jaw angle there and every edge between two of them with the jaws open (manifest gripper); release_poses: over the cargo bin, where the claw only lets go; a close anywhere else may hold an object (DD94)"
+        }
       },
       "eye_board_mm": [
         1.6,
@@ -671,8 +695,8 @@
       {
         "name": "arms right 5-axis left passive shoulder servo and bearings",
         "mass_kg": 0.72,
-        "x_mm": 38,
-        "y_mm": -55,
+        "x_mm": 33,
+        "y_mm": -33,
         "z_mm": 163
       },
       {
@@ -1557,6 +1581,39 @@
       ]
     },
     {
+      "name": "UGV-MECH-055--1",
+      "step": "cad/assembly/generated/UGV-MECH-055--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-062--1",
+      "step": "cad/assembly/generated/UGV-MECH-062--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "REF-SPACER-JAWB-R",
+      "step": "cad/assembly/generated/REF-SPACER-JAWB-R.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
       "name": "UGV-MECH-058--1",
       "step": "cad/assembly/generated/UGV-MECH-058--1.step",
       "printable": true,
@@ -1630,6 +1687,28 @@
       "color": [
         0.1,
         0.1,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-063--1",
+      "step": "cad/assembly/generated/UGV-MECH-063--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
+    },
+    {
+      "name": "UGV-MECH-064--1",
+      "step": "cad/assembly/generated/UGV-MECH-064--1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
         0.12
       ]
     },
@@ -1711,6 +1790,149 @@
       ]
     },
     {
+      "name": "UGV-MECH-055-+1",
+      "step": "cad/assembly/generated/UGV-MECH-055-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-062-+1",
+      "step": "cad/assembly/generated/UGV-MECH-062-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "REF-SPACER-JAWB-L",
+      "step": "cad/assembly/generated/REF-SPACER-JAWB-L.step",
+      "printable": false,
+      "role": "reserved_envelope",
+      "color": [
+        0.7,
+        0.7,
+        0.72
+      ]
+    },
+    {
+      "name": "UGV-MECH-058-+1",
+      "step": "cad/assembly/generated/UGV-MECH-058-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-059-+1",
+      "step": "cad/assembly/generated/UGV-MECH-059-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-066-+1",
+      "step": "cad/assembly/generated/UGV-MECH-066-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-067-+1",
+      "step": "cad/assembly/generated/UGV-MECH-067-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-068-+1",
+      "step": "cad/assembly/generated/UGV-MECH-068-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-069-+1",
+      "step": "cad/assembly/generated/UGV-MECH-069-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-074-+1",
+      "step": "cad/assembly/generated/UGV-MECH-074-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-075-+1",
+      "step": "cad/assembly/generated/UGV-MECH-075-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-076-+1",
+      "step": "cad/assembly/generated/UGV-MECH-076-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
+      "name": "UGV-MECH-077-+1",
+      "step": "cad/assembly/generated/UGV-MECH-077-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.3,
+        0.31,
+        0.33
+      ]
+    },
+    {
       "name": "REF-BEARING-SHOULDER-+1",
       "step": "cad/assembly/generated/REF-BEARING-SHOULDER-+1.step",
       "printable": false,
@@ -1753,6 +1975,17 @@
         0.28,
         0.3
       ]
+    },
+    {
+      "name": "UGV-MECH-065-+1",
+      "step": "cad/assembly/generated/UGV-MECH-065-+1.step",
+      "printable": true,
+      "role": "interface_concept",
+      "color": [
+        0.1,
+        0.11,
+        0.12
+      ]
     }
   ],
   "unapproved_intersections": [],
@@ -1766,9 +1999,9 @@
         0
       ],
       "grip_mm": [
-        -151.0,
-        -138.0,
-        163.0
+        -156.0,
+        -143.0,
+        146.5
       ],
       "intersections": []
     },
@@ -1781,9 +2014,9 @@
         0
       ],
       "grip_mm": [
-        125.0,
-        -138.0,
-        439.0
+        108.5,
+        -143.0,
+        444.0
       ],
       "intersections": []
     },
@@ -1796,9 +2029,9 @@
         0
       ],
       "grip_mm": [
-        125.0,
-        -138.0,
-        439.0
+        120.0,
+        -121.5,
+        444.0
       ],
       "intersections": []
     },
@@ -1811,9 +2044,9 @@
         0
       ],
       "grip_mm": [
-        371.7,
-        -138.0,
-        233.7
+        376.7,
+        -121.5,
+        238.7
       ],
       "intersections": []
     },
@@ -1826,9 +2059,9 @@
         0
       ],
       "grip_mm": [
-        401.0,
-        -138.0,
-        163.0
+        406.0,
+        -121.5,
+        168.0
       ],
       "intersections": []
     },
@@ -1841,9 +2074,9 @@
         0
       ],
       "grip_mm": [
-        228.7,
-        -138.0,
-        21.8
+        233.7,
+        -121.5,
+        16.8
       ],
       "intersections": []
     },
@@ -1856,9 +2089,9 @@
         0
       ],
       "grip_mm": [
-        265.3,
-        -10.0,
-        45.3
+        281.1,
+        -11.8,
+        53.5
       ],
       "intersections": []
     },
@@ -1871,9 +2104,9 @@
         0
       ],
       "grip_mm": [
-        125.0,
-        -25.8,
-        233.0
+        108.5,
+        -19.0,
+        231.4
       ],
       "intersections": []
     }
@@ -1959,7 +2192,7 @@
         "stow",
         "lift"
       ],
-      "moving_mm": 5.65,
+      "moving_mm": 4.75,
       "park_mm": 1.0
     },
     {
@@ -1975,7 +2208,7 @@
         "lift",
         "store"
       ],
-      "moving_mm": 6.35,
+      "moving_mm": 9.71,
       "park_mm": null
     },
     {
@@ -1983,7 +2216,7 @@
         "up",
         "ready"
       ],
-      "moving_mm": 8.02,
+      "moving_mm": 8.0,
       "park_mm": null
     },
     {
@@ -2011,6 +2244,75 @@
       "park_mm": null
     }
   ],
+  "gripper": {
+    "open_deg": 60,
+    "jaw_self_hits": [],
+    "poses": {
+      "ready": [],
+      "reach_mid": [],
+      "reach_low": [],
+      "reach_center": [],
+      "store": []
+    },
+    "edges": [
+      {
+        "pose": [
+          "ready",
+          "reach_mid"
+        ],
+        "samples": 46,
+        "hits": []
+      },
+      {
+        "pose": [
+          "ready",
+          "reach_low"
+        ],
+        "samples": 59,
+        "hits": []
+      },
+      {
+        "pose": [
+          "ready",
+          "reach_center"
+        ],
+        "samples": 91,
+        "hits": []
+      }
+    ],
+    "gap_open_mm": {
+      "tips": 53.5,
+      "pad_centres": 41.4
+    }
+  },
+  "park_tolerance": {
+    "error_deg": 1,
+    "corners": 32,
+    "min_wall_mm": 4.1,
+    "pair": "UGV-MECH-053 / UGV-MECH-010--1",
+    "worst_error_deg": [
+      -1,
+      1,
+      1,
+      1,
+      -1
+    ],
+    "nominal_wall_mm": 7.5
+  },
+  "left_twist_play": {
+    "limit_deg": 1,
+    "fill_clearance_mm": 0.2,
+    "nominal_mm3": 0.0,
+    "hit_mm3": [
+      118.158,
+      118.477
+    ]
+  },
+  "grasp_datum_local_mm": {
+    "from_wrist_x": 101,
+    "d": -16.5,
+    "z": 5.0
+  },
   "head_tilt": {
     "range_deg": [
       -30,
@@ -2094,6 +2396,9 @@
       "UGV-MECH-052--1": 2,
       "UGV-MECH-053--1": 3,
       "UGV-MECH-054--1": 4,
+      "UGV-MECH-055--1": 4,
+      "UGV-MECH-062--1": 4,
+      "REF-SPACER-JAWB-R": 4,
       "UGV-MECH-058--1": 0,
       "UGV-MECH-059--1": 1,
       "REF-SERVO-TWIST-R": 0,
@@ -2101,6 +2406,8 @@
       "REF-SERVO-WRIST-R": 2,
       "REF-SERVO-ROLL-R": 3,
       "REF-SERVO-GRIPPER-R": 4,
+      "UGV-MECH-063--1": 4,
+      "UGV-MECH-064--1": 4,
       "REF-BEARING-TWIST-R": 0
     }
   },
@@ -2112,9 +2419,9 @@
     "cables themselves, service loops and zip ties (DD85: exits, slots, the shoulder bore and the head channels are modelled)",
     "fender flange screws into the side panels, shoulder-servo frame screws",
     "eye camera mounts, lens windows, FFC routes and stereo calibration",
-    "arm sweeps are joint-space straight lines sampled at <= 5 deg; the planner must use the same path",
-    "gripper jaw kinematics and pad material (jaws drawn fixed)",
-    "left arm friction joints (drawn as the right arm without servos)",
+    "arm sweeps are joint-space straight lines sampled at <= 1 deg; the planner must use the same path",
+    "gear tooth contact, backlash and the pads' grip on a real object (the claw is swept as rigid jaws)",
+    "left arm distal joints: fixed by their bolts (no servos, no bearings); only the shoulder is posed",
     "full load path from mast to chassis"
   ]
 }

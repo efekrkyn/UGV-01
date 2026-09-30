@@ -1,0 +1,1 @@
+PASS: ESP32-S3 DevKitC-1 pin map: 20 GPIOs + 3 listed spares, 8 servos on the PCA9685 (/OE pulled up); reserved pins, ADC2 and peripheral overflow rejected; pins.h generated from it

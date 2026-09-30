@@ -67,6 +67,7 @@
     "rail_width_mm": 12,
     "rail_height_mm": 15,
     "rail_center_y_mm": 75,
+    "rail_bolt_x_mm": [-65, -50, -20, -5],
     "lid_thickness_mm": 3,
     "wall_thickness_mm": 3,
     "light_bar_opening_mm": [
@@ -496,7 +497,17 @@
       "pitch_wall_mm": 5.5,
       "drive_poses": [
         "stow"
-      ]
+      ],
+      "gripper": {
+        "type": "twin geared claw (M01, DD93): jaw A on the MG90S horn, jaw B on an M3 pin in the palm post",
+        "pivot_spacing_mm": 10,
+        "gear_module": 0.625,
+        "gear_teeth": 16,
+        "open_deg": 60,
+        "open_poses": ["ready", "reach_mid", "reach_low", "reach_center", "store"],
+        "release_poses": ["store"],
+        "source": "open_poses: the CAD sweeps every jaw angle there and every edge between two of them with the jaws open (manifest gripper); release_poses: over the cargo bin, where the claw only lets go; a close anywhere else may hold an object (DD94)"
+      }
     },
     "eye_board_mm": [
       1.6,
@@ -670,8 +681,8 @@
     {
       "name": "arms right 5-axis left passive shoulder servo and bearings",
       "mass_kg": 0.72,
-      "x_mm": 38,
-      "y_mm": -55,
+      "x_mm": 33,
+      "y_mm": -33,
       "z_mm": 163
     },
     {

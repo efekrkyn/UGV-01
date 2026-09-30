@@ -1,0 +1,1 @@
+PASS: strict tool schemas, local bounds, permit/lease loss, stale-task permit generations (R2), NaN/inf sensor samples (R1), huge-int/NaN/bool inputs (R9), stop word, ToF reflex, arm pose graph and arm-drive interlock

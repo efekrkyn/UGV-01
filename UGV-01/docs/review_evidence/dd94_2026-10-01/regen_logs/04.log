@@ -1,0 +1,11 @@
+/private<reviewed-checkout>/.venv/lib/python3.12/site-packages/cadquery/utils.py:39: FutureWarning: save will be removed in the next release.
+  warn(f"{f.__name__} will be removed in the next release.", FutureWarning)
+Generated 115 STEP parts, printable STL, assembly, concept DXF and geometry URDF
+Unapproved intersections: []
+Arm poses: {'stow': ([-156.0, -143.0, 146.5], 0), 'lift': ([108.5, -143.0, 444.0], 0), 'up': ([120.0, -121.5, 444.0], 0), 'ready': ([376.7, -121.5, 238.7], 0), 'reach_mid': ([406.0, -121.5, 168.0], 0), 'reach_low': ([233.7, -121.5, 16.8], 0), 'reach_center': ([281.1, -11.8, 53.5], 0), 'store': ([108.5, -19.0, 231.4], 0)}
+Arm edges: [(['stow', 'lift'], 0), (['lift', 'up'], 0), (['lift', 'store'], 0), (['up', 'ready'], 0), (['ready', 'reach_mid'], 0), (['ready', 'reach_low'], 0), (['ready', 'reach_center'], 0)]
+Limp rest: {'angle_deg': 181.5, 'hits': [{'arm': 'UGV-MECH-050--1', 'part': 'UGV-MECH-015-FR', 'volume_mm3': 106.456}]}
+Head tilt: {'range_deg': [-30, 60], 'step_deg': 5, 'hits': [], 'min_clearance_mm': 1.6}
+Clearance: [(['stow', 'lift'], 4.75, 1.0), (['lift', 'up'], 9.71, None), (['lift', 'store'], 9.71, None), (['up', 'ready'], 8.0, None), (['ready', 'reach_mid'], 12.0, None), (['ready', 'reach_low'], 12.0, None), (['ready', 'reach_center'], 5.26, None)]
+Gripper: {'self': [], 'poses': {'ready': 0, 'reach_mid': 0, 'reach_low': 0, 'reach_center': 0, 'store': 0}, 'edges': [(['ready', 'reach_mid'], 0), (['ready', 'reach_low'], 0), (['ready', 'reach_center'], 0)], 'gap': {'tips': 53.5, 'pad_centres': 41.4}}
+Park tolerance: {'error_deg': 1, 'corners': 32, 'min_wall_mm': 4.1, 'pair': 'UGV-MECH-053 / UGV-MECH-010--1', 'worst_error_deg': [-1, 1, 1, 1, -1], 'nominal_wall_mm': 7.5}

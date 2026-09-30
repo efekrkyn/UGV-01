@@ -27,7 +27,7 @@ def e(prefix, phase, orient, rot=(), supports=NONE, walls=4, infill=25, note='',
 # rot: rotations about the world axes through the origin, applied in order, before the part is set on the bed.
 PLAN = [
     e('UGV-MECH-001', 1, FLAT, walls=5, infill=40, note='iki yarı; ek yeri x=−35'),
-    e('UGV-MECH-002', 1, FLAT, walls=5, infill=40, note='ek kirişi, iki yarıyı üstten bağlar'),
+    e('UGV-MECH-002', 1, FLAT, walls=5, infill=40, note='ek kirişi: iki yarıyı üstten köprüler; plaka altından 4 × M3 × 10 dört insertine (M02)'),
     e('UGV-MECH-003', 1, FLAT, walls=5, infill=40, note='motor kelepçesi alt yuvası'),
     e('UGV-MECH-004', 1, 'Ters çevrili: düz üst yüz tablada, yarım silindir yuvası yukarı', [('x', 180)], walls=5, infill=40),
     e('UGV-MECH-060-FL', 2, 'Dış yüz (jant göbeği) tablada', [('x', -90)], walls=5, infill=40, note='önce D delik deneme parçası'),
@@ -53,7 +53,8 @@ PLAN = [
     e('UGV-MECH-072', 4, FLAT, note='direnç rafı: PETG ısıya ≈70 °C\'ye kadar dayanır; TL1\'de ölçülür'),
     e('UGV-MECH-073', 4, 'Arka duvar tablada; taban dikey, köprü yok', [('y', -90)], supports='yalnız yatay ayakların altına'),
     e('UGV-MECH-056', 4, 'Servo plakası tablada, kollar yukarı', [('x', -90)], walls=5, infill=40),
-    e('UGV-MECH-057', 4, 'Halka yüzü tablada', [('x', 90)], walls=5, infill=40),
+    e('UGV-MECH-057', 4, 'Halka yüzü tablada', [('x', 90)], walls=5, infill=40, note='yarıklı bilezik: M3 × 12 + somun ile mile sıkılır (M03)'),
+    e('UGV-MECH-065', 4, 'Pul yüzü tablada', [('x', 90)], walls=2, infill=100, note='TPU 95A sürtünme pulu: bilezik ile duvar göbeği arasında'),
     e('UGV-MECH-015-FL', 5, 'Flanşın gövdeye bakan yüzü tablada', [('x', 90)]),
     e('UGV-MECH-015-RL', 5, 'Flanşın gövdeye bakan yüzü tablada', [('x', 90)]),
     e('UGV-MECH-015-FR', 5, 'Flanşın gövdeye bakan yüzü tablada', [('x', -90)]),
@@ -81,9 +82,23 @@ PLAN = [
     e('UGV-MECH-052', 7, 'Yan yüz tablada', [('x', 90)], walls=5, infill=40,
       note='dirsek çatalı (624 yuvası yatay: önce deneme) + bilek MG996R yuvası'),
     e('UGV-MECH-053', 7, 'Yan yüz tablada', [('x', 90)], walls=5, infill=40, note='bilek çatalı + MG90S dönüş yuvası'),
-    e('UGV-MECH-054', 7, 'Dış yüz tablada, kulak yüzü yukarı', [('x', 180)], supports='yalnız çenelerin altına',
-      walls=5, infill=40, note='pençe MG90S kulakları ve dönüş kornası M2 ile'),
+    e('UGV-MECH-054', 7, 'Dış yüz tablada, kulak yüzü yukarı', [('x', 180)], walls=5, infill=40,
+      note='pençe MG90S kulakları ve dönüş kornası M2 ile; çene B direği dikey (M3 pim vidası 2,5 mm kılavuza)'),
+    e('UGV-MECH-055', 7, 'Park yönünde: dişli dış yüzü tablada', walls=4, infill=60,
+      note='çene A: 16T m0,625 dişli + MG90S kol kornasına 2 × M2; dişli çifti önce deneme baskısı (M01)'),
+    e('UGV-MECH-062', 7, 'Park yönünde: dişli dış yüzü tablada', walls=4, infill=60,
+      note='çene B: Ø5 naylon burç üstünde döner, M3 × 16 burcu direğe sıkar; eksenel boşluk 0,5 mm (R05)'),
+    e('UGV-MECH-063', 7, 'Geniş yüz tablada', [('x', 90)], walls=2, infill=100, note='TPU 95A ped, çene A yüzüne yapıştırılır'),
+    e('UGV-MECH-064', 7, 'Geniş yüz tablada', [('x', 90)], walls=2, infill=100, note='TPU 95A ped, çene B yüzüne yapıştırılır'),
     e('UGV-MECH-058', 7, 'Düz', [('x', 90)], walls=3, infill=40, note='twist servo kapağı'),
+    e('UGV-MECH-066', 7, 'Geniş yan yüz tablada', [('y', 90)], walls=4, infill=40, supports='korna diskinin altına', note='sol twist taklidi (R04)'),
+    e('UGV-MECH-067', 7, 'Ters: kasa sırtı tablada', [('x', 180)], walls=4, infill=40, supports='kulakların altına', note='sol dirsek taklidi (R04)'),
+    e('UGV-MECH-068', 7, 'Ters: kasa sırtı tablada', [('x', 180)], walls=4, infill=40, supports='kulakların altına', note='sol bilek taklidi (R04)'),
+    e('UGV-MECH-069', 7, 'Yan yüz tablada', [('y', 90)], walls=4, infill=40, supports='kulakların altına', note='sol dönüş taklidi; iki pim E’nin kılavuzlarına'),
+    e('UGV-MECH-074', 7, 'Yan yüz tablada', [('x', 90)], walls=4, infill=40, supports='kulakların altına', note='sol pençe servosu taklidi'),
+    e('UGV-MECH-075', 7, 'Halka yüzü tablada', [('y', 90)], walls=4, infill=100, note='sol twist halkası (6704 yerine)'),
+    e('UGV-MECH-076', 7, 'Halka yüzü tablada', walls=4, infill=100, note='sol dirsek burcu (624 yerine)'),
+    e('UGV-MECH-077', 7, 'Halka yüzü tablada', walls=4, infill=100, note='sol bilek burcu (624 yerine)'),
     e('UGV-MECH-059', 7, 'Flanş tablada', [('y', 90)], walls=6, infill=100,
       note='twist adaptörü: 25T korna ↔ 6704 iç bileziği; %100 dolgu, istenirse alüminyumdan tornalanır'),
 ]
@@ -107,7 +122,7 @@ def fasteners():
     lids, panels = 3, 6
     return {
         'M3 ısıl insert (Ø4,0 × 6 delik)': panels * 2 + 4 + len(it['tray_standoffs_mm']) + 4 + len(it['cargo']['flange_screw_y_mm'])
-        + 8,
+        + 8 + 8 + len(g['rail_bolt_x_mm']) * 2,  # MG996R ears: right elbow/wrist, and the left stand-ins (R04)
         'M3 × 10: kapaklar → panel insertleri': lids * 4,
         'M3 × 25: boyun köprüsü → kapak → flanş → pan tabanı insertleri': 4,
         'M2 × 6 kendinden kılavuzlu: pan ve tilt MG90S kulakları 4, pan kornası → boyun 2, sütun kapağı → blok 4': 10,
@@ -128,6 +143,15 @@ def fasteners():
         'M3 × 12: üst kol B → twist adaptörü (B\'nin servo cebinden)': 2,
         'M4 × 12 + somun + 0,5 mm pul: 624 boşta yatakları (dirsek, bilek)': 2,
         'M2 × 8 kendinden kılavuzlu: twist kapağı 4, MG90S kulakları 4, dönüş kornası → pençe 2': 10,
+        'M3 × 10: ek kirişleri → plaka altından insertlere (M02)': len(g['rail_bolt_x_mm']) * 2,
+        'M2 × 6: çene A → MG90S kol kornası, 12 mm’de kesilmiş (sağ kol)': 2,
+        'M3 × 16 + yaylı rondela + pul: çene B pimi, naylon burcun üstünden direğe (2,5 mm kılavuz, 0,4 N·m), iki kol': 2,
+        'M3 naylon ara burç Ø5/Ø3,2, 8 mm’den 7,5 mm’ye kısaltılır: çene B (R05)': 2,
+        'Sol kol (R04): twist kapağı 4 × M2 × 8; adaptör → twist taklidi 4 × M3 × 8; üst kol B → adaptör 2 × M3 × 12': 10,
+        'Sol kol (R04): dirsek/bilek taklidi kulakları 8 × M3 × 10 insertlere; çatal iç yanağı → taklit diski 8 × M3 × 8': 16,
+        'Sol kol (R04): M4 × 12 + somun, çatal dış yanakları burçlardan': 2,
+        'Sol kol (R04): dönüş ve pençe taklidi kulakları 4 × M2 × 8; pençe → dönüş taklidi merkez M3 × 10 + pul; çene A → korna taklidi 2 × M2 × 6': 7,
+        'M3 × 12 + somun: sol omuz bileziği sıkma vidası (M03)': 1,
     }
 
 
@@ -175,7 +199,7 @@ def guide():
         *(f'| {k} | {v} |' for k, v in fasteners().items()),
         '| Rulman 6804-2RS (boyun + iki omuz) | 3 |', '| Rulman 6704-2RS (üst kol dönüşü) | 1 |',
         '| Rulman 624ZZ (dirsek, bilek) | 2 |', '| 25T alüminyum disk korna (twist, dirsek, bilek) | 3 |', '',
-        'Ek kirişlerin plakaya bağlanması (yapıştırma ya da vida) ve göz kapaklarının yapıştırılması montajda karar verilir.',
+        'Ek kirişleri plakaya vidayla bağlanır (M02, yapıştırıcı yok). Göz kapaklarının yapıştırılması montajda karar verilir.',
     ]
     return '\n'.join(lines) + '\n'
 

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/private<reviewed-checkout>/tests/check_body_mass.py", line 47, in <module>
+    assert abs(held['y']) > motion['cg_max_abs_y_mm'] and held['pitch_tip_deg'] >= 30 and held['roll_tip_deg'] >= 30, held
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'x': 4.632429346410507, 'y': -8.946817602193896, 'z': 128.0045130595105, 'pitch_tip_deg': 38.099781498655815, 'roll_tip_deg': 45.45485038003858}

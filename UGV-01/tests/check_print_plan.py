@@ -64,6 +64,6 @@ assert not held, held
 guide = (ROOT / 'docs/print_guide_A3.md').read_text()
 assert guide == pp.guide(), 'docs/print_guide_A3.md is stale: python3 tools/print_plan.py'
 inserts = pp.fasteners()['M3 ısıl insert (Ø4,0 × 6 delik)']
-assert inserts == 34, inserts
+assert inserts == 50, inserts  # DD93/M02: +8 in the splice ribs; DD94/R04: +8 for the left arm's stand-ins
 print(f"PASS: {len(printed)} printed parts planned, none on hold, oriented STLs on the bed within "
       f"{limit} mm, contact patches, {inserts} M3 inserts, guide up to date")

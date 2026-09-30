@@ -115,10 +115,20 @@ static int arm_cmd(Rig *r, uint8_t from, uint8_t to, uint16_t target) {  /* 0x12
     return lite_core_receive(&r->c, d, sizeof d, r->now);
 }
 
+static void claw(Rig *r, int close) {  /* 0x121: claw close/open, AI flag */
+    const uint16_t sq = r->aseq++;
+    const uint8_t p[8] = {0, 0, (uint8_t)close, 1, (uint8_t)sq, (uint8_t)(sq >> 8), 0x78, 0x56};
+    send(r, 0x121, p);
+}
+
+static int claw_there(const Rig *r, int32_t cdeg) {
+    return r->c.servo.target_cdeg[UGV_SERVO_GRIPPER] == cdeg && r->c.servo.pos_cdeg[UGV_SERVO_GRIPPER] == cdeg;
+}
+
 static uint16_t park_seq;
 static int park(Rig *r, uint16_t session) {  /* 0x123: operator parked the arm at stow by hand */
     const uint16_t sq = park_seq++;
-    const uint8_t p[8] = {1, 0, 0, 0, (uint8_t)sq, (uint8_t)(sq >> 8), (uint8_t)session, (uint8_t)(session >> 8)};
+    const uint8_t p[8] = {1, 1, 0, 0, (uint8_t)sq, (uint8_t)(sq >> 8), (uint8_t)session, (uint8_t)(session >> 8)};  /* DD94: + claw closed, empty */
     uint8_t d[UGV_LITE_DGRAM_LEN];
     ugv_lite_pack(d, UGV_LITE_CMD, 0x123, p, KEY, sizeof KEY);
     return lite_core_receive(&r->c, d, sizeof d, r->now);
@@ -183,6 +193,32 @@ int main(void) {
     r.send = 0;
     run(&r, 100);
     assert(r.out.state == LITE_IDLE && !r.out.act_en && all(&r, 0) && r.out.servo_us[UGV_SERVO_PAN] == 0);
+
+    /* A01 (full review): a missing or wrong-size link key (NVS with Wi-Fi but no link_key) never becomes a usable
+       HMAC key: the core refuses every datagram, even ones signed with that same key, and sends no telemetry. */
+    static const size_t bad_len[] = {0, 16, 31, 33};
+    uint8_t bad_key[33];
+    memcpy(bad_key, KEY, 32);
+    bad_key[32] = 0xAA;
+    for (int k = 0; k < 4; ++k) {
+        rig_init(&r);
+        lite_core_init(&r.c, bad_key, bad_len[k], r.now);
+        r.send = 0;
+        for (int t = 0; t < 60; ++t) {  /* IDLE handshake, 0.7 s of ARM, then DRIVE: all refused */
+            const uint8_t mode = t < 5 ? UGV_CAN_MODE_IDLE : t < 40 ? UGV_CAN_MODE_ARM : UGV_CAN_MODE_DRIVE;
+            const uint8_t lease[8] = {0x78, 0x56, 0x34, 0x12, (uint8_t)t, 0, (uint8_t)(0x10 | mode), mode != UGV_CAN_MODE_IDLE};
+            const uint8_t drv[8] = {200, 0, 200, 0, (uint8_t)t, 0, 0x78, 0x56};
+            uint8_t d[UGV_LITE_DGRAM_LEN];
+            ugv_lite_pack(d, UGV_LITE_CMD, 0x110, lease, bad_key, bad_len[k]);
+            assert(!lite_core_receive(&r.c, d, sizeof d, r.now));
+            ugv_lite_pack(d, UGV_LITE_CMD, 0x100, drv, bad_key, bad_len[k]);
+            assert(!lite_core_receive(&r.c, d, sizeof d, r.now));
+            run(&r, LITE_TICK_MS);
+        }
+        assert(r.out.state == LITE_IDLE && !r.out.act_en && all(&r, 0));
+        uint8_t none[4][UGV_LITE_DGRAM_LEN];
+        assert(lite_core_telemetry(&r.c, r.now + LITE_TLM_PERIOD_MS, none) == 0);
+    }
 
     /* Arming needs an IDLE handshake then 500 ms of fresh neutral ARM traffic; servo PWM after 100 ms. */
     rig_init(&r);
@@ -264,6 +300,23 @@ int main(void) {
     assert(lite_core_telemetry(&r.c, r.now, tl) == 4);
     assert(ugv_lite_unpack_bound(tl[3], UGV_LITE_DGRAM_LEN, UGV_LITE_TLM, &tid, tp, KEY, sizeof KEY, 0x12345678u, r.c.lease_ext));
     assert(tp[7] == (uint8_t)(next_seq - 1));
+    /* A06 (full review): a new-sequence command the arm refuses (off-graph edge) burns its sequence against replay but
+       leaves the echo alone: the echo reports only commands the arm took. */
+    assert(!arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_REACH_LOW, 65535));
+    run(&r, 60);                                                          /* leases stay fresh */
+    assert(lite_core_telemetry(&r.c, r.now, tl) == 4);
+    assert(ugv_lite_unpack_bound(tl[3], UGV_LITE_DGRAM_LEN, UGV_LITE_TLM, &tid, tp, KEY, sizeof KEY, 0x12345678u, r.c.lease_ext));
+    assert(tp[7] == (uint8_t)(next_seq - 1) && !(tp[6] >> 4));
+    --arm_seq;
+    assert(!arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_UP, 0));                   /* its sequence cannot be replayed */
+    /* The echo is 12 bits (A05): byte 7 low byte, byte 6 bits 4-7 the rest. */
+    arm_seq = 0x2A5;
+    frac = (uint16_t)(tp[2] | tp[3] << 8);
+    assert(arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_UP, 65535));
+    run(&r, 60);
+    assert(lite_core_telemetry(&r.c, r.now, tl) == 4);
+    assert(ugv_lite_unpack_bound(tl[3], UGV_LITE_DGRAM_LEN, UGV_LITE_TLM, &tid, tp, KEY, sizeof KEY, 0x12345678u, r.c.lease_ext));
+    assert(tp[7] == 0xA5 && tp[6] >> 4 == 0x2);
     frac = (uint16_t)(tp[2] | tp[3] << 8);
     assert(arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_UP, frac));                 /* hold where it is */
     run(&r, 400);
@@ -271,11 +324,11 @@ int main(void) {
     assert(arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_UP, 65535));                /* one command; the rest "lost" */
     run(&r, 2500);
     assert(at_pose(&r, UGV_ARM_UP) && arm_settled(&r));
-    /* 0x121 carries only the gripper and the AI flag in M3: its shoulder field no longer moves the arm. */
+    /* 0x121 carries only the claw and the AI flag in M3: its shoulder field no longer moves the arm. */
     const uint8_t old_shoulder[8] = {0x88, 0x13, 1, 1, 0, 0, 0x78, 0x56};  /* shoulder 50 deg, close, AI */
     send(&r, 0x121, old_shoulder);
     run(&r, 600);
-    assert(at_pose(&r, UGV_ARM_UP) && r.c.servo.target_cdeg[UGV_SERVO_GRIPPER] == 9000);
+    assert(at_pose(&r, UGV_ARM_UP) && claw_there(&r, 0));                 /* closed = 0 = the park */
     /* A lease loss (or E-stop) mid-move cancels the move: re-arming never resumes an old arm command. M3 review:
        the rails went off with the arm away from stow, so it drooped: after re-arming it stays limp (no pulse, no
        path, telemetry bit1) instead of jumping back to the old path point, until it is parked by hand. */
@@ -291,7 +344,7 @@ int main(void) {
     r.now += LITE_TLM_PERIOD_MS;
     assert(lite_core_telemetry(&r.c, r.now, tl) == 4);
     assert(ugv_lite_unpack_bound(tl[3], UGV_LITE_DGRAM_LEN, UGV_LITE_TLM, &tid, tp, KEY, sizeof KEY, 0x12345678u, r.c.lease_ext));
-    assert(tp[6] == 2);                                                   /* limp, not settled */
+    assert((tp[6] & 3) == 2);                                             /* limp, not settled */
     handshake(&r, 60);
     assert(park(&r, 0x5678));
     arm(&r);
@@ -335,6 +388,155 @@ int main(void) {
         drive(&r, 0, 0, 3000);
     }
     assert(at_pose(&r, UGV_ARM_STOW));
+
+    /* DD93 (M01, A04): the twin geared claw. Closed and empty at stow the wheels go (0x1A0 bit4 = empty). It cannot open
+       at stow or lift (the jaws would hit the body): an "open" there is ignored. At an OPEN pose it opens; while it is
+       open the arm moves only between OPEN poses. A close at a GRASP pose may hold an object: the wheels refuse at stow
+       until the claw has been fully open again (at store, over the cargo bin); a lost "open" never lets them go. */
+    drive(&r, 200, 200, 600);
+    assert(all(&r, 1) && !(r.c.flags & 8) && (r.c.flags & 16) && claw_there(&r, 0));
+    drive(&r, 0, 0, 600);
+    r.aseq = 1;
+    claw(&r, 0);
+    drive(&r, 0, 0, 300);
+    assert(claw_there(&r, 0));                                                /* not at stow */
+    const uint8_t to_ready[][2] = {{UGV_ARM_STOW, UGV_ARM_LIFT}, {UGV_ARM_LIFT, UGV_ARM_UP}, {UGV_ARM_UP, UGV_ARM_READY}};
+    for (int k = 0; k < 3; ++k) {
+        assert(arm_cmd(&r, to_ready[k][0], to_ready[k][1], 65535));
+        drive(&r, 0, 0, 3000);
+        if (k == 0) {
+            claw(&r, 0);
+            drive(&r, 0, 0, 300);
+            assert(claw_there(&r, 0));                                        /* nor at lift */
+        }
+    }
+    claw(&r, 0);
+    drive(&r, 0, 0, 600);
+    assert(at_pose(&r, UGV_ARM_READY) && claw_there(&r, UGV_GRIP_OPEN_CDEG) && r.out.servo_us[UGV_SERVO_GRIPPER] == 2167);
+    r.now += LITE_TLM_PERIOD_MS;
+    assert(lite_core_telemetry(&r.c, r.now, tl) == 4);
+    assert(ugv_lite_unpack_bound(tl[3], UGV_LITE_DGRAM_LEN, UGV_LITE_TLM, &tid, tp, KEY, sizeof KEY, 0x12345678u, r.c.lease_ext));
+    assert((tp[6] & 0x0C) == 8);                                              /* commanded open, and there */
+    assert(!arm_cmd(&r, UGV_ARM_READY, UGV_ARM_UP, 65535));                   /* open: UP is not an open pose */
+    assert(arm_cmd(&r, UGV_ARM_READY, UGV_ARM_REACH_LOW, 65535));             /* READY-REACH_LOW is swept open */
+    drive(&r, 0, 0, 3000);
+    assert(at_pose(&r, UGV_ARM_REACH_LOW));
+    claw(&r, 1);                                                              /* grasp */
+    drive(&r, 0, 0, 600);
+    assert(claw_there(&r, 0) && !r.c.grip_empty);
+    const uint8_t home[][2] = {{UGV_ARM_REACH_LOW, UGV_ARM_READY}, {UGV_ARM_READY, UGV_ARM_UP}, {UGV_ARM_UP, UGV_ARM_LIFT},
+                               {UGV_ARM_LIFT, UGV_ARM_STOW}};
+    for (int k = 0; k < 4; ++k) {
+        assert(arm_cmd(&r, home[k][0], home[k][1], 65535));
+        drive(&r, 0, 0, 3000);
+    }
+    drive(&r, 200, 200, 600);
+    assert(at_pose(&r, UGV_ARM_STOW) && all(&r, 0) && (r.c.flags & 8) && !(r.c.flags & 16));  /* may hold an object */
+    drive(&r, 0, 0, 100);
+    assert(arm_cmd(&r, UGV_ARM_STOW, UGV_ARM_LIFT, 65535));
+    drive(&r, 0, 0, 3000);
+    assert(arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_STORE, 65535));
+    drive(&r, 0, 0, 4000);
+    assert(at_pose(&r, UGV_ARM_STORE));
+    claw(&r, 0);                                                              /* over the cargo bin: let go */
+    drive(&r, 0, 0, 600);
+    assert(claw_there(&r, UGV_GRIP_OPEN_CDEG) && r.c.grip_empty);
+    claw(&r, 1);                                                              /* close empty, not at a grasp pose */
+    drive(&r, 0, 0, 600);
+    assert(claw_there(&r, 0) && r.c.grip_empty);
+    assert(arm_cmd(&r, UGV_ARM_STORE, UGV_ARM_LIFT, 65535));
+    drive(&r, 0, 0, 4000);
+    assert(arm_cmd(&r, UGV_ARM_LIFT, UGV_ARM_STOW, 65535));
+    drive(&r, 0, 0, 3000);
+    drive(&r, 200, 200, 600);
+    assert(at_pose(&r, UGV_ARM_STOW) && all(&r, 1) && !(r.c.flags & 8) && (r.c.flags & 16));
+    drive(&r, 0, 0, 600);
+
+    /* DD94 (R02): a close anywhere but a release pose (store) may hold an object, READY included. */
+    for (int k = 0; k < 3; ++k) {
+        assert(arm_cmd(&r, to_ready[k][0], to_ready[k][1], 65535));
+        drive(&r, 0, 0, 3000);
+    }
+    claw(&r, 0);
+    drive(&r, 0, 0, 600);
+    claw(&r, 1);
+    drive(&r, 0, 0, 600);
+    assert(claw_there(&r, 0) && !r.c.grip_empty);
+    /* R02: open at READY, then the actuators drop (IDLE): the arm is out of stow and the claw open, so both are latched
+       unknown: no arm and no claw pulse (not the old open PWM), until 0x123 says "parked at stow, claw closed and
+       empty" - then closed at stow, not open against the side wall. A park without the claw statement is refused. */
+    claw(&r, 0);
+    drive(&r, 0, 0, 600);
+    assert(claw_there(&r, UGV_GRIP_OPEN_CDEG));
+    handshake(&r, 60);
+    assert(!r.out.act_en && r.c.arm_limp);
+    r.mode = UGV_CAN_MODE_ARM;
+    r.deadman = 1;
+    run(&r, 700);
+    assert(r.out.act_en && arm_pulses_off(&r) && !r.out.servo_us[UGV_SERVO_GRIPPER]);
+    /* DD94 recheck #2: a close while limp moves nothing (no pulse), so the model takes no target and the telemetry
+       claims neither "closed" nor "settled" nor "empty": the claw stays unknown until 0x123. */
+    claw(&r, 1);
+    run(&r, 600);
+    assert(!r.out.servo_us[UGV_SERVO_GRIPPER] && claw_there(&r, UGV_GRIP_OPEN_CDEG) && !r.c.grip_empty && !(r.c.flags & 16));
+    r.now += LITE_TLM_PERIOD_MS;
+    assert(lite_core_telemetry(&r.c, r.now, tl) == 4);
+    assert(ugv_lite_unpack_bound(tl[3], UGV_LITE_DGRAM_LEN, UGV_LITE_TLM, &tid, tp, KEY, sizeof KEY, 0x12345678u, r.c.lease_ext));
+    assert((tp[6] & 0x0F) == 2);                                              /* limp only: bits 0, 2, 3 clear */
+    handshake(&r, 60);
+    const uint16_t ps = park_seq++;
+    const uint8_t arm_only[8] = {1, 0, 0, 0, (uint8_t)ps, (uint8_t)(ps >> 8), 0x78, 0x56};
+    send(&r, 0x123, arm_only);
+    assert(r.c.arm_limp);                                                     /* the claw was not confirmed */
+    assert(park(&r, 0x5678) && claw_there(&r, 0) && r.c.grip_empty);
+    arm(&r);
+    run(&r, 200);
+    assert(at_pose(&r, UGV_ARM_STOW) && r.out.servo_us[UGV_SERVO_GRIPPER] == 1500);
+    /* R02: grasp at REACH_LOW, park, then a watchdog reset: "empty" is not regained by a reset. The vehicle drives
+       only after the operator's closed-and-empty park confirmation. */
+    for (int k = 0; k < 3; ++k) {
+        assert(arm_cmd(&r, to_ready[k][0], to_ready[k][1], 65535));
+        drive(&r, 0, 0, 3000);
+    }
+    claw(&r, 0);
+    drive(&r, 0, 0, 600);
+    assert(arm_cmd(&r, UGV_ARM_READY, UGV_ARM_REACH_LOW, 65535));
+    drive(&r, 0, 0, 3000);
+    claw(&r, 1);
+    drive(&r, 0, 0, 600);
+    for (int k = 0; k < 4; ++k) {
+        assert(arm_cmd(&r, home[k][0], home[k][1], 65535));
+        drive(&r, 0, 0, 3000);
+    }
+    assert(at_pose(&r, UGV_ARM_STOW) && !r.c.grip_empty);
+    lite_core_init(&r.c, KEY, sizeof KEY, r.now);                             /* watchdog reset */
+    park_seq = 0;
+    arm_seq = 0;
+    r.aseq = 1;
+    arm(&r);
+    drive(&r, 200, 200, 600);
+    assert(!r.c.grip_empty && all(&r, 0) && (r.c.flags & 8));                /* limp and not empty: no wheels */
+    handshake(&r, 60);
+    assert(park(&r, 0x5678) && r.c.grip_empty);
+    arm(&r);
+    drive(&r, 200, 200, 600);
+    assert(all(&r, 1));
+    drive(&r, 0, 0, 600);
+
+    /* DD94 (R01): a front ToF that saw nothing in range (0xFFFF) is no clear road: forward only at a 100 mm/s creep
+       (0x1A0 bit5), reverse as usual; an invalid reading (0) still stops forward at once. */
+    r.in.tof_mm[1] = 0xFFFF;
+    drive(&r, 200, 200, 2000);
+    assert(all(&r, 1) && fabsf(mm_s(&r) - LITE_TOF_BLIND_MM_S) < 12.0f && r.out.forward_blind && !r.out.forward_blocked);
+    assert(r.c.flags & 32);
+    drive(&r, -200, -200, 2000);
+    assert(all(&r, -1) && mm_s(&r) < -150.0f);
+    r.in.tof_mm[0] = 0;
+    drive(&r, 200, 200, 600);
+    assert(r.out.forward_blocked && all(&r, 0));
+    r.in.tof_mm[0] = r.in.tof_mm[1] = 2000;
+    drive(&r, 100, 100, 1500);                                                /* forward again, as before */
+    drive(&r, 0, 0, 1200);
 
     /* Drive: 0.5 m/s2 ramp, feed-forward + PI speed loop per motor, same sign front/rear. */
     drive(&r, 200, 200, 20);  /* first tick: one ramp step (10 mm/s), not the 200 mm/s voltage */
@@ -511,8 +713,8 @@ int main(void) {
         assert(fabsf(v) / 1000.0f / LITE_PATH_OHM_MIN <= LITE_I_LIMIT_A + 0.01f);
     }
 
-    puts("PASS: Lite core boot-off, 500 ms ARM, arm path on the pose graph (N1), ramp, PI speed loop, AI cap, pivot on mu 0.3 at 9.7 V (N2), "
+    puts("PASS: Lite core boot-off, no link without a 32-byte key (A01), 500 ms ARM, arm path on the pose graph (N1), ramp, PI speed loop, AI cap, pivot on mu 0.3 at 9.7 V (N2), "
          "zero-crossing coast and back-EMF limit, ToF, lease loss, E-stop latch, STOP, low battery, per-wheel stall, "
-         "TB6612 thermal budget, lease-bound signed telemetry, arm limp latch until 0x123 park (M3 review)");
+         "TB6612 thermal budget, lease-bound signed telemetry, arm limp latch until 0x123 park (M3 review), 12-bit echo of taken arm commands only (A05/A06), twin geared claw: opens only at swept poses, arm on open edges only, drives closed and empty (A04, DD93); blind ToF creep, claw state reconciled on park/reset (DD94); limp claw takes no command, reports nothing (DD95)");
     return 0;
 }

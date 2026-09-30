@@ -14,6 +14,9 @@ TICK_S = 0.05
 FRONT_STOP_M = 0.25
 TURN_RATE_RAD_S = 0.45
 ARM_TIMEOUT_S = 20.0
+BLIND_MPS = 0.1    # DD94: the core's forward creep while a front ToF sees nothing in range
+BLIND_MAX_M = 0.3  # then stop and look again
+GRIPPER_TIMEOUT_S = 2.0  # A04: the claw needs 0.33 s; the rest is telemetry and a lost datagram or two
 # M3 (DD73): named poses of the 5-axis arm, joint degrees [shoulder, twist, elbow, wrist, roll], and the pose graph
 # whose edges the CAD swept for collisions. "lift" is a planner-only waypoint (stow <-> up without twisting beside
 # the body), not a pose the AI can ask for.
@@ -23,6 +26,8 @@ ARM_EDGES = [tuple(e) for e in _ARM["pose_edges"]]
 REACH_POSES = {"reach_mid", "reach_low", "reach_center", "store"}  # arm out in front or over the lid
 DRIVE_POSES = set(_ARM["drive_poses"])  # driving and turning allowed only here; the core enforces it too (DD84)
 DRIVE_TEXT = " or ".join(_ARM["drive_poses"])  # N4: only stow, where the loaded CG stays inside its limits
+OPEN_POSES = set(_ARM["gripper"]["open_poses"])  # DD93: the claw opens only here (CAD-swept); the core enforces it
+OPEN_TEXT = ", ".join(_ARM["gripper"]["open_poses"])
 
 
 def pose_path(start, goal):
@@ -159,9 +164,10 @@ class SkillExecutor:
             state = self.vehicle.state()
             if state["arm"] not in DRIVE_POSES:
                 return Result(False, f"arm must be {DRIVE_TEXT} before driving or turning")
-            if state["gripper"] != "open":  # N4: a held object moves the CG sideways; it rides in the cargo bin
-                return Result(False, "open the gripper before driving or turning: put a held object in the cargo "
-                                     "bin first (arm store, gripper open)")
+            # N4/DD93: a held object moves the CG sideways; it rides in the cargo bin, and the claw drives closed
+            if state["gripper"] != "closed" or not state.get("gripper_empty"):
+                return Result(False, "the gripper must be closed and empty before driving or turning: put a held "
+                                     "object in the cargo bin first (arm store, gripper open, gripper close)")
         return getattr(self, f"_{name}")(**args)
 
     def _move(self, target, rate, axis, forward_check):
@@ -170,7 +176,8 @@ class SkillExecutor:
         Every odometry and front range sample is checked before use: a NaN/inf reading is a sensor
         fault, so motion does not start, or stops at once, with an explicit error."""
         sign, goal = (1 if target >= 0 else -1), abs(target)
-        deadline = self.clock.monotonic() + goal / rate + 2.0
+        deadline = self.clock.monotonic() + goal / min(rate, BLIND_MPS) + 2.0
+        blind_from = None  # DD94: where the front view went blind in this motion
         try:
             start = self.vehicle.odometry()[axis]
             if not finite_number(start):
@@ -185,15 +192,25 @@ class SkillExecutor:
                 covered = abs(position - start)
                 if covered >= goal - 1e-9:
                     return Result(True, f"done ({covered:.3f})", images=True)
+                speed = rate
                 if forward_check and sign > 0:
                     front = self.vehicle.front_tof_m()
-                    if not finite_number(front):
+                    blind = getattr(self.vehicle, "front_blind", lambda: False)()  # DD94: said so by the vehicle
+                    if not (finite_number(front) or (front == math.inf and blind)):  # R1: any other inf is invalid
                         return Result(False, "front ToF reading invalid (not a finite number); stopped", images=True)
                     if front < FRONT_STOP_M:
                         return Result(False, f"obstacle ahead, stopped after {covered:.2f} m", images=True)
+                    if blind:
+                        blind_from = covered if blind_from is None else blind_from
+                        if covered - blind_from >= BLIND_MAX_M:  # DD94: nothing seen is not a clear road
+                            return Result(False, f"front ToF sees nothing in range: stopped after {covered:.2f} m, "
+                                                 f"{BLIND_MAX_M} m of it blind; look before driving on", images=True)
+                        speed = min(rate, BLIND_MPS)
+                    else:
+                        blind_from = None
                 if self.clock.monotonic() > deadline:
                     return Result(False, "motion timeout", images=True)
-                step = sign * min(rate, (goal - covered) / TICK_S)
+                step = sign * min(speed, (goal - covered) / TICK_S)
                 if axis == 0:
                     self.vehicle.set_velocity(step, 0.0)
                 else:
@@ -214,9 +231,18 @@ class SkillExecutor:
 
     def _arm(self, pose):
         """Walk the pose graph; wait until the arm arrives. A halt holds the arm where it is."""
-        if self.vehicle.state()["arm"] == "limp":  # M3 review: pose unknown to the core after a power drop
+        fault = getattr(self.vehicle, "arm_fault", None)
+        if fault:  # DD94: latched for the session; the next task re-arms with a new one
+            return Result(False, fault, images=True)
+        state = self.vehicle.state()
+        if state["arm"] == "limp":  # M3 review: pose unknown to the core after a power drop
             return Result(False, "arm is limp (servo power dropped away from stow): park it by hand, confirm on "
                                  "the panel, then re-arm", images=True)
+        if state["gripper"] != "closed":  # DD93: open jaws are swept only between the open poses
+            if state["arm"] not in OPEN_POSES or pose not in OPEN_POSES or \
+                    any(p not in OPEN_POSES for p in pose_path(state["arm"], pose)):
+                return Result(False, f"close the gripper first: with it open the arm moves only between {OPEN_TEXT}",
+                              images=True)
         self.vehicle.set_arm(pose)
         deadline = self.clock.monotonic() + ARM_TIMEOUT_S
         while self.vehicle.arm_moving():
@@ -225,10 +251,30 @@ class SkillExecutor:
                 self.vehicle.hold_arm()
                 return Result(False, halt or "arm timeout (is the vehicle armed?)", images=True, abort=bool(halt))
             self.clock.sleep(TICK_S)
+        fault = getattr(self.vehicle, "arm_fault", None)  # A05: the core never took the commands
+        if fault:
+            return Result(False, fault, images=True)
         return Result(True, f"arm {pose}", images=True)
 
     def _gripper(self, action):
+        """A04: done only when the vehicle reports the gripper there (core telemetry), not when it was asked."""
+        want = "open" if action == "open" else "closed"
+        state = self.vehicle.state()
+        if state["arm"] == "limp":  # DD94 recheck: no pulse reaches the claw until the operator parks the arm
+            return Result(False, "the arm and gripper are limp (position unknown) until the operator parks them",
+                          images=True)
+        if action == "open" and state["arm"] not in OPEN_POSES:  # DD93: jaws would hit the body
+            return Result(False, f"the gripper opens only with the arm at {OPEN_TEXT}", images=True)
         self.vehicle.set_gripper(action)
+        deadline = self.clock.monotonic() + GRIPPER_TIMEOUT_S
+        while self.vehicle.state()["gripper"] != want:
+            halt = self.halt_reason()
+            if halt or self.clock.monotonic() > deadline:
+                if state["gripper"] in ("open", "closed"):  # withdraw the request: no late move after a failure
+                    self.vehicle.set_gripper("open" if state["gripper"] == "open" else "close")
+                return Result(False, halt or f"gripper did not report {want} (is the vehicle armed?)", images=True,
+                              abort=bool(halt))
+            self.clock.sleep(TICK_S)
         return Result(True, f"gripper {action}", images=True)
 
     def _wait(self, seconds):

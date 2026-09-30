@@ -1,0 +1,11 @@
+✔ a button pressed mid-edge finishes that edge or goes back along it, never across (0.902834ms)
+✔ after free sliders the route snaps to park, then follows the graph (0.306042ms)
+✔ from a node the route is the shortest graph path (0.0845ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.825209

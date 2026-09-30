@@ -23,7 +23,7 @@ Kaynak `config/vehicle.json`, rapor [calculation_results.md](calculation_results
 | Faydalı yük (kapak üstünde, muhafazakâr) | 0,50 | 0 | 250 | Kullanıcı kararı (Lite) |
 | **Brüt** | **5,10** | | | Hesap yükü |
 
-Yüklü CG z=130,8 mm (sınır 135; statik boyuna devrilme 33,7°). A3'ün 3,47 kg / z105,4 mm değerleri M3 ile geçersizdir. Hiçbir değer tartılmadı; baskı kütlesi dolgu ayarına bağlıdır.
+Yüklü CG z=130,8 mm bu bütçenin tek-nokta modelinden (sınır 135; statik boyuna devrilme 33,7°); N4 kontrolü kolun CAD ağırlık merkeziyle parkta z=131,1 mm ve öne 36,1° verir (DD95 sonrası; kol bütçe noktası x33, y−33, z163; `tests/check_body_mass.py`). A3'ün 3,47 kg / z105,4 mm değerleri M3 ile geçersizdir. Hiçbir değer tartılmadı; baskı kütlesi dolgu ayarına bağlıdır.
 
 ## A2 (arşiv)
 

@@ -16,7 +16,7 @@ static const UgvServoJoint JOINTS[UGV_SERVO_COUNT] = {
     [UGV_SERVO_ELBOW] = {-3000, 13500, 0, 9000, 583, 2417},
     [UGV_SERVO_WRIST] = {-7000, 10000, 0, 9000, 556, 2444},
     [UGV_SERVO_ROLL] = {-8500, 8500, 0, 18000, 556, 2444},
-    [UGV_SERVO_GRIPPER] = {0, 9000, 0, 18000, 1500, 2500},
+    [UGV_SERVO_GRIPPER] = {0, 6000, 0, 18000, 1500, 2167},  /* DD93: twin geared claw, 0 = closed (park), 60 deg open */
 };
 
 void ugv_servo_init(UgvServo *s) {

@@ -2,9 +2,13 @@
 
 The panel (software/web_ui/panel.html) is served on 127.0.0.1 only and talks JSON over ws://<host>/ai:
 in  {"type": "lease", "ai": true} every 50 ms while allowed, {"type": "stop", "source": ...},
-    {"type": "instruction", "text": ...}, {"type": "arm_parked"} (operator parked the arm at stow by hand);
-    out {"type": "say"|"ask"|"status", ...}.
+    {"type": "instruction", "text": ...}, {"type": "arm_parked", "claw_closed_empty": true} (DD94: the operator
+    parked the arm at stow by hand and closed and emptied the claw);
+    out {"type": "say"|"ask"|"status", ...}; a status when the front ToF goes blind and when that ends (DD95).
 `websockets`, the Anthropic SDK and sockets are imported only by `main()`; the logic is host-testable.
+A03 (full review): the socket takes only the panel page this server serves (Host and Origin = this localhost port), and
+one panel connection at a time is in control: answers go to it alone, a second one is refused, and when the controlling
+one goes away its permit goes with it (a running task halts on the permit).
 """
 import json
 import os
@@ -14,10 +18,22 @@ import re
 import threading
 
 STOP_WORDS = {"dur", "durdur", "stop", "kes"}  # same list as software/web_ui/panel_logic.mjs
+LOCAL_HOSTS = ("127.0.0.1", "localhost")
+BLIND_ON = ("Ön ToF kör: menzilde hiçbir şey görmüyor (koyu ya da cam yüzey de olabilir). İleri yalnız 100 mm/s "
+            "sürünme; AI her hareket çağrısında en fazla 0,3 m gidip yeni görüntüyle yeniden bakar. Robotu izleyin; "
+            "gerekirse DUR ya da fiziksel E-stop.")
+BLIND_OFF = "Ön ToF kör modu bitti."
 
 
 def is_stop(text):
     return any(word in STOP_WORDS for word in re.split(r"[^\w]+", str(text).lower()))
+
+
+def local_origin(headers, port):
+    """A03: a /ai handshake from this server's own panel page: Host is this localhost port (no DNS rebinding) and the
+    Origin is that same page (no other web page, no origin-less client)."""
+    hosts = {f"{host}:{port}" for host in LOCAL_HOSTS}
+    return headers.get("Host") in hosts and headers.get("Origin") in {f"http://{host}" for host in hosts}
 
 
 class Gateway:
@@ -26,6 +42,28 @@ class Gateway:
         self.run_task, self.send = run_task, send
         self.busy = False
         self.answers = None  # a queue while ask() waits for the operator
+        self.owner = None  # A03: the send callback of the one panel connection in control
+        self.blind = False
+
+    def notice(self):
+        """DD95 (R01 recheck): the operator watches the blind creep, so the panel hears when it starts and ends."""
+        blind = self.vehicle.front_blind()
+        if blind != self.blind:
+            self.blind = blind
+            self.send({"type": "status", "text": BLIND_ON if blind else BLIND_OFF})
+
+    def attach(self, send):
+        """A03: a panel connection asks for control; only one at a time, and the answers go to it alone."""
+        if self.owner is not None:
+            return False
+        self.owner = self.send = send
+        return True
+
+    def detach(self, send):
+        """A03: the controlling panel went away: the permit goes with it. Other connections change nothing."""
+        if self.owner is not None and self.owner == send:
+            self.owner, self.send = None, lambda msg: None
+            self.permit.set(ai_switch=False, visible_focused=False)
 
     def stop(self, source):
         self.executor.request_stop(source)
@@ -43,7 +81,10 @@ class Gateway:
         elif kind == "stop":
             self.stop(str(message.get("source", "panel")))
         elif kind == "arm_parked":
-            if self.busy:
+            if message.get("claw_closed_empty") is not True:  # DD94: both statements, explicitly
+                self.send({"type": "status", "text": "Park onayı eksik: kolun parkta, pençenin kapalı ve boş "
+                                                     "olduğunu birlikte onaylayın."})
+            elif self.busy:
                 self.send({"type": "status", "text": "Görev sürerken kol park onayı verilemez; önce durdurun."})
             else:
                 self.vehicle.confirm_arm_parked()
@@ -103,7 +144,7 @@ def serve(gateway, host="127.0.0.1", port=8765):
 
     def page(connection, request):
         if request.path == "/ai":
-            return None
+            return None if local_origin(request.headers, port) else connection.respond(403, "forbidden\n")
         name, mime = files.get(request.path, (None, None))
         if name is None:
             return connection.respond(404, "not found\n")
@@ -115,12 +156,19 @@ def serve(gateway, host="127.0.0.1", port=8765):
         loop = asyncio.get_running_loop()
 
         async def client(ws):
-            gateway.send = lambda msg: loop.call_soon_threadsafe(asyncio.ensure_future, ws.send(json.dumps(msg)))
-            async for raw in ws:
-                try:
-                    gateway.handle(json.loads(raw))
-                except (ValueError, TypeError):
-                    gateway.send({"type": "status", "text": "unknown message type: not JSON"})
+            def send(msg):
+                loop.call_soon_threadsafe(asyncio.ensure_future, ws.send(json.dumps(msg)))
+            if not gateway.attach(send):
+                await ws.close(1008, "another panel is in control")
+                return
+            try:
+                async for raw in ws:
+                    try:
+                        gateway.handle(json.loads(raw))
+                    except (ValueError, TypeError):
+                        send({"type": "status", "text": "unknown message type: not JSON"})
+            finally:
+                gateway.detach(send)
         async with ws_serve(client, host, port, process_request=page):
             await asyncio.Future()
 
@@ -170,12 +218,14 @@ def main():
     vehicle = LiteVehicle(UdpLink((host, int(port))), key, clock, permit_ok=permit.ok,
                           cameras=[lambda u=u: urllib.request.urlopen(u, timeout=2).read() for u in eyes])
 
+    gateway = Gateway(permit, None, vehicle, run_task=None, send=lambda msg: None)
+
     def pump():
         while True:
             vehicle.pump()
+            gateway.notice()
             time.sleep(0.02)
     threading.Thread(target=pump, daemon=True).start()
-    gateway = Gateway(permit, None, vehicle, run_task=None, send=lambda msg: None)
     gateway.executor = SkillExecutor(vehicle, permit, clock, panel=lambda t: gateway.send({"type": "say", "text": t}),
                                      operator=gateway.ask)
     bridge = AiBridge(gateway.executor, vehicle, log_dir=Path.home() / ".local/share/ugv/logs")

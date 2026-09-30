@@ -1,0 +1,7 @@
+wrote /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmph24re3y4/.config/ugv/nvs/s3.csv (secrets: never commit or paste it). Next:
+  docker run --rm -v /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmph24re3y4/.config/ugv/nvs:/nvs espressif/idf:v5.3.2 python /opt/esp/idf/components/nvs_flash/nvs_partition_generator/nvs_partition_gen.py generate /nvs/s3.csv /nvs/s3.bin 0x6000
+  python3 -m esptool --chip esp32s3 write_flash 0x9000 /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmph24re3y4/.config/ugv/nvs/s3.bin
+wrote /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmph24re3y4/.config/ugv/nvs/eye.csv (secrets: never commit or paste it). Next:
+  docker run --rm -v /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmph24re3y4/.config/ugv/nvs:/nvs espressif/idf:v5.3.2 python /opt/esp/idf/components/nvs_flash/nvs_partition_generator/nvs_partition_gen.py generate /nvs/eye.csv /nvs/eye.bin 0x6000
+  python3 -m esptool --chip esp32 write_flash 0x9000 /var/folders/43/yr2vdg1x1hn35fd2b1l0drkm0000gn/T/tmph24re3y4/.config/ugv/nvs/eye.bin
+PASS: NVS CSVs carry exactly the keys and types both firmwares read; bad key/Wi-Fi/calibration refused; written owner-only under ~/.config/ugv/nvs from the env files, never in the repo (DD89)

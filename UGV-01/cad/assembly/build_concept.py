@@ -31,6 +31,23 @@ def cylinder(radius, length, start, axis=(0, 0, 1)):
     return cq.Solid.makeCylinder(radius, length, cq.Vector(*start), cq.Vector(*axis))
 
 
+def spur_gear(teeth, module, width):
+    """20 deg involute spur gear, axis +y from y = 0 to width, centred on the y axis (straight root segments)."""
+    rp=teeth*module/2; rb=rp*math.cos(math.radians(20)); ra,rf=rp+module,rp-1.25*module
+    inv=lambda a: math.tan(a)-a
+    half=math.pi/(2*teeth)+inv(math.radians(20))  # half tooth angle at the base circle
+    flank=[(r,half-inv(math.acos(rb/r))) for r in (rb+(ra-rb)*i/5 for i in range(6))]
+    pts=[]
+    for k in range(teeth):
+        c=2*math.pi*k/teeth
+        pts.append((rf*math.cos(c-half),rf*math.sin(c-half)))
+        pts+=[(r*math.cos(c-t),r*math.sin(c-t)) for r,t in flank]
+        pts+=[(r*math.cos(c+t),r*math.sin(c+t)) for r,t in reversed(flank)]
+        pts.append((rf*math.cos(c+half),rf*math.sin(c+half)))
+    solid=cq.Workplane('XY').polyline(pts).close().extrude(width).val()
+    return solid.rotate(cq.Vector(0,0,0),cq.Vector(1,0,0),-90)  # profile (u, v) -> (x, -z), extrusion -> +y
+
+
 def add(name, shape, color, printable=False, role='interface_concept'):
     if not shape.isValid() or shape.Volume() <= 0:
         raise ValueError(f'Invalid solid: {name}')
@@ -57,19 +74,24 @@ NECK_BOLTS=[(G['neck_axis_xy_mm'][0]+dx,G['neck_axis_xy_mm'][1]+dy) for dx in (-
 # M2: each motor clamp is held by two M3 bolts through cap, cradle and base plate (nuts under the plate).
 CLAMP_BOLTS=[(x+dx,side*(G['motor_face_abs_y_mm']-38)) for x in (-G['wheelbase_mm']/2,G['wheelbase_mm']/2)
              for side in (-1,1) for dx in (-G['motor_bracket_bolt_dx_mm'],G['motor_bracket_bolt_dx_mm'])]
+# M02 (full review, DD93): each splice rib bridges the seam with two M3 x 10 on either side, from under the plate into
+# heat-set inserts in the rib (no glue): the bolts carry the seam's bending as shear.
+RAIL_BOLTS=[(x,s_*G['rail_center_y_mm']) for x in G['rail_bolt_x_mm'] for s_ in (-1,1)]
 for suffix,(x0,x1) in (('R',(-half_l,seam)),('F',(seam,half_l))):
     half=box((x1-x0,G['plate_width_mm'],G['plate_thickness_mm']),
              ((x0+x1)/2,0,G['plate_bottom_z_mm']+G['plate_thickness_mm']/2))
     for x,y in holes:
         half=half.cut(cylinder(G['chassis_mount_diameter_mm']/2,20,(x,y,G['plate_bottom_z_mm']-5)))
-    for x,y in CLAMP_BOLTS+[tuple(m) for k in ('battery_mounts_mm','tray_mounts_mm','ballast_mounts_mm')
+    for x,y in CLAMP_BOLTS+RAIL_BOLTS+[tuple(m) for k in ('battery_mounts_mm','tray_mounts_mm','ballast_mounts_mm')
                             for m in IT[k]]+[tuple(m) for m in IT['cargo']['leg_mounts_mm']]:
         half=half.cut(cylinder(FAST['m3_clear_mm']/2,20,(x,y,G['plate_bottom_z_mm']-5)))
     add(f'UGV-MECH-001-{suffix}',half,PETG,True)
 
 for sign in (-1,1):
-    add(f'UGV-MECH-002-{sign:+d}',box((G['rail_length_mm'],G['rail_width_mm'],G['rail_height_mm']),
-        (0,sign*G['rail_center_y_mm'],plate_top+G['rail_height_mm']/2)),PETG,True)
+    rib=box((G['rail_length_mm'],G['rail_width_mm'],G['rail_height_mm']),(0,sign*G['rail_center_y_mm'],plate_top+G['rail_height_mm']/2))
+    for x in G['rail_bolt_x_mm']:
+        rib=rib.cut(cylinder(FAST['m3_insert_hole_mm'][0]/2,FAST['m3_insert_hole_mm'][1]+0.5,(x,sign*G['rail_center_y_mm'],plate_top-0.01)))
+    add(f'UGV-MECH-002-{sign:+d}',rib,PETG,True)
 
 wall=G['wall_thickness_mm']
 lid_z=top-G['lid_thickness_mm']
@@ -435,6 +457,9 @@ for side in (-1,1):
 # M3 arms (DD73). Zero pose: arm straight forward (+x) in the plane |y| = YA. Joints: 0 shoulder (y, through the
 # wall), 1 upper-arm twist (x), 2 elbow (y), 3 wrist pitch (y), 4 wrist roll (x). Right arm powered, left passive.
 DS3218=(20,45,40)  # x, y (height incl. spline, shaft axis), z (length, spline 10 mm from the top end)
+GR=A['gripper']; GP=GR['pivot_spacing_mm']  # M01: jaw pivots GP apart (= gear pitch diameter)
+XG=xw+L3-16                                 # gripper MG90S spline axis (along y), x
+DG0,DG1=-25,-18                             # gear plane (d, 7 mm face), inboard of the MG90S horn face
 ARM_NAMES=('UGV-MECH-050','UGV-MECH-051','UGV-MECH-052','UGV-MECH-053','UGV-MECH-054')
 COVER_SCREWS=[(xs+TB+dx,dz) for dx,dz in ((-45,-13.85),(-25,-13.85),(-10,-9),(-10,25))]  # twist cover, M2 into link A
 
@@ -545,17 +570,20 @@ def arm_zero(side):
     for s_ in (-1,1):
         dd=dd.cut(xc(FAST['m2_pilot_mm']/2,m9e-6.5,m9e+1,dmid+s_*M9['ear_hole_pitch']/2))
     out.append((ARM_NAMES[3],dd.clean(),3,DARK))
-    # E: palm on the roll horn (2 x M2), gripper MG90S (spline inboard, ears on E's face), two jaws at xw + L3.
-    xg=xw+L3-16; GB=15; GE=GB-M9['ear_underside']
+    # E: palm on the roll horn (2 x M2), gripper MG90S (spline inboard, ears on E's face). M01 (full review, DD93):
+    # twin geared claw. Jaw A (055) is on the MG90S arm horn, jaw B (062) turns on an M3 pin screw in a post of the palm,
+    # GP higher; two 16T gears (module 0.625, GP = pitch diameter) make the jaws turn together; they meet at z = GP/2,
+    # TPU pads (063/064) on both. Parked, +z points outboard: the whole claw stays inside |y| <= 154 (gear B top).
+    xg=XG; GB=15; GE=GB-M9['ear_underside']
     gc=xg+M9['spline_from_end']-m9l/2
     g0,g1=xg+M9['spline_from_end']-m9l,xg+M9['spline_from_end']
     grip_servo=(db(g0,g1,GB-m9h,GB,-m9w/2,m9w/2)
                 .fuse(db(gc-M9['ear_span']/2,gc+M9['ear_span']/2,GE-M9['ear_t'],GE,-m9w/2,m9w/2))
                 .fuse(dc(3,GB-m9s,GB-m9h,xg)))
     e0=xr+m9s+HORN['face_above_spline']
-    e=db(e0,xw+L3-3.5,GE,GB+2,-12,12)
-    for zc in (8.5,-8.5):
-        e=e.fuse(db(xw+L3-4,xw+L3+11,-5,5,zc-2.5,zc+2.5))
+    e=db(e0,xw+L3-3.5,GE,GB+2,-9,12)  # -z face at -9 (was -12): the parked palm keeps >= 3 mm off the wall at +-1 deg
+    e=e.fuse(db(xg-3.5,xg+3.5,GE,GB+2,9,GP+3.5)).fuse(dc(3.5,DG1+0.25,GE,xg,GP))  # jaw B post on a web
+    e=e.cut(dc(1.25,DG1+0.15,GE-1,xg,GP))  # 2.5 mm pilot: jaw B's M3 pin screw taps into the post
     e=e.cut(db(g0-0.5,g1+0.5,GE-1,GB+0.5,-m9w/2-0.5,m9w/2+0.5))
     e=e.cut(db(g0,g0+5,GB-3,GB+2.1,-2.5,2.5))  # DD85: gripper servo cable to E's outboard face
     for s_ in (-1,1):
@@ -564,6 +592,21 @@ def arm_zero(side):
         e=e.cut(xc(FAST['m2_pilot_mm']/2,e0-0.5,e0+6,0,z_))  # roll horn screws
     e=e.cut(xc(2.5,e0-0.5,g0))  # roll horn centre screw
     out.append((ARM_NAMES[4],e.clean(),4,(0.72,0.71,0.66)))
+    def gear_at(z,phase=0.0):  # 16T gear in the gear plane DG0..DG1, axis along y through (xg, z)
+        lo,hi=sorted((s*(YA+DG0),s*(YA+DG1)))
+        g_=spur_gear(GR['gear_teeth'],GR['gear_module'],hi-lo).rotate(cq.Vector(0,0,0),cq.Vector(0,1,0),phase)
+        return g_.translate(cq.Vector(xg,lo,zs+z))
+    ja=(gear_at(0).fuse(db(xg,xg+14,DG0,DG1,-3,GP/2-1.5)).fuse(db(xg+13,xg+28,DG0,-8,GP/2-7,GP/2-1.5))
+        .cut(dc(1.25,DG0-1,DG1+1,xg)))  # the horn's centre screw, reached through the gear
+    for dx in (7,11):  # two M2 into the MG90S single-arm horn laid along the jaw, arm cut to 12 mm (clear of the finger)
+        ja=ja.cut(dc(FAST['m2_clear_mm']/2,DG0-1,DG1+1,xg+dx))
+    jb=(gear_at(GP,180/GR["gear_teeth"]).fuse(db(xg,xg+14,DG0,DG1,GP/2+1.5,GP+2.5)).fuse(db(xg+13,xg+28,DG0,-8,GP/2+1.5,GP/2+7))
+        .cut(dc(2.6,DG0-1,DG1+1,xg,GP)))  # R05: turns on a 5 mm spacer, not on the screw
+    # R05 (DD94): the M3 pin screw clamps a nylon spacer (5/3.2 mm, 7.5 long) to the post face; jaw B (7 mm) turns on the
+    # spacer with 0.5 mm axial play (0.25 each side); the screw's head, spring washer and washer bear on the spacer only.
+    spacer=dc(2.5,DG0-0.25,DG1+0.25,xg,GP).cut(dc(1.6,DG0-1,DG1+1,xg,GP))
+    out+=[('UGV-MECH-055',ja.clean(),4,DARK),('UGV-MECH-062',jb.clean(),4,DARK),
+          (f"REF-SPACER-JAWB-{'R' if s<0 else 'L'}",spacer,4,STEEL)]
     if side<0:  # powered right arm: servo envelopes, the twist bearing, cover and adapter
         cover=db(xs+5,T-7.5,12.5,14.5,-16,33)  # starts beside the shoulder cable entry
         for x_,z_ in COVER_SCREWS:
@@ -580,7 +623,48 @@ def arm_zero(side):
               ('REF-SERVO-TWIST-R',twist,0,SERVO),('REF-SERVO-ELBOW-R',elbow,1,SERVO),
               ('REF-SERVO-WRIST-R',wrist,2,SERVO),('REF-SERVO-ROLL-R',roll,3,SERVO),
               ('REF-SERVO-GRIPPER-R',grip_servo,4,SERVO),
+              ('UGV-MECH-063',db(xg+14,xg+28,DG0+1,-9,GP/2-1.5,GP/2),4,TPU),   # jaw pads, TPU 95A, glued
+              ('UGV-MECH-064',db(xg+14,xg+28,DG0+1,-9,GP/2,GP/2+1.5),4,TPU),
               ('REF-BEARING-TWIST-R',xc(BTW[1],T+0.5,T+BTW[2]+0.5).cut(xc(BTW[0],T,T+9)),0,STEEL)]
+    else:  # R04 (DD94): the passive left arm is assembled through the right arm's own interfaces, with printed stand-ins
+        # for its servos, horns and bearings: every joint is bolted and fixed at the stow angles; only the shoulder turns.
+        cover=db(xs+5,T-7.5,12.5,14.5,-16,33)
+        for x_,z_ in COVER_SCREWS:
+            cover=cover.cut(dc(FAST['m2_clear_mm']/2,12,15,x_,z_))
+        adp=xc(12,T-4.5,T-1.5).fuse(xc(11.2,T-1.5,T+0.5)).fuse(xc(BTW[0],T+0.5,T+BTW[2]+0.5))
+        adp=adp.cut(xc(3,T-5,T+5))
+        pcd=A['horn_pcd_mm']/2
+        # twist MG996R + its 25T horn, one printed block. DD95 (R04 recheck): it fills the pocket to 0.2 mm on every side,
+        # the cover's too (the servo's envelope left 0.5 mm and 2.5 mm), so it turns < 1 deg before it bears (LEFT_TWIST).
+        dtw=(db(T-6.5-Hs,T-6.5-(Hs-Hc),-W_/2-0.3,12.3,-SE-0.3,L_-SE+0.3).fuse(xc(6,T-6.5-(Hs-Hc),T-6.5))
+             .fuse(xc(12.5,T-6.5,T-4.5)))
+        for k in range(4):  # the adapter's four M3 from the front (as on the right), self-tapping here
+            ang=math.radians(90*k)
+            d_,z_=pcd*math.cos(ang),pcd*math.sin(ang)
+            adp=adp.cut(xc(FAST['m3_clear_mm']/2,T-5,T+5,d_,z_)).cut(xc(3,T-2.5,T+0.6,d_,z_))
+            dtw=dtw.cut(xc(1.25,T-6.6,T-4.4,d_,z_))
+        for z_ in (-5,5):  # link B's two M3 (self-tapping into the adapter)
+            adp=adp.cut(xc(1.25,T-1.5,T+5,5,z_))
+        def dpitch(xj):  # elbow/wrist MG996R block: ears on the seat's four inserts, horn disc under the fork's cheek
+            d=elbow.translate(cq.Vector(xj-xe,0,0)).fuse(dc(12.5,DH,-DB,xj))
+            for k in range(4):
+                ang=math.radians(45+90*k)
+                d=d.cut(dc(1.25,DH-0.1,-DB+0.1,xj+pcd*math.cos(ang),pcd*math.sin(ang)))
+            return d
+        def bush(xj):  # 624 stand-in: the M4 clamps the outboard cheek through it
+            return dc(bo/2,DI,DI+bw,xj).cut(dc(FAST['m4_clear_mm']/2,DI-1,DI+bw+1,xj))
+        drl=roll.fuse(xc(10,xr+m9s,e0)).cut(xc(1.25,e0-6,e0+0.1))  # roll MG90S + horn disc; E's centre M3 taps in
+        for z_ in (-7,7):  # two pins into E's M2 pilots stop the disc turning
+            drl=drl.fuse(xc(0.7,e0-0.1,e0+3,0,z_))
+        dgr=grip_servo.fuse(db(xg-4,xg+12.5,DG1,GB-m9s,-3,3))  # gripper MG90S + arm horn (cut at 12 mm, as on the right)
+        for dx in (7,11):
+            dgr=dgr.cut(dc(0.8,DG1-0.1,GB-m9s+0.1,xg+dx))    # jaw A's two M2, self-tapping
+        out+=[('UGV-MECH-058',cover.clean(),0,DARK),('UGV-MECH-059',adp.clean(),1,DARK),
+              ('UGV-MECH-066',dtw.clean(),0,DARK),('UGV-MECH-067',dpitch(xe).clean(),1,DARK),
+              ('UGV-MECH-068',dpitch(xw).clean(),2,DARK),('UGV-MECH-069',drl.clean(),3,DARK),
+              ('UGV-MECH-074',dgr.clean(),4,DARK),
+              ('UGV-MECH-075',xc(BTW[1],T+0.5,T+BTW[2]+0.5).cut(xc(BTW[0],T,T+9)),0,DARK),
+              ('UGV-MECH-076',bush(xe),2,DARK),('UGV-MECH-077',bush(xw),3,DARK)]
     return out
 
 
@@ -600,9 +684,9 @@ def posed(shape, link, q, side):
 
 
 POSES=A['poses_deg']
-RIGHT=arm_zero(-1)
+RIGHT,LEFT=arm_zero(-1),arm_zero(1)
 for side in (-1,1):
-    for name,shape,link,color in (RIGHT if side<0 else arm_zero(1)):
+    for name,shape,link,color in (RIGHT if side<0 else LEFT):
         full=name if name.startswith('REF') else f'{name}-{side:+d}'
         role='reserved_envelope' if name.startswith('REF') else 'interface_concept'
         add(full,posed(shape,link,POSES['stow'],side),color,not name.startswith('REF'),role)
@@ -626,8 +710,18 @@ for dx in (-5,5):  # DS3218 ears: 49.5 x 10 mm hole pattern (verify), M3 through
     for dz in (-24.75,24.75):
         frame=frame.cut(cylinder(FAST['m3_clear_mm']/2,10,(xs+dx,-(fy0+6),zs-10+dz),(0,1,0)))
 add('UGV-MECH-056--1',frame.clean(),PETG,True)
-# Passive left shoulder: split friction collar on the journal (posed by hand).
-add('UGV-MECH-057-+1',cylinder(16,5.5,(xs,HW-17,zs),(0,1,0)).cut(cylinder(BRG[0],7,(xs,HW-18,zs),(0,1,0))),PETG,True)
+# M03 (full review, DD93): the passive left shoulder holds its pose by friction. A split collar clamps the journal (M3
+# screw + nut across the slit) and turns with it; a TPU washer between it and the wall boss's inner face (fixed) is the
+# friction pair. At assembly the collar is pushed outboard to preload the washer, then clamped.
+cy0,cy1=HW-19,HW-12.5
+collar=cylinder(18,cy1-cy0,(xs,cy0,zs),(0,1,0)).cut(cylinder(BRG[0],cy1-cy0+2,(xs,cy0-1,zs),(0,1,0)))
+collar=collar.fuse(box((11,cy1-cy0,9),(xs,(cy0+cy1)/2,zs-21.5)))      # clamp lugs below the slit
+collar=collar.cut(box((1.5,cy1-cy0+2,19),(xs,(cy0+cy1)/2,zs-17.5)))   # slit through the ring wall and the lugs
+collar=collar.cut(cylinder(FAST['m3_clear_mm']/2,14,(xs-7,(cy0+cy1)/2,zs-22),(1,0,0)))
+nut=cq.Workplane('YZ').polygon(6,FAST['m3_nut_af_mm']/math.cos(math.pi/6)).extrude(FAST['m3_nut_t_mm']+0.3).val()
+collar=collar.cut(nut.translate(cq.Vector(xs+5.5-FAST['m3_nut_t_mm']-0.3,(cy0+cy1)/2,zs-22)))
+add('UGV-MECH-057-+1',collar.clean(),PETG,True)
+add('UGV-MECH-065-+1',cylinder(19,1.5,(xs,cy1,zs),(0,1,0)).cut(cylinder(BRG[0]+0.5,3,(xs,cy1-0.5,zs),(0,1,0))),TPU,True)
 
 # Arm sweeps: every pose and the joint-space straight line of every pose-graph edge (<= 1 deg per step).
 RIGHT_NAMES={n if n.startswith('REF') else f'{n}--1' for n,_,_,_ in RIGHT}
@@ -641,8 +735,20 @@ def overlap(a,b,m=0.0):
             and a.zmin-m<=b.zmax and b.zmin-m<=a.zmax)
 
 
-def arm_hits(q, self_check=True):
-    solids=[(n if n.startswith('REF') else f'{n}--1',posed(s,l,q,-1),l) for n,s,l,_ in RIGHT]
+# M01: jaw A (and its pad) turns about the MG90S spline axis, jaw B (and its pad) about its pin GP higher, oppositely.
+JAW_PIVOT={'UGV-MECH-055':(0,1),'UGV-MECH-063':(0,1),'UGV-MECH-062':(GP,-1),'UGV-MECH-064':(GP,-1)}
+
+
+def jaw(name, shape, alpha):
+    """Zero-pose solid with the jaws opened by alpha deg (0 = closed)."""
+    if not alpha or name not in JAW_PIVOT:
+        return shape
+    z_,sign=JAW_PIVOT[name]
+    return shape.rotate(cq.Vector(XG,0,zs+z_),cq.Vector(XG,1,zs+z_),sign*alpha)  # +: ahead of the pivot goes down
+
+
+def arm_hits(q, self_check=True, alpha=0):
+    solids=[(n if n.startswith('REF') else f'{n}--1',posed(jaw(n,s,alpha),l,q,-1),l) for n,s,l,_ in RIGHT]
     boxes=[s.BoundingBox() for _,s,_ in solids]
     hits=[]
     for (n,s,_),sb in zip(solids,boxes):
@@ -657,8 +763,13 @@ def arm_hits(q, self_check=True):
     return hits
 
 
+# R06 (DD94): the grasp datum is where the closed pads meet: the middle of their shared face, from the pad geometry.
+GRASP_LOCAL=(XG+21,(DG0+1-9)/2,GP/2)  # x, d (offset from the arm plane, + outboard), z, zero pose
+
+
 def grip_point(q, side=-1):
-    v=posed(cq.Vertex.makeVertex(xw+L3,side*YA,zs),4,q,side)
+    x_,d_,z_=GRASP_LOCAL
+    v=posed(cq.Vertex.makeVertex(x_,side*(YA+d_),zs+z_),4,q,side)
     return [round(c,1) for c in v.toTuple()]
 
 
@@ -673,8 +784,67 @@ for a_,b_ in A['pose_edges']:
         if h:=arm_hits(q):
             hits.append({'q':[round(t,2) for t in q],'hits':h[:4]})
     ARM_EDGES.append({'pose':[a_,b_],'samples':n+1,'max_step_deg':round(max(abs(u-v) for u,v in zip(qa,qb))/n,3),'hits':hits})
-# Clearance along every edge (5 deg samples): moving links (elbow onward) to every other part, and the whole arm
-# in the park pose (where it rests on the fender by design). The shoulder hub/journal turns in place in its bearing.
+# M01: the claw opens only where the CAD swept it (config gripper.open_poses): every jaw angle at each of those poses,
+# every edge between two of them with the jaws open, and the jaws against their own palm, servos and each other.
+OPEN_DEG=GR['open_deg']
+OPEN_POSES=GR['open_poses']
+JAW_NAMES=[n for n,_,_,_ in RIGHT if n in JAW_PIVOT]
+LINK4=[(n,s) for n,s,l,_ in RIGHT if l==4 and n not in JAW_PIVOT]
+jaw_self=[]
+for ang in range(0,OPEN_DEG+1,5):
+    js=[(n,jaw(n,s,ang)) for n,s,l,_ in RIGHT if n in JAW_PIVOT]
+    pairs=[(a_,b_) for a_ in js for b_ in LINK4]+[(a_,b_) for a_,b_ in itertools.combinations(js,2)
+                                                 if JAW_PIVOT[a_[0]][0]!=JAW_PIVOT[b_[0]][0]]  # A side vs B side
+    for (n1,s1),(n2,s2) in pairs:
+        if (v:=s1.intersect(s2).Volume())>0.01:
+            jaw_self.append({'deg':ang,'jaw':n1,'part':n2,'volume_mm3':round(v,3)})
+GRIPPER={'open_deg':OPEN_DEG,'jaw_self_hits':jaw_self,'poses':{},'edges':[]}
+for name in OPEN_POSES:
+    GRIPPER['poses'][name]=[{'deg':ang,'hits':h[:4]} for ang in range(5,OPEN_DEG+1,5) if (h:=arm_hits(POSES[name],alpha=ang))]
+for a_,b_ in A['pose_edges']:
+    if a_ in OPEN_POSES and b_ in OPEN_POSES:
+        qa,qb=POSES[a_],POSES[b_]
+        n=max(1,math.ceil(max(abs(u-v) for u,v in zip(qa,qb))/1))
+        hits=[{'q':[round(u+(v-u)*k/n,2) for u,v in zip(qa,qb)],'hits':h[:4]} for k in range(n+1)
+              if (h:=arm_hits([u+(v-u)*k/n for u,v in zip(qa,qb)],alpha=OPEN_DEG))]
+        GRIPPER['edges'].append({'pose':[a_,b_],'samples':n+1,'hits':hits})
+# Opening at the contact point: pad faces at the jaw tips and at the pad centres, jaws fully open.
+def pad_gap(x_,alpha):
+    a,b=math.radians(alpha),x_-XG
+    za=-b*math.sin(a)+GP/2*math.cos(a)                    # pad A face point, turned down about (XG, 0)
+    zb=GP+b*math.sin(a)-GP/2*math.cos(a)                  # pad B face point, turned up about (XG, GP)
+    return round(zb-za,1)
+GRIPPER['gap_open_mm']={'tips':pad_gap(XG+28,OPEN_DEG),'pad_centres':pad_gap(XG+21,OPEN_DEG)}
+
+# Park tolerance (full review): with every joint off by +-1 deg at once (32 corners), the moving links (twist onward)
+# keep >= 3 mm from the side panels (TL4 wall criterion); the joint error budget TL4 has to hold is +-1 deg per joint.
+WALLS=[p_ for p_ in OTHERS if p_['name'] in ('UGV-MECH-010--1','UGV-MECH-011--1','UGV-MECH-012--1')]
+def wall_gap(q):
+    best=(99.0,None)
+    for n,s,l,_ in RIGHT:
+        if l>=1:
+            ps=posed(s,l,q,-1)
+            for p_ in WALLS:
+                if overlap(ps.BoundingBox(),p_['bb'],12) and (d_:=ps.distance(p_['shape']))<best[0]:
+                    best=(d_,f"{n} / {p_['name']}")
+    return best
+PARK_TOL=min((wall_gap([u+e for u,e in zip(POSES['stow'],es)])+(list(es),) for es in itertools.product((-1,1),repeat=5)),
+             key=lambda t: t[0])
+PARK_TOLERANCE={'error_deg':1,'corners':32,'min_wall_mm':round(PARK_TOL[0],2),'pair':PARK_TOL[1],'worst_error_deg':PARK_TOL[2],
+                'nominal_wall_mm':round(wall_gap(POSES['stow'])[0],2)}
+# DD95 (R04 recheck): the passive left twist has no servo holding it: its printed block (066) turns in link A's pocket
+# about the twist axis until it bears on A or the cover (058). Accepted: < +-1 deg (the TL4 joint budget above), i.e.
+# turned 1 deg either way it already overlaps one of them; nominal it is clear. Axially the block stays where the
+# right arm's servo does: bolted to the adapter (059), which the ring (075) holds in A's seat; the cover closes the pocket.
+LZ={n:sh for n,sh,_,_ in LEFT}
+def twist_overlap(deg):
+    blk=LZ['UGV-MECH-066'].rotate(cq.Vector(0,YA,zs),cq.Vector(1,YA,zs),deg)
+    return round(max(blk.intersect(LZ[k]).Volume() for k in (ARM_NAMES[0],'UGV-MECH-058')),3)
+LEFT_TWIST={'limit_deg':1,'fill_clearance_mm':0.2,'nominal_mm3':twist_overlap(0),'hit_mm3':[twist_overlap(-1),twist_overlap(1)]}
+
+# Clearance along every edge (1 deg samples, as the collision sweep): moving links (elbow onward) to every other part,
+# and the whole arm in the park pose (where it rests on the fender by design). The shoulder hub/journal turns in place
+# in its bearing.
 def arm_clearance(q, first_link, margin=12.0):
     best=margin
     for n,s,l,_ in RIGHT:
@@ -690,7 +860,7 @@ def arm_clearance(q, first_link, margin=12.0):
 ARM_CLEARANCE=[]
 for a_,b_ in A['pose_edges']:
     qa,qb=POSES[a_],POSES[b_]
-    n=max(1,math.ceil(max(abs(u-v) for u,v in zip(qa,qb))/5))
+    n=max(1,math.ceil(max(abs(u-v) for u,v in zip(qa,qb))/1))
     samples=[[u+(v-u)*k/n for u,v in zip(qa,qb)] for k in range(n+1)]
     ARM_CLEARANCE.append({'pose':[a_,b_],'moving_mm':min(arm_clearance(q,1) for q in samples if q!=POSES['stow']),
                           'park_mm':arm_clearance(POSES['stow'],0) if POSES['stow'] in samples else None})
@@ -736,6 +906,8 @@ manifest={'parameters':P,'status':'CONCEPT_NOT_FOR_MANUFACTURE','revision':P['re
           'parts':[{k:v for k,v in part.items() if k not in ('shape','bb')} for part in PARTS],
           'unapproved_intersections':intersections,
           'arm_poses':ARM_POSES,'arm_edges':ARM_EDGES,'arm_limp_rest':ARM_LIMP_REST,'arm_clearance':ARM_CLEARANCE,
+          'gripper':GRIPPER,'park_tolerance':PARK_TOLERANCE,'left_twist_play':LEFT_TWIST,
+          'grasp_datum_local_mm':{'from_wrist_x':round(GRASP_LOCAL[0]-xw,2),'d':GRASP_LOCAL[1],'z':GRASP_LOCAL[2]},
           'head_tilt':HEAD_TILT,
           'arm_chain':{'joints':[{'origin':list(o),'axis':list(d),'sign':sign} for o,d,sign in joint_axes(-1)],
                        'links':{(n if n.startswith('REF') else f'{n}--1'):l for n,_,l,_ in RIGHT}},
@@ -746,9 +918,9 @@ manifest={'parameters':P,'status':'CONCEPT_NOT_FOR_MANUFACTURE','revision':P['re
                          'cables themselves, service loops and zip ties (DD85: exits, slots, the shoulder bore and the head channels are modelled)',
                          'fender flange screws into the side panels, shoulder-servo frame screws',
                          'eye camera mounts, lens windows, FFC routes and stereo calibration',
-                         'arm sweeps are joint-space straight lines sampled at <= 5 deg; the planner must use the same path',
-                         'gripper jaw kinematics and pad material (jaws drawn fixed)',
-                         'left arm friction joints (drawn as the right arm without servos)',
+                         'arm sweeps are joint-space straight lines sampled at <= 1 deg; the planner must use the same path',
+                         'gear tooth contact, backlash and the pads\' grip on a real object (the claw is swept as rigid jaws)',
+                         'left arm distal joints: fixed by their bolts (no servos, no bearings); only the shoulder is posed',
                          'full load path from mast to chassis']}
 (ROOT/'cad/assembly/manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 
@@ -805,3 +977,7 @@ print('Arm edges:',[(e['pose'],len(e['hits'])) for e in ARM_EDGES])
 print('Limp rest:',ARM_LIMP_REST)
 print('Head tilt:',HEAD_TILT)
 print('Clearance:',[(c['pose'],c['moving_mm'],c['park_mm']) for c in ARM_CLEARANCE])
+print('Gripper:',{'self':GRIPPER['jaw_self_hits'][:3],'poses':{k:len(v) for k,v in GRIPPER['poses'].items()},
+                  'edges':[(e['pose'],len(e['hits'])) for e in GRIPPER['edges']],'gap':GRIPPER['gap_open_mm']})
+print('Park tolerance:',PARK_TOLERANCE)
+print('Left twist play:',LEFT_TWIST)

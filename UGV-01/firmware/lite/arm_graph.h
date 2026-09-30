@@ -10,6 +10,10 @@ enum { UGV_ARM_JOINTS = 5, UGV_ARM_POSES = 8, UGV_ARM_EDGES = 7,
        UGV_ARM_RATE_CDEG_S = 4500 };
 /* Poses the wheels may drive in (bit = pose number): the core refuses to drive anywhere else (DD84). */
 enum { UGV_ARM_DRIVE_MASK = 0x01 };
+/* DD93 (M01): the claw opens only settled at an OPEN pose (the CAD swept every jaw angle there) and, while not
+   closed, the arm moves only on edges between two OPEN poses. DD94: a close keeps the claw "empty" only settled at a
+   RELEASE pose (over the cargo bin); anywhere else it may hold an object. Open angle in centi-degrees (0 = closed). */
+enum { UGV_ARM_OPEN_MASK = 0xF8, UGV_ARM_RELEASE_MASK = 0x80, UGV_GRIP_OPEN_CDEG = 6000 };
 static const int16_t UGV_ARM_POSE_CDEG[UGV_ARM_POSES][UGV_ARM_JOINTS] = {
     {18000, 9000, 0, 0, 0},
     {9000, 9000, 0, 0, 0},

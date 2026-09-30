@@ -71,10 +71,13 @@ static void fx(void *ctx, int level) {
 
 static void fd(void *ctx, uint32_t ms) { (void)ctx, (void)ms, ++delays; }
 
-static void sample(Fake *f, uint16_t mm) {
+static void sample_status(Fake *f, uint16_t mm, uint8_t status) { /* status = DeviceRangeStatus, 0x14 bits 6:3 */
     assert(f->ranging);
+    f->reg[0][0x14] = (uint8_t)(status << 3);
     f->reg[0][0x1E] = (uint8_t)(mm >> 8), f->reg[0][0x1F] = (uint8_t)mm, f->reg[0][0x13] = 0x04;
 }
+
+static void sample(Fake *f, uint16_t mm) { sample_status(f, mm, 11); } /* 11 = range valid */
 
 static const UgvI2cBus bus = {fw, fr, fx, fd, NULL};
 
@@ -101,17 +104,37 @@ int main(void) {
     assert(r->reg[0][0x01] == 0xE8 && r->reg[1][0x91] == 0x3C);        /* MSRC/TCC off; stop variable restored */
     assert(r->page == 0 && dev[0].page == 0);                         /* every page switch undone */
 
-    /* Polling: nothing yet -> 0; a sample is read once and its interrupt cleared; 8190 = nothing in range. */
+    /* Polling: nothing yet -> 0; a sample is read once and its interrupt cleared; NO_TARGET = nothing seen in range. */
     uint16_t mm[2];
     ugv_tof_pair_poll(&bus, tof, 1000, mm);
     assert(mm[0] == 0 && mm[1] == 0);
-    sample(&dev[0], 612), sample(&dev[1], 8190);
+    sample(&dev[0], 612), sample_status(&dev[1], 8190, 4); /* signal fail + out-of-range code = no target */
     ugv_tof_pair_poll(&bus, tof, 1020, mm);
-    assert(mm[0] == 612 && mm[1] == 8190 && !dev[0].reg[0][0x13] && !dev[1].reg[0][0x13]);
+    assert(mm[0] == 612 && mm[1] == UGV_TOF_NO_TARGET && !dev[0].reg[0][0x13] && !dev[1].reg[0][0x13]);
     ugv_tof_pair_poll(&bus, tof, 1020 + UGV_TOF_STALE_MS, mm); /* still fresh */
-    assert(mm[0] == 612 && mm[1] == 8190);
+    assert(mm[0] == 612 && mm[1] == UGV_TOF_NO_TARGET);
     ugv_tof_pair_poll(&bus, tof, 1021 + UGV_TOF_STALE_MS, mm); /* no new sample for too long */
     assert(mm[0] == 0 && mm[1] == 0);
+    /* A02/DD94: a sample the sensor itself flags is not a distance. A signal fail at 1200 mm, a phase fail, a min-range
+       or hardware fail, or "none" reads 0 = forward blocked at once, even right after a valid sample (the old value is
+       not kept alive). A signal/phase fail with the out-of-range code reads NO_TARGET: never 8190 (a distance the core
+       would take as a clear road), and it also drops the old valid sample. A valid 8190 cannot pose as out of range. */
+    static const struct { uint16_t mm; uint8_t status, want; } cases[] = {
+        {1200, 4, 0}, {700, 6, 0}, {700, 9, 0}, {30, 8, 0}, {30, 10, 0}, {900, 1, 0}, {900, 3, 0}, {900, 0, 0},
+        {900, 5, 0}, {8190, 1, 0}, {8191, 3, 0}, {8190, 8, 0}, {8190, 4, 1}, {8191, 4, 1}, {8190, 6, 1}, {8191, 6, 1},
+        {8190, 9, 1}, {8191, 9, 1}, {8190, 11, 2}};
+    uint32_t now = 1500;
+    for (size_t k = 0; k < sizeof cases / sizeof cases[0]; ++k) {
+        sample(&dev[0], 1200), sample(&dev[1], 1200);
+        ugv_tof_pair_poll(&bus, tof, now += 20, mm);
+        assert(mm[0] == 1200 && mm[1] == 1200);
+        sample_status(&dev[0], cases[k].mm, cases[k].status), sample_status(&dev[1], cases[k].mm, cases[k].status);
+        ugv_tof_pair_poll(&bus, tof, now += 20, mm);
+        const uint16_t want = cases[k].want == 2 ? 8189 : cases[k].want ? UGV_TOF_NO_TARGET : 0;
+        assert(mm[0] == want && mm[1] == want && mm[0] != 1200);
+        ugv_tof_pair_poll(&bus, tof, now += 20, mm); /* no new sample: still not the old valid one */
+        assert(mm[0] == want);
+    }
     /* A sensor that stops answering goes stale; it never reads as an empty road. */
     sample(&dev[0], 700), sample(&dev[1], 700);
     dev[1].present = 0;
@@ -142,6 +165,6 @@ int main(void) {
     assert(start(tof) == 1 && !tof[1].ok && delays < 1000);
 
     puts("PASS: VL53L0X pair: left held in reset while the right moves to 0x30 (no collision), init/tuning/SPAD "
-         "map, ranging, stale -> 0, lost/missing/foreign sensor, warm restart, bounded waits (L4b)");
+         "map, ranging, range status (invalid -> 0, nothing in range -> NO_TARGET, A02/DD94), stale -> 0, lost/missing/foreign sensor, warm restart, bounded waits (L4b)");
     return 0;
 }

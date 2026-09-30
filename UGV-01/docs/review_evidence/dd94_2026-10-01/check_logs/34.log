@@ -1,0 +1,1 @@
+PASS: VL53L0X pair: left held in reset while the right moves to 0x30 (no collision), init/tuning/SPAD map, ranging, range status (invalid -> 0, nothing in range -> NO_TARGET, A02/DD94), stale -> 0, lost/missing/foreign sensor, warm restart, bounded waits (L4b)

@@ -1,0 +1,11 @@
+✔ stop words are handled locally, before any AI (1.013916ms)
+✔ AI mode needs switch, visible page and focus; operator input drops it (0.071125ms)
+✔ lease is sent every 50 ms and is stale after 100 ms (0.044583ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32.314083

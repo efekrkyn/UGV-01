@@ -1,0 +1,1 @@
+PASS: dual NC energy channels, TPS3431 100 pF + TPS3808 rail gate, release-edge reset latch, SAFE_GATE-qualified K1/K2/precharge/test/ACT_EN; standalone ERC only off-page rail/label items

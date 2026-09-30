@@ -1,0 +1,281 @@
+{
+  "review_date": "2026-09-30",
+  "scope": "uncommitted DD92/DD93 snapshot on HEAD 42524c9d271edaa842ca49b30e2747520887d61b",
+  "host_checks": [
+    {
+      "id": 1,
+      "command": "python3 tests/check_design.py",
+      "exit_code": 0,
+      "seconds": 0.05
+    },
+    {
+      "id": 2,
+      "command": ".venv/bin/python tests/check_cad.py",
+      "exit_code": 0,
+      "seconds": 19.29
+    },
+    {
+      "id": 3,
+      "command": ".venv/bin/python tests/check_print_plan.py",
+      "exit_code": 0,
+      "seconds": 6.51
+    },
+    {
+      "id": 4,
+      "command": ".venv/bin/python tests/check_body_mass.py",
+      "exit_code": 0,
+      "seconds": 2.9
+    },
+    {
+      "id": 5,
+      "command": ".venv/bin/python tests/check_drivetrain.py",
+      "exit_code": 0,
+      "seconds": 1.83
+    },
+    {
+      "id": 6,
+      "command": ".venv/bin/python tests/check_lightweight.py",
+      "exit_code": 0,
+      "seconds": 3.31
+    },
+    {
+      "id": 7,
+      "command": "python3 tests/check_esp32_pinmap.py",
+      "exit_code": 0,
+      "seconds": 0.09
+    },
+    {
+      "id": 8,
+      "command": "python3 tests/check_lite_wiring.py",
+      "exit_code": 0,
+      "seconds": 3.17
+    },
+    {
+      "id": 9,
+      "command": "python3 tests/check_lite_bom.py",
+      "exit_code": 0,
+      "seconds": 0.09
+    },
+    {
+      "id": 10,
+      "command": "python3 tests/check_mcu_pinmap_integration.py",
+      "exit_code": 0,
+      "seconds": 0.09
+    },
+    {
+      "id": 11,
+      "command": "python3 tests/check_mcu_servo_light.py",
+      "exit_code": 0,
+      "seconds": 3.21
+    },
+    {
+      "id": 12,
+      "command": "python3 tests/check_ai_executor.py",
+      "exit_code": 0,
+      "seconds": 0.42
+    },
+    {
+      "id": 13,
+      "command": "python3 tests/check_ai_bridge.py",
+      "exit_code": 0,
+      "seconds": 0.49
+    },
+    {
+      "id": 14,
+      "command": "python3 tests/check_lite_gateway.py",
+      "exit_code": 0,
+      "seconds": 2.69
+    },
+    {
+      "id": 15,
+      "command": "node --test software/web_ui/panel_logic.test.mjs",
+      "exit_code": 0,
+      "seconds": 0.16
+    },
+    {
+      "id": 16,
+      "command": "node --test tests/viewer_route.test.mjs",
+      "exit_code": 0,
+      "seconds": 0.16
+    },
+    {
+      "id": 17,
+      "command": "python3 tests/check_pwr_mcu_harness.py",
+      "exit_code": 0,
+      "seconds": 2.02
+    },
+    {
+      "id": 18,
+      "command": "python3 tests/check_pwr_mcu_connector.py",
+      "exit_code": 0,
+      "seconds": 0.06
+    },
+    {
+      "id": 19,
+      "command": "python3 tests/check_differential_i2c_reference.py",
+      "exit_code": 0,
+      "seconds": 1.61
+    },
+    {
+      "id": 20,
+      "command": "python3 tests/check_board_interface_sheets.py",
+      "exit_code": 0,
+      "seconds": 5.06
+    },
+    {
+      "id": 21,
+      "command": "python3 tests/check_status_receiver.py",
+      "exit_code": 0,
+      "seconds": 1.49
+    },
+    {
+      "id": 22,
+      "command": "python3 tests/check_k2_reference.py",
+      "exit_code": 0,
+      "seconds": 1.99
+    },
+    {
+      "id": 23,
+      "command": "python3 tests/check_pwr_actuator_path.py",
+      "exit_code": 0,
+      "seconds": 3.53
+    },
+    {
+      "id": 24,
+      "command": "python3 tests/check_pwr_safety_gate.py",
+      "exit_code": 0,
+      "seconds": 1.64
+    },
+    {
+      "id": 25,
+      "command": "python3 tests/check_pwr_board.py",
+      "exit_code": 0,
+      "seconds": 2.5
+    },
+    {
+      "id": 26,
+      "command": "python3 tests/check_markdown_links.py",
+      "exit_code": 0,
+      "seconds": 0.05
+    },
+    {
+      "id": 27,
+      "command": "python3 tests/check_make_nvs.py",
+      "exit_code": 0,
+      "seconds": 0.04
+    },
+    {
+      "id": 28,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/safety_core_test.c firmware/stm32/safety_core.c -o /tmp/ugv-safety-core-test && /tmp/ugv-safety-core-test",
+      "exit_code": 0,
+      "seconds": 0.4
+    },
+    {
+      "id": 29,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/can_protocol_test.c firmware/stm32/can_protocol.c -o /tmp/ugv-can-test && /tmp/ugv-can-test",
+      "exit_code": 0,
+      "seconds": 0.41
+    },
+    {
+      "id": 30,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/servo_light_test.c firmware/stm32/servo_control.c firmware/stm32/light_bar.c -o /tmp/ugv-servo-light-test && /tmp/ugv-servo-light-test",
+      "exit_code": 0,
+      "seconds": 0.48
+    },
+    {
+      "id": 31,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/lite_link_test.c firmware/lite/hmac_sha256.c firmware/lite/lite_link.c firmware/stm32/can_protocol.c -o /tmp/ugv-lite-link && /tmp/ugv-lite-link",
+      "exit_code": 0,
+      "seconds": 0.22
+    },
+    {
+      "id": 32,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/lite_core_test.c firmware/lite/lite_core.c firmware/lite/arm_path.c firmware/lite/lite_link.c firmware/lite/hmac_sha256.c firmware/stm32/can_protocol.c firmware/stm32/servo_control.c firmware/stm32/light_bar.c -lm -o /tmp/ugv-lite-core && /tmp/ugv-lite-core",
+      "exit_code": 0,
+      "seconds": 0.66
+    },
+    {
+      "id": 33,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/board_math_test.c firmware/lite/board_math.c -o /tmp/ugv-board-math && /tmp/ugv-board-math",
+      "exit_code": 0,
+      "seconds": 0.24
+    },
+    {
+      "id": 34,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/vl53l0x_test.c firmware/lite/vl53l0x.c -o /tmp/ugv-vl53 && /tmp/ugv-vl53",
+      "exit_code": 0,
+      "seconds": 0.33
+    }
+  ],
+  "esp_builds": [
+    {
+      "target": "esp32s3",
+      "exit_code": 0,
+      "seconds": 23.31
+    },
+    {
+      "target": "eye",
+      "exit_code": 0,
+      "seconds": 37.12
+    }
+  ],
+  "regeneration": [
+    {
+      "command": "python3 tools/gen_arm_graph.py",
+      "exit_code": 0,
+      "seconds": 0.04
+    },
+    {
+      "command": "python3 tools/gen_pins.py",
+      "exit_code": 0,
+      "seconds": 0.12
+    },
+    {
+      "command": "python3 tools/calculations.py",
+      "exit_code": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": ".venv/bin/python cad/assembly/build_concept.py",
+      "exit_code": 0,
+      "seconds": 200.89
+    },
+    {
+      "command": ".venv/bin/python tools/print_plan.py",
+      "exit_code": 0,
+      "seconds": 4.0
+    },
+    {
+      "command": ".venv/bin/python tests/check_cad.py",
+      "exit_code": 0,
+      "seconds": 8.83
+    },
+    {
+      "command": ".venv/bin/python tests/check_print_plan.py",
+      "exit_code": 0,
+      "seconds": 4.04
+    },
+    {
+      "command": ".venv/bin/python tests/check_body_mass.py",
+      "exit_code": 0,
+      "seconds": 2.53
+    }
+  ],
+  "semantic_manifest_changed_keys": [],
+  "source_baseline_count": 219,
+  "source_baseline_changed": [],
+  "physical_tests": "NOT_RUN",
+  "additional_root_checks": {
+    "tof_error_sentinel_reproduced": true,
+    "gripper_open_park_rearm_reproduced": true,
+    "gripper_empty_reset_reproduced": true,
+    "ack_alias_at_retry17_reproduced": true,
+    "websocket_origin_owner_recheck": "PASS with system Python and installed websockets",
+    "jaw_0_25_deg_samples": 241,
+    "jaw_self_hits": 0,
+    "transition_corner_samples": 2912,
+    "transition_min_wall_mm": 4.100013476911556,
+    "new_markdown_links": "PASS",
+    "note": "These reproductions assert present defects; not acceptance-test PASS."
+  }
+}

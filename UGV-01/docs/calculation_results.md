@@ -10,7 +10,7 @@ Kaynak: config/vehicle.json; güç profilleri docs/electrical_architecture.md §
 | runtime_typical_h | 1.308150 |
 | runtime_heavy_h | 0.455009 |
 | curb_mass_kg | 4.580000 |
-| curb_cg_x_mm | 10.991266 |
+| curb_cg_x_mm | 10.205240 |
 | curb_cg_z_mm | 118.135371 |
 | loaded_cg_z_mm | 131.114173 |
 | flat_rolling_force_n | 1.500417 |

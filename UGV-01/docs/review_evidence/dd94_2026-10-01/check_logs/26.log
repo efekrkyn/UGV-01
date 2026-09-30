@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/private<reviewed-checkout>/tests/check_markdown_links.py", line 38, in <module>
+    assert not bad, "\n".join(bad)
+           ^^^^^^^
+AssertionError: README.md:21: docs/review_full_2026-09-29.md
+README.md:21: docs/review_full_closure_2026-09-29.md
+README.md:21: docs/review_dd92_dd93_2026-09-30.md
+README.md:21: docs/review_dd92_dd93_closure_2026-10-01.md
+docs/design_decisions.md:563: review_full_2026-09-29.md
+docs/design_decisions.md:563: review_full_closure_2026-09-29.md
+docs/design_decisions.md:586: review_dd92_dd93_2026-09-30.md
+docs/design_decisions.md:586: review_dd92_dd93_closure_2026-10-01.md

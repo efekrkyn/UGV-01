@@ -12,13 +12,14 @@ import cadquery as cq
 
 DENSITY_G_CM3 = {'PETG': 1.27, 'TPU': 1.21, 'steel': 7.85}
 SHELL_MM, INFILL = 1.2, 0.20  # ponytail: shell/infill approximation, not a slicer; weigh real prints
-TPU_PREFIXES = ('UGV-MECH-017', 'UGV-MECH-018', 'UGV-MECH-061')
+TPU_PREFIXES = ('UGV-MECH-017', 'UGV-MECH-018', 'UGV-MECH-061', 'UGV-MECH-063', 'UGV-MECH-064', 'UGV-MECH-065')
 MG90S, MG996R, DS3218 = 13.4, 55.0, 60.0  # catalogue grams
 CATALOG_G = {'REF-SERVO-PAN': MG90S, 'REF-SERVO-TILT': MG90S, 'REF-SERVO-ROLL-R': MG90S, 'REF-SERVO-GRIPPER-R': MG90S,
              'REF-SERVO-TWIST-R': MG996R, 'REF-SERVO-ELBOW-R': MG996R, 'REF-SERVO-WRIST-R': MG996R,
              'REF-SERVO-SHOULDER-R': DS3218,  # DS3218MG 270 deg
              'REF-EYE-CAMERA--1': 12.0, 'REF-EYE-CAMERA-+1': 12.0,  # ESP32-CAM + OV2640
-             'REF-TILT-ROD': 1.0}  # 1.5 mm steel pushrod
+             'REF-TILT-ROD': 1.0,  # 1.5 mm steel pushrod
+             'REF-SPACER-JAWB-R': 0.1, 'REF-SPACER-JAWB-L': 0.1}  # nylon spacers (R05)
 GROUPS = {
     'base': (('UGV-MECH-001', 'UGV-MECH-002', 'UGV-MECH-003', 'UGV-MECH-004'),
              'printed PETG base plate splice ribs and motor brackets'),
@@ -31,7 +32,7 @@ GROUPS = {
               'REF-TILT-ROD', 'REF-SERVO-PAN',
               'REF-SERVO-TILT', 'REF-EYE-CAMERA', 'REF-BEARING-PAN'),
              'head neck pan tilt servos and two ESP32-CAM eyes'),
-    'arms': (('UGV-MECH-050', 'UGV-MECH-051', 'UGV-MECH-052', 'UGV-MECH-053', 'UGV-MECH-054', 'UGV-MECH-056',
+    'arms': (('UGV-MECH-050', 'UGV-MECH-051', 'UGV-MECH-052', 'UGV-MECH-053', 'UGV-MECH-054', 'UGV-MECH-066', 'UGV-MECH-067', 'UGV-MECH-068', 'UGV-MECH-069', 'UGV-MECH-074', 'UGV-MECH-075', 'UGV-MECH-076', 'UGV-MECH-077', 'REF-SPACER', 'UGV-MECH-055', 'UGV-MECH-062', 'UGV-MECH-063', 'UGV-MECH-064', 'UGV-MECH-065', 'UGV-MECH-056',
               'UGV-MECH-057', 'UGV-MECH-058', 'UGV-MECH-059', 'REF-SERVO-SHOULDER', 'REF-SERVO-TWIST', 'REF-SERVO-ELBOW', 'REF-SERVO-WRIST',
               'REF-SERVO-ROLL', 'REF-SERVO-GRIPPER', 'REF-BEARING-SHOULDER', 'REF-BEARING-TWIST'),
              'arms right 5-axis left passive shoulder servo and bearings'),
@@ -78,8 +79,9 @@ def cg_cases(config, manifest, arm_parts):
     """N4: vehicle CG (mm) and static pitch/roll tip angles for every arm pose and payload placement. Budget items
     keep their x/z (y 0, symmetric); the arms allocation sits at the arms group's CAD centroid (printed-estimate
     weights) moved to the pose; the one payload is redistributed, never added twice: `lid` all of it at
-    payload_cg_z_mm, `bin` arm.payload_kg of it in the cargo bin (the `store` release point), `gripper` that part held
-    in the gripper. arm_parts: (grams, stow centroid, right-arm link or None)."""
+    payload_cg_z_mm, `bin` arm.payload_kg of it on the cargo bin's floor (R06: where it lands, not the release point
+    above), `gripper` that part held at the grasp datum (the closed pads' shared face, manifest grip_mm). arm_parts:
+    (grams, stow centroid, right-arm link or None)."""
     g, motion, arm = config['geometry'], config['motion'], config['geometry']['arm']
     chain, stow, total = manifest['arm_chain'], arm['poses_deg']['stow'], sum(m for m, _, _ in arm_parts)
 
@@ -90,12 +92,14 @@ def cg_cases(config, manifest, arm_parts):
     arms = next(b for b in config['mass_budget'] if b['name'] == GROUPS['arms'][1])
     fixed = [(b['mass_kg'], (b['x_mm'], b.get('y_mm', 0), b['z_mm'])) for b in config['mass_budget'] if b is not arms]
     pay, held, lid = motion['payload_kg'], arm['payload_kg'], (0.0, 0.0, motion['payload_cg_z_mm'])
+    cargo = g['internal']['cargo']  # a 50 mm object resting on the bin floor, bin centre
+    floor = (sum(cargo['bin_x_mm']) / 2, 0.0, cargo['bin_z_mm'][0] + cargo['wall_mm'] + 25)
     cg = {}
     for pose, q in arm['poses_deg'].items():
         base = fixed + [(arms['mass_kg'], arm_centroid(q))]
         cg[pose] = {}
         for case, load in (('lid', [(pay, lid)]),
-                           ('bin', [(pay-held, lid), (held, manifest['arm_poses']['store']['grip_mm'])]),
+                           ('bin', [(pay-held, lid), (held, floor)]),
                            ('gripper', [(pay-held, lid), (held, manifest['arm_poses'][pose]['grip_mm'])])):
             items = base + load
             mass = sum(m for m, _ in items)

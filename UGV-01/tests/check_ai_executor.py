@@ -142,7 +142,7 @@ assert pose_path("reach_low", "store") == ["ready", "up", "lift", "store"]
 assert pose_path("ready", "ready") == [] and REACH_POSES == {"reach_mid", "reach_low", "reach_center", "store"}
 
 # Arm out: no driving or turning until it is stowed (N4: stow is the only drive pose, raised poses put the loaded CG
-# past its limits) and the gripper is open (a held object goes to the cargo bin first).
+# past its limits) and the claw is closed and empty (DD93: a held object goes to the cargo bin first).
 clock, vehicle, permit, ex, said, asked = rig()
 assert ex.execute("arm", {"pose": "reach_low"}).ok and vehicle.arm == "reach_low"
 assert not ex.execute("drive", {"distance_m": 0.2, "speed_mps": 0.1}).ok
@@ -152,11 +152,21 @@ for pose in ("ready", "up"):
     assert ex.execute("arm", {"pose": pose}).ok
     refused = ex.execute("turn", {"angle_deg": 20})
     assert not refused.ok and "stow" in refused.text and vehicle.max_abs_speed == 0, refused
-assert ex.execute("gripper", {"action": "close"}).ok and vehicle.gripper == "close"
+# DD93 claw: opens only at the swept open poses; while open the arm stays between them; after a grasp the vehicle drives
+# only once the claw has let go over the cargo bin (store) and closed again.
+assert ex.execute("arm", {"pose": "stow"}).ok
+at_stow = ex.execute("gripper", {"action": "open"})
+assert not at_stow.ok and "opens only" in at_stow.text and vehicle.gripper == "close", at_stow
+assert ex.execute("arm", {"pose": "ready"}).ok and ex.execute("gripper", {"action": "open"}).ok
+off = ex.execute("arm", {"pose": "up"})
+assert not off.ok and "close the gripper" in off.text and vehicle.arm == "ready", off
+assert ex.execute("arm", {"pose": "reach_low"}).ok and ex.execute("gripper", {"action": "close"}).ok  # grasp
 assert ex.execute("arm", {"pose": "stow"}).ok
 held = ex.execute("turn", {"angle_deg": 20})
-assert not held.ok and "gripper" in held.text and vehicle.max_abs_speed == 0, held
-assert ex.execute("gripper", {"action": "open"}).ok and ex.execute("turn", {"angle_deg": 20}).ok
+assert not held.ok and "empty" in held.text and vehicle.max_abs_speed == 0, held
+assert ex.execute("arm", {"pose": "store"}).ok and ex.execute("gripper", {"action": "open"}).ok
+assert ex.execute("gripper", {"action": "close"}).ok and ex.execute("arm", {"pose": "stow"}).ok
+assert ex.execute("turn", {"angle_deg": 20}).ok
 
 # Talking, asking and finishing.
 assert ex.execute("say", {"text": "Kırmızı küpü görüyorum."}).ok and said == ["Kırmızı küpü görüyorum."]

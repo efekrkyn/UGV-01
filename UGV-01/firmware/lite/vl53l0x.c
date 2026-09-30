@@ -6,7 +6,7 @@
    vl53l0x_tuning.h, PerformRefCalibration), at register level as in Pololu's vl53l0x-arduino (MIT). */
 enum {
     SYSRANGE_START = 0x00, SYSTEM_SEQUENCE_CONFIG = 0x01, SYSTEM_INTERRUPT_CONFIG_GPIO = 0x0A,
-    SYSTEM_INTERRUPT_CLEAR = 0x0B, RESULT_INTERRUPT_STATUS = 0x13, RESULT_RANGE_MM = 0x1E,
+    SYSTEM_INTERRUPT_CLEAR = 0x0B, RESULT_INTERRUPT_STATUS = 0x13, RESULT_RANGE_STATUS = 0x14,
     FINAL_RANGE_MIN_COUNT_RATE = 0x44, SPAD_NUM_REQUESTED_REF = 0x4E, SPAD_REF_EN_START_OFFSET = 0x4F,
     MSRC_CONFIG_CONTROL = 0x60, GPIO_HV_MUX_ACTIVE_HIGH = 0x84, PAD_EXTSUP_HV = 0x89, SLAVE_DEVICE_ADDRESS = 0x8A,
     SPAD_ENABLES_REF_0 = 0xB0, REF_EN_START_SELECT = 0xB6, MODEL_ID = 0xC0, PAGE = 0xFF,
@@ -147,15 +147,27 @@ int ugv_tof_pair_start(const UgvI2cBus *bus, UgvTof tof[2]) {
     return n;
 }
 
+/* A02/DD94: the device range status (0x14 bits 6:3, the raw DeviceRangeStatus, not the API's RangeStatus) decides what
+   the distance means. 11 = range valid (a distance, capped below the out-of-range code). A signal fail (4) or phase
+   fail (6, 9) carrying the out-of-range code (>= 8190) means the sensor saw nothing it trusts in range: that proves no
+   empty road (a dark or glassy target can read so), so it is UGV_TOF_NO_TARGET, which the core drives into only at a
+   creep. Everything else is invalid: 0 = forward blocked at once, and the older valid sample is dropped.
+   ponytail: which status the real sensor gives for open space is checked at bring-up (TL5); any other only blocks. */
+static uint16_t reading(uint8_t status_reg, uint16_t mm) {
+    const uint8_t s = (uint8_t)(status_reg >> 3 & 0x0F);
+    if (s == 11) return mm < 1 ? 1 : mm > 8189 ? 8189 : mm;
+    return (s == 4 || s == 6 || s == 9) && mm >= 8190 ? UGV_TOF_NO_TARGET : 0;
+}
+
 void ugv_tof_pair_poll(const UgvI2cBus *bus, UgvTof tof[2], uint32_t now_ms, uint16_t out_mm[2]) {
     for (int i = 0; i < 2; ++i) {
         UgvTof *t = &tof[i];
         Dev d = {bus, t->addr, 0};
         if (t->ok && (r8(&d, RESULT_INTERRUPT_STATUS) & 0x07)) {
-            uint8_t mm[2];
-            rd(&d, RESULT_RANGE_MM, mm, sizeof mm);
+            uint8_t res[12]; /* range status .. distance in one burst, as ST's API reads them */
+            rd(&d, RESULT_RANGE_STATUS, res, sizeof res);
             w8(&d, SYSTEM_INTERRUPT_CLEAR, 0x01);
-            if (!d.err) t->mm = (uint16_t)(mm[0] << 8 | mm[1]), t->at_ms = now_ms;
+            if (!d.err) t->mm = reading(res[0], (uint16_t)(res[10] << 8 | res[11])), t->at_ms = now_ms;
         }
         /* ponytail: a sensor that browns out stays stale (forward blocked) until the next boot; re-init if TL5 needs it */
         out_mm[i] = t->ok && t->mm && now_ms - t->at_ms <= UGV_TOF_STALE_MS ? t->mm : 0;

@@ -1,0 +1,1 @@
+PASS: CAN session, replay, range, mode and STOP checks; no replay after a mode switch (R3); A2 servo/AI frames, M3 0x122 arm path frame and 200 mm/s AI cap

@@ -23,7 +23,7 @@ class SimVehicle:
     def __init__(self, clock, obstacle_x=None):
         self.clock, self.obstacle_x = clock, obstacle_x
         self.x = self.yaw = self.dist = self.v = self.w = self.max_abs_speed = 0.0
-        self.head, self.arm, self.gripper = (0, 0), "stow", "open"
+        self.head, self.arm, self.gripper, self.empty = (0, 0), "stow", "close", True  # DD93: claw parks closed
         self._at = clock.t
 
     def _advance(self):
@@ -61,7 +61,15 @@ class SimVehicle:
         pass
 
     def set_gripper(self, action):
-        self.gripper = action
+        """As the core (DD93/94): opens only at an open pose; a close anywhere but a release pose may hold an object."""
+        from .executor import _ARM
+        grip = _ARM["gripper"]
+        if action == "open" and self.arm in grip["open_poses"]:
+            self.gripper, self.empty = "open", True
+        elif action == "close":
+            if self.gripper == "open" and self.arm not in grip["release_poses"]:
+                self.empty = False
+            self.gripper = "close"
 
     def images(self):
         return [("image/jpeg", b"\xff\xd8sim-left\xff\xd9"), ("image/jpeg", b"\xff\xd8sim-right\xff\xd9")]
@@ -69,5 +77,6 @@ class SimVehicle:
     def state(self):
         self._advance()
         return {"head_pan_deg": self.head[0], "head_tilt_deg": self.head[1], "arm": self.arm,
-                "gripper": self.gripper, "front_tof_m": round(self.front_tof_m(), 3),
+                "gripper": "closed" if self.gripper == "close" else "open", "gripper_empty": self.empty,
+                "front_tof_m": round(self.front_tof_m(), 3),
                 "battery_pct": 80, "moving": self.v != 0 or self.w != 0}

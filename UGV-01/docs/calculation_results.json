@@ -5,7 +5,7 @@
   "runtime_typical_h": 1.3081500000000004,
   "runtime_heavy_h": 0.45500869565217406,
   "curb_mass_kg": 4.58,
-  "curb_cg_x_mm": 10.99126637554585,
+  "curb_cg_x_mm": 10.205240174672488,
   "curb_cg_z_mm": 118.13537117903928,
   "loaded_cg_z_mm": 131.11417322834643,
   "flat_rolling_force_n": 1.5004174499999996,

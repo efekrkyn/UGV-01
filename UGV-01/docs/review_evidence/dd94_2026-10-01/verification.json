@@ -1,0 +1,306 @@
+{
+  "date": "2026-10-01",
+  "base_sha": "42524c9d271edaa842ca49b30e2747520887d61b",
+  "snapshot_sha": "5176afb2fab9e48603102e4c3349ef1a9e6b772c",
+  "snapshot_created_at": "2026-10-01T00:39:52+03:00",
+  "snapshot_is_final_dd94": false,
+  "snapshot_note": "Recovered tracked intermediate snapshot, not Claude final checkout. Final mass-test correction and untracked closure documents were unavailable. Main checkout not restored or edited.",
+  "source_sha256": {
+    "config/vehicle.json": "bfa3b718f2ad257de8f15e6a3edf17e6d920d4c894a566fa76a5ef3fad483cee",
+    "firmware/lite/lite_core.c": "0f64cbc718d5f28670abc0202433a20ba33f8703c7c115834a8600b1ba01b697",
+    "firmware/lite/lite_core.h": "451af129545f6e18edeb7c0e45a2e3221be4982efd5615a8e1c860182b298beb",
+    "software/ugv_lite/vehicle.py": "b8f1cfb68bc9d84e8487e9c3b6484fc9f8745c9ce69c794cf22a1c541a4acff2",
+    "software/ugv_ai/executor.py": "f49cf4d9cd10e15721d0495753851cb6660ede08cc29f0f25e68ab52e33785d0",
+    "software/ugv_lite/gateway.py": "1d382e4729a26da0a5a51f6838bc4cbdf6f25bf89fd206b638591ef45cf73942",
+    "cad/assembly/build_concept.py": "1f40ac59fde26f44bac61e9836dd509ed92d3fa2e3c0c7e9647155a11596429e",
+    "cad/assembly/manifest.json": "733e4a0f34141ae0d7f3b57e2c60e1f20d85f12de15ad1511503ee0e527b24a8",
+    "docs/lite_mechanical_A3.md": "e09a26dc751c43f21bb34d89589da80f428cd947e7d1bcf84a4be4cfdc5a83b5",
+    "tests/check_body_mass.py": "7801cf206b239d56041219af1f77f91a399eebd0cb2a712dc4b484c2ef3cb01b"
+  },
+  "suite": {
+    "total": 34,
+    "passed": 32,
+    "failed": [
+      4,
+      26
+    ]
+  },
+  "checks": [
+    {
+      "id": 1,
+      "command": "python3 tests/check_design.py",
+      "exit_code": 0,
+      "seconds": 0.02,
+      "log": "check_logs/01.log"
+    },
+    {
+      "id": 2,
+      "command": ".venv/bin/python tests/check_cad.py",
+      "exit_code": 0,
+      "seconds": 10.14,
+      "log": "check_logs/02.log"
+    },
+    {
+      "id": 3,
+      "command": ".venv/bin/python tests/check_print_plan.py",
+      "exit_code": 0,
+      "seconds": 4.02,
+      "log": "check_logs/03.log"
+    },
+    {
+      "id": 4,
+      "command": ".venv/bin/python tests/check_body_mass.py",
+      "exit_code": 1,
+      "seconds": 2.42,
+      "log": "check_logs/04.log"
+    },
+    {
+      "id": 5,
+      "command": ".venv/bin/python tests/check_drivetrain.py",
+      "exit_code": 0,
+      "seconds": 1.33,
+      "log": "check_logs/05.log"
+    },
+    {
+      "id": 6,
+      "command": ".venv/bin/python tests/check_lightweight.py",
+      "exit_code": 0,
+      "seconds": 1.66,
+      "log": "check_logs/06.log"
+    },
+    {
+      "id": 7,
+      "command": "python3 tests/check_esp32_pinmap.py",
+      "exit_code": 0,
+      "seconds": 0.03,
+      "log": "check_logs/07.log"
+    },
+    {
+      "id": 8,
+      "command": "python3 tests/check_lite_wiring.py",
+      "exit_code": 0,
+      "seconds": 1.45,
+      "log": "check_logs/08.log"
+    },
+    {
+      "id": 9,
+      "command": "python3 tests/check_lite_bom.py",
+      "exit_code": 0,
+      "seconds": 0.02,
+      "log": "check_logs/09.log"
+    },
+    {
+      "id": 10,
+      "command": "python3 tests/check_mcu_pinmap_integration.py",
+      "exit_code": 0,
+      "seconds": 0.03,
+      "log": "check_logs/10.log"
+    },
+    {
+      "id": 11,
+      "command": "python3 tests/check_mcu_servo_light.py",
+      "exit_code": 0,
+      "seconds": 1.4,
+      "log": "check_logs/11.log"
+    },
+    {
+      "id": 12,
+      "command": "python3 tests/check_ai_executor.py",
+      "exit_code": 0,
+      "seconds": 0.03,
+      "log": "check_logs/12.log"
+    },
+    {
+      "id": 13,
+      "command": "python3 tests/check_ai_bridge.py",
+      "exit_code": 0,
+      "seconds": 0.04,
+      "log": "check_logs/13.log"
+    },
+    {
+      "id": 14,
+      "command": "python3 tests/check_lite_gateway.py",
+      "exit_code": 0,
+      "seconds": 1.59,
+      "log": "check_logs/14.log"
+    },
+    {
+      "id": 15,
+      "command": "node --test software/web_ui/panel_logic.test.mjs",
+      "exit_code": 0,
+      "seconds": 0.07,
+      "log": "check_logs/15.log"
+    },
+    {
+      "id": 16,
+      "command": "node --test tests/viewer_route.test.mjs",
+      "exit_code": 0,
+      "seconds": 0.05,
+      "log": "check_logs/16.log"
+    },
+    {
+      "id": 17,
+      "command": "python3 tests/check_pwr_mcu_harness.py",
+      "exit_code": 0,
+      "seconds": 1.02,
+      "log": "check_logs/17.log"
+    },
+    {
+      "id": 18,
+      "command": "python3 tests/check_pwr_mcu_connector.py",
+      "exit_code": 0,
+      "seconds": 0.02,
+      "log": "check_logs/18.log"
+    },
+    {
+      "id": 19,
+      "command": "python3 tests/check_differential_i2c_reference.py",
+      "exit_code": 0,
+      "seconds": 1.13,
+      "log": "check_logs/19.log"
+    },
+    {
+      "id": 20,
+      "command": "python3 tests/check_board_interface_sheets.py",
+      "exit_code": 0,
+      "seconds": 2.61,
+      "log": "check_logs/20.log"
+    },
+    {
+      "id": 21,
+      "command": "python3 tests/check_status_receiver.py",
+      "exit_code": 0,
+      "seconds": 1.1,
+      "log": "check_logs/21.log"
+    },
+    {
+      "id": 22,
+      "command": "python3 tests/check_k2_reference.py",
+      "exit_code": 0,
+      "seconds": 1.24,
+      "log": "check_logs/22.log"
+    },
+    {
+      "id": 23,
+      "command": "python3 tests/check_pwr_actuator_path.py",
+      "exit_code": 0,
+      "seconds": 2.16,
+      "log": "check_logs/23.log"
+    },
+    {
+      "id": 24,
+      "command": "python3 tests/check_pwr_safety_gate.py",
+      "exit_code": 0,
+      "seconds": 1.26,
+      "log": "check_logs/24.log"
+    },
+    {
+      "id": 25,
+      "command": "python3 tests/check_pwr_board.py",
+      "exit_code": 0,
+      "seconds": 2.04,
+      "log": "check_logs/25.log"
+    },
+    {
+      "id": 26,
+      "command": "python3 tests/check_markdown_links.py",
+      "exit_code": 1,
+      "seconds": 0.05,
+      "log": "check_logs/26.log"
+    },
+    {
+      "id": 27,
+      "command": "python3 tests/check_make_nvs.py",
+      "exit_code": 0,
+      "seconds": 0.04,
+      "log": "check_logs/27.log"
+    },
+    {
+      "id": 28,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/safety_core_test.c firmware/stm32/safety_core.c -o /tmp/ugv-safety-core-test && /tmp/ugv-safety-core-test",
+      "exit_code": 0,
+      "seconds": 0.44,
+      "log": "check_logs/28.log"
+    },
+    {
+      "id": 29,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/can_protocol_test.c firmware/stm32/can_protocol.c -o /tmp/ugv-can-test && /tmp/ugv-can-test",
+      "exit_code": 0,
+      "seconds": 0.35,
+      "log": "check_logs/29.log"
+    },
+    {
+      "id": 30,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/servo_light_test.c firmware/stm32/servo_control.c firmware/stm32/light_bar.c -o /tmp/ugv-servo-light-test && /tmp/ugv-servo-light-test",
+      "exit_code": 0,
+      "seconds": 0.37,
+      "log": "check_logs/30.log"
+    },
+    {
+      "id": 31,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/lite_link_test.c firmware/lite/hmac_sha256.c firmware/lite/lite_link.c firmware/stm32/can_protocol.c -o /tmp/ugv-lite-link && /tmp/ugv-lite-link",
+      "exit_code": 0,
+      "seconds": 0.4,
+      "log": "check_logs/31.log"
+    },
+    {
+      "id": 32,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/lite_core_test.c firmware/lite/lite_core.c firmware/lite/arm_path.c firmware/lite/lite_link.c firmware/lite/hmac_sha256.c firmware/stm32/can_protocol.c firmware/stm32/servo_control.c firmware/stm32/light_bar.c -lm -o /tmp/ugv-lite-core && /tmp/ugv-lite-core",
+      "exit_code": 0,
+      "seconds": 0.73,
+      "log": "check_logs/32.log"
+    },
+    {
+      "id": 33,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/board_math_test.c firmware/lite/board_math.c -o /tmp/ugv-board-math && /tmp/ugv-board-math",
+      "exit_code": 0,
+      "seconds": 0.43,
+      "log": "check_logs/33.log"
+    },
+    {
+      "id": 34,
+      "command": "cc -std=c11 -Wall -Wextra -Werror tests/vl53l0x_test.c firmware/lite/vl53l0x.c -o /tmp/ugv-vl53 && /tmp/ugv-vl53",
+      "exit_code": 0,
+      "seconds": 0.34,
+      "log": "check_logs/34.log"
+    }
+  ],
+  "builds": [
+    {
+      "target": "esp32s3",
+      "exit_code": 0,
+      "seconds": 17.41,
+      "log": "build_logs/esp32s3.log",
+      "compiler_warnings": 0,
+      "image": "espressif/idf:v5.3.2",
+      "binary_size": "0xcd770"
+    },
+    {
+      "target": "eye",
+      "exit_code": 0,
+      "seconds": 19.96,
+      "log": "build_logs/eye.log",
+      "compiler_warnings": 0,
+      "image": "espressif/idf:v5.3.2",
+      "binary_size": "0xed7e0"
+    }
+  ],
+  "cad": {
+    "step_parts": 115,
+    "print_parts": 84,
+    "inserts": 50,
+    "semantic_manifest_changed_keys": [],
+    "regeneration_seconds": 166.52
+  },
+  "viewer": {
+    "parts": 115,
+    "triangles": 290956,
+    "size_kib": 4648,
+    "route_tests_passed": 3
+  },
+  "counterexamples": {
+    "claw_close_reports_ok_without_pwm": true,
+    "old_session_status_overwrites_new_session": true
+  },
+  "physical_tests": "NOT_RUN"
+}

@@ -1,0 +1,1 @@
+PASS: MCU pinmap matches KiCad G474 LQFP100; A2 servo/light pins present; bad I2C, duplicates, BOOT0 and shared servo timer rejected

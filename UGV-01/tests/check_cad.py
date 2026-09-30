@@ -383,7 +383,61 @@ xg = xw0 + A_['grip_mm'] - 16                           # gripper spline, inboar
 gc = xg + M9['spline_from_end'] - M9['case'][0] / 2
 for s_ in (-1, 1):
     assert empty(e54, dy(fast['m2_pilot_mm']/2 - 0.05, -6, 0, gc + s_ * M9['ear_hole_pitch'] / 2, 0, 4)), ('grip ear pilot', s_)
-assert not empty(e54, dx(1, xw0 + A_['grip_mm'] - 3, xw0 + A_['grip_mm'] + 3, 0, 8.5, 4)), 'jaws at the grip centre'
+# DD93 (M01): twin geared claw. Jaw A on the MG90S spline axis, jaw B on its pin GP higher (a 2.5 mm pilot in the palm's
+# post), 16T gears on both; the pads meet at z = GP/2 in the grip region; it opens only where the CAD swept it.
+GR_ = A_['gripper']
+GP_ = GR_['pivot_spacing_mm']
+ja, jb = step('UGV-MECH-055--1'), step('UGV-MECH-062--1')
+pa, pb = step('UGV-MECH-063--1'), step('UGV-MECH-064--1')
+assert not empty(pa, dx(0.5, xg + 16, xg + 26, -15, GP_ / 2 - 0.75, 4)), 'pad A below the meeting plane'
+assert not empty(pb, dx(0.5, xg + 16, xg + 26, -15, GP_ / 2 + 0.75, 4)), 'pad B above it'
+assert empty(e54, dy(1.1, -17.5, -8, xg, GP_, 4)) and not empty(e54, dy(2.2, -17, -8, xg, GP_, 4)), 'jaw B pin pilot in its post'
+assert not empty(ja, dy(3, -24.5, -18.5, xg, 0, 4)) and not empty(jb, dy(3, -24.5, -18.5, xg, GP_, 4)), 'gears on both pivots'
+assert empty(ja, dy(1.0, -26, -17, xg + 7, 0, 4)) and empty(ja, dy(1.0, -26, -17, xg + 11, 0, 4)), 'horn screw holes in jaw A'
+gm = m['gripper']
+assert gm['open_deg'] == GR_['open_deg'] and not gm['jaw_self_hits'], gm['jaw_self_hits']  # gears mesh, jaws clear the palm
+assert set(gm['poses']) == set(GR_['open_poses']) and not any(gm['poses'].values()), gm['poses']
+open_edges = {tuple(sorted(e)) for e in A_['pose_edges'] if e[0] in GR_['open_poses'] and e[1] in GR_['open_poses']}
+assert {tuple(sorted(e['pose'])) for e in gm['edges']} == open_edges and not any(e['hits'] for e in gm['edges']), gm['edges']
+assert 'stow' not in GR_['open_poses'] and set(GR_['release_poses']) <= set(GR_['open_poses'])  # DD94: store
+assert gm['gap_open_mm']['tips'] >= 50, gm['gap_open_mm']  # TL5 objects up to 50 mm
+# R06 (DD94): the published grasp point is where the closed pads meet (their shared face's middle), not the old
+# wrist + 96 mm point on the arm axis.
+pads = [step(n).BoundingBox() for n in ('UGV-MECH-063--1', 'UGV-MECH-064--1')]
+face = [(min(b.xmin for b in pads) + max(b.xmax for b in pads)) / 2, (min(b.ymin for b in pads) + max(b.ymax for b in pads)) / 2,
+        (min(b.zmin for b in pads) + max(b.zmax for b in pads)) / 2]
+assert math.dist(face, m['arm_poses']['stow']['grip_mm']) < 0.1, (face, m['arm_poses']['stow']['grip_mm'])
+gd = m['grasp_datum_local_mm']
+assert abs(gd['from_wrist_x'] - (A_['grip_mm'] + 5)) < 0.01 and gd['z'] == GP_ / 2, gd
+# DD94 recheck #1: the pose table in the mechanical doc is the manifest's grasp point, pose by pose (graph order).
+import re  # noqa: E402
+doc_grip = [[float(v.replace('−', '-').replace(',', '.')) for v in row.split(' / ')]
+            for row in re.findall(r'^\| [^|]+ \| [^|]+ \| \(([^)]+)\) \|', (ROOT/'docs/lite_mechanical_A3.md').read_text(), re.M)]
+assert len(doc_grip) == len(m['arm_poses']) and all(
+    math.dist(d, v['grip_mm']) <= 0.05 for d, v in zip(doc_grip, m['arm_poses'].values())), doc_grip
+# R05 (DD94): jaw B turns on a 5 mm nylon spacer (bore 5.2) that the M3 pin screw clamps to the post, 0.5 mm axial play.
+for sfx, sgn in (('R', -1), ('L', 1)):
+    sp = step(f'REF-SPACER-JAWB-{sfx}').BoundingBox()
+    assert abs(max(sp.xlen, sp.ylen, sp.zlen) - 7.5) < 0.01 and abs(sorted((sp.xlen, sp.ylen, sp.zlen))[0] - 5) < 0.01, sp
+assert empty(jb, dy(2.55, -25.5, -17.5, xg, GP_, 4)) and not empty(jb, dy(2.7, -24.5, -18.5, xg, GP_, 4)), 'jaw B bore 5.2'
+assert empty(step('REF-SPACER-JAWB-R'), dy(1.55, -26, -17, xg, GP_, 4)), 'M3 through the spacer'
+# R04 (DD94): the passive left arm is bolted through the right arm's interfaces with printed stand-ins, no free link.
+touch = [('UGV-MECH-066-+1', 'UGV-MECH-059-+1'), ('UGV-MECH-059-+1', 'UGV-MECH-051-+1'), ('UGV-MECH-075-+1', 'UGV-MECH-050-+1'),
+         ('UGV-MECH-067-+1', 'UGV-MECH-051-+1'), ('UGV-MECH-067-+1', 'UGV-MECH-052-+1'), ('UGV-MECH-076-+1', 'UGV-MECH-052-+1'),
+         ('UGV-MECH-068-+1', 'UGV-MECH-052-+1'), ('UGV-MECH-068-+1', 'UGV-MECH-053-+1'), ('UGV-MECH-077-+1', 'UGV-MECH-053-+1'),
+         ('UGV-MECH-069-+1', 'UGV-MECH-053-+1'), ('UGV-MECH-069-+1', 'UGV-MECH-054-+1'), ('UGV-MECH-074-+1', 'UGV-MECH-054-+1'),
+         ('UGV-MECH-074-+1', 'UGV-MECH-055-+1'), ('UGV-MECH-058-+1', 'UGV-MECH-050-+1')]
+for a_, b_ in touch:
+    assert step(a_).distance(step(b_)) < 0.01, (a_, b_)
+# DD95 (R04 recheck): the passive twist block fills its pocket (<= 0.25 mm to link A and to the cover, not touching) and
+# turns < +-1 deg (TL4 joint budget) before it bears: turned 1 deg either way it overlaps A or the cover.
+lt = m['left_twist_play']
+assert lt['limit_deg'] == 1 and lt['nominal_mm3'] == 0 and min(lt['hit_mm3']) > 0.01, lt
+assert all(0 < step('UGV-MECH-066-+1').distance(step(n)) <= 0.25 for n in ('UGV-MECH-050-+1', 'UGV-MECH-058-+1'))
+assert not any(p['name'].startswith('REF-SERVO') and p['name'].endswith(('-L', '-+1')) for p in m['parts'])
+# Full review: park with all five joints +-1 deg at once (32 corners): >= 3 mm from the side panels (TL4).
+pt = m['park_tolerance']
+assert pt['corners'] == 32 and pt['error_deg'] == 1 and pt['min_wall_mm'] >= 3.0, pt
 # DD85 cable paths: every arm servo cable leaves its pocket through a slot to the link's outboard face; the bundle runs
 # outboard (zip ties round the links) and enters the body along the shoulder axis through the journal bore, which opens
 # on link A's outboard face beside the twist cover; the twist cable reaches it under the cover through a groove.
@@ -398,6 +452,25 @@ d_out9 = (d_hi9 - M9['spline_from_end']) / 2 + 19                  # D's outboar
 assert empty(d53, stowed(cube((4, d_out9 - 0.1 - (d_hi9 - 1), 5), (xr_ + 2.5, -(YA_ + (d_hi9 - 1 + d_out9 - 0.1) / 2), zs0)), 3)), 'roll cable slot'
 g0_ = xg + M9['spline_from_end'] - M9['case'][0]
 assert empty(e54, stowed(cube((4, 4.8, 5), (g0_ + 2, -(YA_ + 14.5), zs0)), 4)), 'gripper cable slot'
+
+# M02 (full review, DD93): each splice rib is bolted across the plate seam, two M3 on either side, from under the plate
+# into heat-set inserts in the rib; M03: the passive left shoulder's split collar (slit, clamp screw along x) and its TPU
+# friction washer against the wall boss's inner face.
+plate_top0 = g['plate_bottom_z_mm'] + g['plate_thickness_mm']
+xs_bolts = g['rail_bolt_x_mm']
+assert sum(x < g['plate_seam_x_mm'] for x in xs_bolts) == 2 and sum(x > g['plate_seam_x_mm'] for x in xs_bolts) == 2
+for sign in (-1, 1):
+    rib, y_ = step(f'UGV-MECH-002-{sign:+d}'), sign * g['rail_center_y_mm']
+    for x in xs_bolts:
+        assert empty(rib, probe(1.9, 6, (x, y_, plate_top0), (0, 0, 1))), ('rib insert', x)
+        half = step('UGV-MECH-001-R' if x < g['plate_seam_x_mm'] else 'UGV-MECH-001-F')
+        assert empty(half, probe(1.6, g['plate_thickness_mm'] + 2, (x, y_, g['plate_bottom_z_mm'] - 1), (0, 0, 1))), ('plate hole', x)
+col, wsh = step('UGV-MECH-057-+1'), step('UGV-MECH-065-+1')
+xs1, zs1 = g['arm']['shoulder_xz_mm']
+assert empty(col, cube((1.2, 5, 10), (xs1, W/2 - 15.75, zs1 - 17))), 'collar slit'
+assert empty(col, probe(1.5, 14, (xs1 - 7, W/2 - 15.75, zs1 - 22), (1, 0, 0))), 'collar clamp screw'
+wb = wsh.BoundingBox()
+assert abs(wb.ymax - (W/2 - 11)) < 0.01 and abs(wb.ylen - 1.5) < 0.01, 'washer against the boss face'
 
 # E-stop head stands >= 15 mm above the lid and is reachable from above.
 estop = step('REF-ESTOP').BoundingBox()
@@ -450,7 +523,8 @@ for edge in m['arm_edges']:
     assert edge['max_step_deg'] <= 1 and not edge['hits'], edge  # 1 deg: <= 5 mm at the 287 mm tip
 assert {tuple(sorted(e['pose'])) for e in m['arm_edges']} == {tuple(sorted(e)) for e in edges}
 # Clearance, not just no-contact: the moving links beyond the upper-arm hub (elbow onward) keep >= 4.5 mm from every
-# other part along every edge (5 deg samples); only the parked arm itself sits closer (its rest on the fender).
+# other part along every edge (1 deg samples, as the collision sweep); only the parked arm itself sits closer (its
+# rest on the fender).
 for c in m['arm_clearance']:
     assert c['moving_mm'] >= 4.5 and (c['park_mm'] is None or c['park_mm'] >= 1.0), c
 assert {tuple(sorted(c['pose'])) for c in m['arm_clearance']} == {tuple(sorted(e)) for e in edges}

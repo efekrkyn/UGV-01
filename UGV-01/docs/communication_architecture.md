@@ -1,6 +1,6 @@
 # İletişim arayüzü — A0
 
-**A3 Lite (güncel, DD70/DD71):** araç içinde CAN yok. MacBook ile ESP32-S3 arasında aynı çerçeve anlamları (0x080/0x100/0x110/0x120/0x121, M3'te 0x122 kol yolu ve 0x190 durum) 21 baytlık, HMAC-SHA256 imzalı UDP datagramlarıyla taşınır; Lite telemetrisi 0x1A0 (batarya/ToF), 0x1A1 (odometri) ve 0x1A2 (kol yolu durumu) eklenir. DD80: telemetri etiketleri son kabul edilen lease'e bağlıdır (tekrar/gecikme koruması); 0x123 kol park onayıdır. DD84: 0x1A0 bayraklarının bit3'ü "kol sürüşü engelliyor" (kol bir sürüş duruşunda oturmuş değil ya da gevşek). Ayrıntı: [Lite yazılım](lite_software_A3.md). Aşağısı A0–A2 CAN kaydıdır.
+**A3 Lite (güncel, DD70/DD71):** araç içinde CAN yok. MacBook ile ESP32-S3 arasında aynı çerçeve anlamları (0x080/0x100/0x110/0x120/0x121, M3'te 0x122 kol yolu ve 0x190 durum) 21 baytlık, HMAC-SHA256 imzalı UDP datagramlarıyla taşınır; Lite telemetrisi 0x1A0 (batarya/ToF), 0x1A1 (odometri) ve 0x1A2 (kol yolu durumu) eklenir. DD80: telemetri etiketleri son kabul edilen lease'e bağlıdır (tekrar/gecikme koruması); 0x123 kol park onayıdır. DD84: 0x1A0 bayraklarının bit3'ü "kol sürüşü engelliyor" (kol bir sürüş duruşunda oturmuş değil ya da gevşek; DD92/DD93: ya da pençe kapalı ve boş değil); bit4 "pençe boş" (DD93), bit5 "ileri kör: ToF menzilde hedef görmedi" (DD94); ToF alanlarında 0 geçersiz, 0xFFFF hedef yok. 0x123 park onayı: bayt 0 = 1 (kol parkta) ve bayt 1 = 1 (pençe kapalı ve boş), ikisi birden (DD94). Ayrıntı: [Lite yazılım](lite_software_A3.md). Aşağısı A0–A2 CAN kaydıdır.
 
 ## CAN kararı ve alternatifler
 
@@ -30,7 +30,7 @@ Aşağıdaki tablo PH8 DBC/C kodu için bağlayıcı taslak; gerçek encoder/ak�
 |0x121|CM5→MCU|10|8|A2 kol: shoulder_cdeg int16, gripper8 (0 açık/1 kapalı), flags8 (bit0 AI modu, diğerleri 0), seq16, session_tag16 |
 |0x122|MacBook→ESP32|25|8|M3 kol yolu (DD76): from_pose8, to_pose8, target_frac16 (65535 = to_pose'ta), seq16, session_tag16; çekirdek yalnız duruş grafiğinin kenarlarını kabul eder. Lite'ta 0x121'in shoulder alanı yok sayılır |
 |0x123|MacBook→ESP32|olayda|8|DD80 kol elle park edildi: 1,0,0,0, seq16, session_tag16; yalnız aktüatörler kapalıyken (ARMED/DRIVING değil), oturum başına ileri sırayla |
-|0x1A2|ESP32→MacBook|20|8|M3 kol durumu: from8, to8, frac16, target16, flags8 (bit0 yerleşti, bit1 gevşek: park onayı bekliyor), echo8 (N3: çekirdeğin aldığı son 0x122 sırasının düşük baytı) |
+|0x1A2|ESP32→MacBook|20|8|M3 kol durumu: from8, to8, frac16, target16, flags8 (bit0 yerleşti, bit1 gevşek: park onayı bekliyor, bit2 pençe kapalı komutlu, bit3 pençe hedefinde; gevşekken bit0/2/3 = 0, DD95; bit4–7 yankı bit8–11), echo (bayt 7 = bit0–7). Yankı: kolun gerçekten aldığı son 0x122 sırası, 12 bit (N3, DD92) |
 |0x180|MCU→CM5|50|8|4 teker mm/s int16 |
 |0x181|MCU→CM5|50|8|4 delta encoder int16; her20ms örneklemi,ortak sıralama ayrı heartbeat |
 |0x182|MCU→CM5|50|8|ax,ay,az int16 milli-g,örnek sıra16 |
